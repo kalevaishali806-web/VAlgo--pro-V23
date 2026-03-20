@@ -864,6 +864,18 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
 </div>
 
 <script>
+// Live data from local server
+function fetchLiveData(){
+  fetch("http://localhost:8765")
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.nifty>0){STOCKS[0].p=d.nifty;STOCKS[0].base=d.nifty;}
+    if(d.banknifty>0){STOCKS[1].p=d.banknifty;STOCKS[1].base=d.banknifty;}
+    if(d.sensex>0){STOCKS[2].p=d.sensex;STOCKS[2].base=d.sensex;}
+  }).catch(e=>console.log("Server offline"));
+}
+setInterval(fetchLiveData,5000);
+fetchLiveData();
 // ══ STATE ══════════════════════════════════════════════════
 const STOCKS=[
   {sym:'NIFTY',p:24404,chg:0.30,base:24404},
