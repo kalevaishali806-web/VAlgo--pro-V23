@@ -4210,6 +4210,11 @@ async function autoUpdateIP(jwt, apiKey, clientId){
   }
 }
 
+
+const VALID_LICENSES={'VALGO-OWNER-V23':{name:'Admin',expiry:'lifetime',maxTrades:999},'VALGO-BASIC-001':{name:'Basic User 1',expiry:'2026-05-07',maxTrades:2},'VALGO-PRO-001':{name:'Pro User 1',expiry:'2026-07-06',maxTrades:999},'VALGO-ANNUAL-001':{name:'Annual User 1',expiry:'2027-04-07',maxTrades:999}};
+function getLic(){try{return localStorage.getItem('valgo_lic')||'';}catch(e){return '';}}
+function validateLic(k){return VALID_LICENSES[k.trim().toUpperCase()]||null;}
+function initLicense(){const k=getLic();if(k){const l=validateLic(k);if(l){window._lic=l;return;}}window._lic=null;}
 window.addEventListener('load', init);
 </script>
 
