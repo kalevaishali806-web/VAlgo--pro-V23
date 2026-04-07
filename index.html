@@ -53,12 +53,12 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
 #flash{position:fixed;top:58px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:20px;font-size:12px;font-weight:700;z-index:300;opacity:0;pointer-events:none;transition:opacity 0.3s;white-space:nowrap;}
 
 /* Chart area */
-#chartOuter{display:flex;gap:0;margin-bottom:8px;border-radius:10px;overflow:hidden;background:#0a1626;}
+#chartOuter{display:flex;flex-direction:row;gap:0;margin-bottom:8px;border-radius:10px;overflow:hidden;background:#0a1626;}
 #chartToolbar{width:36px;background:#0d1a2a;border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;align-items:center;padding:6px 0;gap:2px;flex-shrink:0;}
 .ctool{width:28px;height:28px;border-radius:6px;background:none;border:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .ctool.on{background:rgba(0,180,255,0.15);color:var(--blue);}
 .ctool-sep{width:20px;height:1px;background:rgba(255,255,255,0.08);margin:3px 0;}
-#chartWrap{flex:1;height:300px;background:#0a1626;overflow:hidden;position:relative;}
+#chartWrap{width:100%;background:#0a1626;overflow:hidden;position:relative;}
 #chartSvg{display:block;width:100%;height:100%;}
 #chartPnl{position:absolute;top:6px;left:8px;font-size:14px;font-weight:900;pointer-events:none;text-shadow:0 1px 6px rgba(0,0,0,0.9);}
 #indPanel{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:290px;max-height:80vh;overflow-y:auto;background:#0d1e30;border:1px solid rgba(0,180,255,0.3);border-radius:14px;z-index:250;padding:14px;}
@@ -167,16 +167,42 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <!-- Candle type -->
         <button class="ctool" id="toolHA" onclick="toolToggle('ha')" title="Heikin-Ashi" style="font-size:9px;font-weight:800;">HA</button>
         <div class="ctool-sep"></div>
-        <!-- Refresh -->
-        <button class="ctool" onclick="bChart()" title="Refresh">🔄</button>
+        <!-- Refresh -->\n        <button class=\"ctool\" onclick=\"bChart()\" title=\"Refresh\">🔄</button>
+        <div class="ctool-sep"></div>
+        <!-- Sub indicators -->
+        <button class="ctool" id="toolRSI" onclick="toggleSubInd('rsi')" title="RSI" style="font-size:8px;font-weight:800;">RSI</button>
+        <button class="ctool" id="toolVOL" onclick="toggleSubInd('vol')" title="Volume" style="font-size:8px;font-weight:800;">VOL</button>
+        <button class="ctool" id="toolMACD2" onclick="toggleSubInd('macd2')" title="MACD" style="font-size:7px;font-weight:800;">MACD</button>
       </div>
+      <!-- Chart + sub-panels wrapper -->
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
       <!-- Chart canvas -->
-      <div id="chartWrap">
-        <svg id="chartSvg"></svg>
-        <canvas id="drawCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;display:none;"></canvas>
+      <div id="chartWrap" style="position:relative;">
+        <svg id="chartSvg" style="display:none;"></svg>
+        <canvas id="mainChartCanvas" style="display:block;width:100%;height:300px;"></canvas>
+        <canvas id="drawCanvas" style="position:absolute;top:0;left:0;width:100%;height:300px;cursor:crosshair;display:none;"></canvas>
         <div id="chartPnl"></div>
         <div id="drawLabel" style="position:absolute;top:6px;right:8px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(0,180,255,0.2);color:var(--blue);display:none;pointer-events:none;"></div>
       </div>
+      <!-- RSI sub-panel -->
+      <div id="rsiWrap" style="display:none;border-top:1px solid rgba(255,255,255,0.07);">
+        <div style="display:flex;justify-content:space-between;padding:3px 8px;font-size:9px;color:var(--muted);">
+          <span>RSI(14)</span><span id="rsiLive" style="color:var(--gold);font-weight:800;"></span>
+          <span style="color:rgba(255,255,255,0.3);">OB:70 · OS:30</span>
+        </div>
+        <canvas id="rsiCanvas" style="display:block;width:100%;height:70px;"></canvas>
+      </div>
+      <!-- Volume sub-panel -->
+      <div id="volWrap" style="display:none;border-top:1px solid rgba(255,255,255,0.07);">
+        <div style="padding:3px 8px;font-size:9px;color:var(--muted);">Volume</div>
+        <canvas id="volCanvas" style="display:block;width:100%;height:60px;"></canvas>
+      </div>
+      <!-- MACD sub-panel -->
+      <div id="macdWrap" style="display:none;border-top:1px solid rgba(255,255,255,0.07);">
+        <div style="padding:3px 8px;font-size:9px;color:var(--muted);">MACD(12,26,9)</div>
+        <canvas id="macdCanvas" style="display:block;width:100%;height:70px;"></canvas>
+      </div>
+      </div><!-- end chart+panels wrapper -->
     </div>
     <!-- Indicator values -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:8px;font-size:11px;">
@@ -205,7 +231,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <span style="font-size:11px;color:var(--muted);font-weight:700;">LOT SIZE</span>
         <div style="display:flex;align-items:center;gap:8px;">
           <button onclick="chLot(-1)" style="width:32px;height:32px;border-radius:8px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:18px;font-weight:900;cursor:pointer;">−</button>
-          <span id="lotN" style="font-size:18px;font-weight:900;min-width:24px;text-align:center;">1</span>
+          <input id="lotN" type="number" min="1" max="999" value="1" oninput="setLotDirect(this.value)" style="width:52px;height:32px;border-radius:8px;background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.2);font-size:16px;font-weight:900;text-align:center;outline:none;">
           <button onclick="chLot(1)" style="width:32px;height:32px;border-radius:8px;background:rgba(0,232,122,0.15);color:var(--green);border:1px solid rgba(0,232,122,0.3);font-size:18px;font-weight:900;cursor:pointer;">+</button>
           <span id="lotQ" style="font-size:10px;color:var(--muted);">= 50 qty</span>
         </div>
@@ -240,13 +266,19 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
   <div style="margin-top:4px;">
     <div style="font-size:18px;font-weight:900;margin-bottom:10px;">📋 Option Chain</div>
     <div style="display:flex;gap:8px;margin-bottom:8px;">
-      <select id="ocSym" onchange="renderOC()" style="margin-bottom:0;flex:1;font-weight:700;"><option>NIFTY</option><option>BANKNIFTY</option><option>SENSEX</option></select>
-      <select id="ocExp" style="margin-bottom:0;flex:1;"><option>13-Mar-26</option><option>27-Mar-26</option></select>
+      <select id="ocSym" onchange="loadOCExpiry();renderOC();" style="margin-bottom:0;flex:1;font-weight:700;"><option>NIFTY</option><option>BANKNIFTY</option><option>SENSEX</option></select>
+      <select id="ocExp" onchange="renderOC()" style="margin-bottom:0;flex:1;"><option>03-Apr-26</option><option>10-Apr-26</option><option>17-Apr-26</option><option>24-Apr-26</option></select>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
       <div class="stat"><div class="v" id="ocSpot" style="color:var(--green);font-size:12px;">—</div><div class="k">Spot</div></div>
       <div class="stat" style="background:rgba(255,184,48,0.1);border:1px solid rgba(255,184,48,0.3);"><div class="v" id="ocATM" style="color:var(--gold);font-size:12px;">—</div><div class="k">ATM</div></div>
       <div class="stat"><div class="v" id="ocPCR" style="font-size:12px;">—</div><div class="k">PCR</div></div>
+      <div class="stat" style="background:rgba(0,180,255,0.08);border:1px solid rgba(0,180,255,0.3);"><div class="v" id="ocMaxPain" style="color:var(--blue);font-size:12px;">—</div><div class="k">MAX PAIN</div></div>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">
+      <div style="font-size:9px;padding:3px 8px;border-radius:10px;background:rgba(0,232,122,0.15);border:1px solid rgba(0,232,122,0.4);color:var(--green);">🦸 Hero-Zero = OTM ₹0.5-5 + बडे Player</div>
+      <div style="font-size:9px;padding:3px 8px;border-radius:10px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.4);color:#00ff88;">🔥 = बडे Player Entry</div>
+      <div style="font-size:9px;padding:3px 8px;border-radius:10px;background:rgba(0,180,255,0.1);border:1px solid rgba(0,180,255,0.4);color:var(--blue);">🎯 Max Pain Strike</div>
       <div class="stat"><div class="v" style="color:var(--gold);font-size:12px;">14.8</div><div class="k">VIX</div></div>
     </div>
     <!-- OC lot -->
@@ -344,6 +376,8 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
 <!-- ═ P&L ═ -->
 <div class="pg" id="pg-pnl">
   <div style="font-size:18px;font-weight:900;margin:4px 0 12px;">💰 P&L Report</div>
+  <!-- Angel One Real P&L Panel -->
+  <div id="angelPnlPanel" style="margin-bottom:10px;"></div>
   <div class="card" style="background:linear-gradient(135deg,#051520,#0a2535);">
     <div style="font-size:28px;font-weight:900;color:var(--green);" id="pnlT">₹0</div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px;">
@@ -382,6 +416,18 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
       <div class="stat"><div class="v" id="aCash" style="color:var(--green);font-size:13px;">Active</div><div class="k">Status</div></div>
       <div class="stat"><div class="v" id="aMargin" style="font-size:13px;">INTRADAY</div><div class="k">Mode</div></div>
+    </div>
+    <!-- Real Balance Section -->
+    <div id="angelBalancePanel" style="background:rgba(0,232,122,0.05);border:1px solid rgba(0,232,122,0.2);border-radius:10px;padding:10px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:12px;font-weight:800;color:var(--green);">💰 Angel One Balance</span>
+        <button onclick="fetchAngelBalance()" style="font-size:10px;padding:4px 10px;background:rgba(0,232,122,0.1);color:var(--green);border:1px solid rgba(0,232,122,0.3);border-radius:6px;cursor:pointer;">🔄 Refresh</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+        <div class="stat" style="background:rgba(0,232,122,0.08);"><div class="v" id="aBalAvail" style="color:var(--green);font-size:12px;">—</div><div class="k">Available</div></div>
+        <div class="stat" style="background:rgba(255,184,48,0.08);"><div class="v" id="aBalUsed" style="color:var(--gold);font-size:12px;">—</div><div class="k">Used</div></div>
+        <div class="stat" style="background:rgba(0,180,255,0.08);"><div class="v" id="aBalNet" style="color:var(--blue);font-size:12px;">—</div><div class="k">Net</div></div>
+      </div>
     </div>
     <button onclick="disconnectAngel()" style="width:100%;padding:11px;background:rgba(255,69,96,0.1);color:var(--red);border:1px solid rgba(255,69,96,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🔌 Disconnect</button>
   </div>
@@ -748,6 +794,15 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
           </div>
         </div>
       </div>
+      <!-- TSL Mode selector -->
+      <div id="tcTSLModeRow" style="display:none;margin-top:8px;display:none;">
+        <div style="font-size:9px;color:var(--muted);margin-bottom:4px;">TSL Mode निवडा:</div>
+        <div style="display:flex;gap:6px;">
+          <button id="tcTSLModeLTP" onclick="tcSetTSLMode('ltp')" style="flex:1;padding:5px 0;border-radius:7px;font-size:9px;font-weight:800;border:1px solid rgba(0,180,255,0.4);background:rgba(0,180,255,0.2);color:#00b4ff;cursor:pointer;">📈 LTP Based</button>
+          <button id="tcTSLModeProfit" onclick="tcSetTSLMode('profit')" style="flex:1;padding:5px 0;border-radius:7px;font-size:9px;font-weight:800;border:1px solid rgba(255,184,48,0.2);background:transparent;color:var(--muted);cursor:pointer;">💰 Profit Based</button>
+        </div>
+        <div id="tcTSLModeDesc" style="font-size:8px;color:var(--muted);margin-top:4px;text-align:center;">LTP च्या मागे SL जातो</div>
+      </div>
     </div>
 
     <!-- Execute buttons -->
@@ -859,23 +914,29 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
       <div><span class="lbl">SL %</span><input id="sSL" type="number" value="1.5" step="0.1"></div>
       <div><span class="lbl">Target %</span><input id="sTG" type="number" value="3" step="0.1"></div>
     </div>
+    <div style="background:rgba(255,200,0,0.07);border:1px solid rgba(255,200,0,0.2);border-radius:10px;padding:12px;margin-bottom:10px;">
+      <div style="font-size:11px;font-weight:800;color:var(--gold);margin-bottom:8px;">🔒 Trailing SL % (प्रत्येक Index साठी वेगळा)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+        <div style="text-align:center;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">NIFTY</div>
+          <input id="sTSL_NIFTY" type="number" value="10" min="0.5" max="20" step="0.5" style="width:100%;text-align:center;padding:6px 4px;background:var(--card2);color:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;">
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">BANKNIFTY</div>
+          <input id="sTSL_BANKNIFTY" type="number" value="12" min="0.5" max="20" step="0.5" style="width:100%;text-align:center;padding:6px 4px;background:var(--card2);color:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;">
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">SENSEX</div>
+          <input id="sTSL_SENSEX" type="number" value="12" min="0.5" max="20" step="0.5" style="width:100%;text-align:center;padding:6px 4px;background:var(--card2);color:#fff;border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:700;">
+        </div>
+      </div>
+      <div style="font-size:9px;color:var(--muted);margin-top:6px;text-align:center;">0 = TSL बंद · 0.5% ते 20% पर्यंत</div>
+    </div>
     <button onclick="saveStrat()" style="width:100%;padding:15px;background:linear-gradient(135deg,#00e87a,#00b857);color:#000;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">💾 Save Strategy</button>
   </div>
 </div>
 
 <script>
-// Live data from local server
-function fetchLiveData(){
-  fetch("http://localhost:8765")
-  .then(r=>r.json())
-  .then(d=>{
-    if(d.nifty>0){STOCKS[0].p=d.nifty;STOCKS[0].base=d.nifty;}
-    if(d.banknifty>0){STOCKS[1].p=d.banknifty;STOCKS[1].base=d.banknifty;}
-    if(d.sensex>0){STOCKS[2].p=d.sensex;STOCKS[2].base=d.sensex;}
-  }).catch(e=>console.log("Server offline"));
-}
-setInterval(fetchLiveData,5000);
-fetchLiveData();
 // ══ STATE ══════════════════════════════════════════════════
 const STOCKS=[
   {sym:'NIFTY',p:24404,chg:0.30,base:24404},
@@ -1021,9 +1082,8 @@ function drawChart(){
   if(!candles.length) return;
   const wrap=document.getElementById('chartWrap');
   if(!wrap) return;
-  const W=wrap.offsetWidth||wrap.clientWidth||(window.screen.width-60);
-  const H=300;
-  const PL=4,PR=56,PT=10,PB=6,CW=W-PL-PR,CH=H-PT-PB;
+
+  // ── Compute indicator values (for stats display) ──
   const dispCandles=getDisplayCandles();
   const cl=dispCandles.map(x=>x.c);
   const e9=calcEMA(cl,emaPeriods.p9), e21=calcEMA(cl,emaPeriods.p21);
@@ -1031,115 +1091,311 @@ function drawChart(){
   const std=Math.sqrt(cl.map(v=>(v-vwap)**2).reduce((a,b)=>a+b)/cl.length);
   const bbU=+(vwap+2*std).toFixed(2), bbL=+(vwap-2*std).toFixed(2);
   let g=0,ls=0;
-  for(let i=cl.length-14;i<cl.length;i++){const d=cl[i]-cl[i-1];d>0?g+=d:ls-=d;}
+  for(let i=Math.max(1,cl.length-14);i<cl.length;i++){const d=cl[i]-cl[i-1];d>0?g+=d:ls-=d;}
   const rsi=ls===0?100:+(100-(100/(1+g/ls))).toFixed(1);
-  const macd=+(e9[e9.length-1]-e21[e21.length-1]).toFixed(1);
+  const macdVal=+(e9[e9.length-1]-e21[e21.length-1]).toFixed(1);
   const emaDir=e9[e9.length-1]>e21[e21.length-1];
-  const sig=macd>0&&emaDir?'BUY':macd<0&&!emaDir?'SELL':'WAIT';
+  const sig=macdVal>0&&emaDir?'BUY':macdVal<0&&!emaDir?'SELL':'WAIT';
   const u=(id,v,col)=>{const el=document.getElementById(id);if(el){el.textContent=v;if(col)el.style.color=col;}};
   const f=v=>'₹'+v.toLocaleString('en-IN',{maximumFractionDigits:1});
   u('vRSI',rsi,rsi>60?'var(--green)':rsi<40?'var(--red)':'var(--gold)');
   u('hRSI',rsi,rsi>60?'var(--green)':rsi<40?'var(--red)':'var(--gold)');
-  u('vMACD',(macd>=0?'+':'')+macd,macd>=0?'var(--green)':'var(--red)');
-  u('hMACD',(macd>=0?'+':'')+macd,macd>=0?'var(--green)':'var(--red)');
+  u('vMACD',(macdVal>=0?'+':'')+macdVal,macdVal>=0?'var(--green)':'var(--red)');
+  u('hMACD',(macdVal>=0?'+':'')+macdVal,macdVal>=0?'var(--green)':'var(--red)');
   u('vEMA9',f(e9[e9.length-1])); u('vEMA21',f(e21[e21.length-1]));
   u('vBBU',f(bbU)); u('vVWAP',f(vwap));
   u('hEMA',emaDir?'▲':'▼',emaDir?'var(--green)':'var(--red)');
   u('hSig',sig,sig==='BUY'?'var(--green)':sig==='SELL'?'var(--red)':'var(--gold)');
 
-  const N=Math.min(chartZoom,dispCandles.length), show=dispCandles.slice(-N);
+  // ── Canvas setup ──
+  const canvas=document.getElementById('mainChartCanvas');
+  if(!canvas) return;
+  const W=wrap.offsetWidth||wrap.clientWidth||(window.innerWidth-60);
+  const H=300;
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  canvas.style.width=W+'px'; canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  // ── Layout ──
+  const PL=4,PR=56,PT=10,PB=6,CW=W-PL-PR,CH=H-PT-PB;
+  const N=Math.min(chartZoom,dispCandles.length);
+  const show=dispCandles.slice(-N);
   const e9s=e9.slice(-N), e21s=e21.slice(-N);
-  const pH=Math.max(...show.map(c=>c.h)), pL=Math.min(...show.map(c=>c.l));
-  const rng=pH-pL||pH*0.02;
-  const vT=pH+rng*0.08, vB=pL-rng*0.08, vR=vT-vB;
+  const pH=Math.max(...show.map(c=>c.h));
+  const pL2=Math.min(...show.map(c=>c.l));
+  const rng=pH-pL2||pH*0.02;
+  const vT=pH+rng*0.08, vB=pL2-rng*0.08, vR=vT-vB;
   const sx=i=>PL+(i+0.5)*(CW/N);
   const sy=p=>PT+(vT-p)/vR*CH;
-  const bW=Math.max(2,Math.floor(CW/N*0.6));
+  const bW=Math.max(2,Math.floor(CW/N*0.65));
+
   // Save chart meta for drawing tools
   chartMeta={PL,PR,PT,CW,CH,vT,vB,vR,N,W,H};
-  // Redraw canvas lines after chart update
   setTimeout(redrawCanvas, 10);
 
-  let s=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" style="display:block;pointer-events:none;">`;
-  s+=`<rect width="${W}" height="${H}" fill="#0a1626"/>`;
-  // Grid
+  // ── Background ──
+  ctx.fillStyle='#0a1626';
+  ctx.fillRect(0,0,W,H);
+
+  // ── Grid + Price labels ──
   for(let i=0;i<=4;i++){
-    const p=vB+(i/4)*vR, y=sy(p).toFixed(1);
-    s+=`<line x1="${PL}" y1="${y}" x2="${PL+CW}" y2="${y}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`;
-    s+=`<text x="${PL+CW+3}" y="${(+y+3).toFixed(1)}" fill="rgba(180,210,240,0.8)" font-size="8.5" font-weight="bold" font-family="sans-serif">₹${Math.round(p).toLocaleString('en-IN')}</text>`;
+    const p=vB+(i/4)*vR, y=sy(p);
+    ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+    ctx.fillStyle='rgba(180,210,240,0.8)'; ctx.font='bold 8px sans-serif';
+    ctx.textAlign='left';
+    ctx.fillText('₹'+Math.round(p).toLocaleString('en-IN'), PL+CW+3, y+3);
   }
-  // BB
+
+  // ── Bollinger Bands ──
   if(inds.bb){
-    const yU=sy(bbU).toFixed(1),yL=sy(bbL).toFixed(1);
-    s+=`<rect x="${PL}" y="${yU}" width="${CW}" height="${(+yL-+yU).toFixed(1)}" fill="${clrs.bb}" fill-opacity="0.05"/>`;
-    s+=`<line x1="${PL}" y1="${yU}" x2="${PL+CW}" y2="${yU}" stroke="${clrs.bb}" stroke-width="1.2" stroke-dasharray="4,3"/>`;
-    s+=`<line x1="${PL}" y1="${yL}" x2="${PL+CW}" y2="${yL}" stroke="${clrs.bb}" stroke-width="1.2" stroke-dasharray="4,3"/>`;
-    s+=`<text x="${(PL+4).toFixed(1)}" y="${(+yU-2).toFixed(1)}" fill="${clrs.bb}" font-size="7" font-family="sans-serif">BB↑</text>`;
-    s+=`<text x="${(PL+4).toFixed(1)}" y="${(+yL+8).toFixed(1)}" fill="${clrs.bb}" font-size="7" font-family="sans-serif">BB↓</text>`;
+    const yU=sy(bbU), yL=sy(bbL);
+    ctx.fillStyle='rgba(100,180,255,0.04)';
+    ctx.fillRect(PL,yU,CW,yL-yU);
+    ctx.strokeStyle=clrs.bb; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(PL,yU); ctx.lineTo(PL+CW,yU); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(PL,yL); ctx.lineTo(PL+CW,yL); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=clrs.bb; ctx.font='7px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('BB↑',PL+4,yU-2); ctx.fillText('BB↓',PL+4,yL+8);
   }
-  // VWAP
+
+  // ── VWAP ──
   if(inds.vwap){
-    const yV=sy(vwap).toFixed(1);
-    s+=`<line x1="${PL}" y1="${yV}" x2="${PL+CW}" y2="${yV}" stroke="${clrs.vwap}" stroke-width="1.5" stroke-dasharray="6,4"/>`;
-    s+=`<text x="${(PL+4).toFixed(1)}" y="${(+yV-2).toFixed(1)}" fill="${clrs.vwap}" font-size="7" font-family="sans-serif">VWAP</text>`;
+    const yV=sy(vwap);
+    ctx.strokeStyle=clrs.vwap; ctx.lineWidth=1.5; ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(PL,yV); ctx.lineTo(PL+CW,yV); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=clrs.vwap; ctx.font='7px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('VWAP',PL+4,yV-2);
   }
-  // Supertrend
+
+  // ── Supertrend (proper ATR-based) ──
   if(inds.st){
-    const atrPeriod=7;
-    for(let i=N-1;i>=1;i--){
-      const c1=show[i],c0=show[i-1];
-      const mid=(c1.h+c1.l)/2;
-      const atr=Math.abs(c1.h-c1.l);
-      const upper=mid+2*atr, lower=mid-2*atr;
-      const bull=c1.c>=(sy(lower)<sy(upper)?lower:upper);
-      const stY=sy(bull?lower:upper).toFixed(1);
-      const x1=sx(i-1).toFixed(1), x2=sx(i).toFixed(1);
-      s+=`<line x1="${x1}" y1="${stY}" x2="${x2}" y2="${stY}" stroke="${bull?'#00e87a':'#ff4560'}" stroke-width="2"/>`;
+    let prevST=null, prevDir=1;
+    for(let i=1;i<show.length;i++){
+      const c=show[i], cp=show[i-1];
+      const tr=Math.max(c.h-c.l,Math.abs(c.h-cp.c),Math.abs(c.l-cp.c));
+      const mid=(c.h+c.l)/2;
+      const up=mid-2*tr, dn=mid+2*tr;
+      let stVal,dir;
+      if(prevST===null){stVal=up;dir=1;}
+      else if(prevDir===1){stVal=c.c>prevST?Math.max(up,prevST):dn;dir=c.c>stVal?1:-1;}
+      else{stVal=c.c<prevST?Math.min(dn,prevST):up;dir=c.c<stVal?-1:1;}
+      // Draw ST line segment
+      ctx.strokeStyle=dir===1?'#00e87a':'#ff4560';
+      ctx.lineWidth=2;
+      ctx.beginPath();
+      if(prevST!==null){ctx.moveTo(sx(i-1),sy(prevST));ctx.lineTo(sx(i),sy(stVal));}
+      else{ctx.moveTo(sx(i),sy(stVal));ctx.lineTo(sx(i),sy(stVal));}
+      ctx.stroke();
+      // BUY/SELL arrow on crossover
+      if(prevST!==null && dir!==prevDir){
+        ctx.fillStyle=dir===1?'#00e87a':'#ff4560';
+        ctx.font='bold 13px sans-serif'; ctx.textAlign='center';
+        ctx.fillText(dir===1?'▲':'▼', sx(i), sy(c.c)+(dir===1?16:-4));
+      }
+      prevST=stVal; prevDir=dir;
     }
   }
-  // EMA
+
+  // ── EMA lines ──
   if(inds.ema){
-    [[e9s,clrs.ema9,`E${emaPeriods.p9}`],[e21s,clrs.ema21,`E${emaPeriods.p21}`]].forEach(([arr,col,lbl])=>{
-      const pts=arr.map((v,i)=>`${sx(i).toFixed(1)},${sy(v).toFixed(1)}`).join(' ');
-      s+=`<polyline points="${pts}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
-      s+=`<text x="${(PL+CW+3).toFixed(1)}" y="${(sy(arr[arr.length-1])+3).toFixed(1)}" fill="${col}" font-size="8" font-family="sans-serif" font-weight="bold">${lbl}</text>`;
+    [[e9s,clrs.ema9,emaPeriods.p9],[e21s,clrs.ema21,emaPeriods.p21]].forEach(([arr,col,p])=>{
+      ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.setLineDash([]);
+      ctx.beginPath();
+      arr.forEach((v,i)=>{ if(i===0)ctx.moveTo(sx(i),sy(v)); else ctx.lineTo(sx(i),sy(v)); });
+      ctx.stroke();
+      ctx.fillStyle=col; ctx.font='bold 8px sans-serif'; ctx.textAlign='left';
+      ctx.fillText('E'+p, PL+CW+3, sy(arr[arr.length-1])+3);
     });
   }
-  // Position lines
+
+  // ── Position lines ──
   positions.forEach(pos=>{
     const base=pos.sym.split(' ')[0];
     if(base!==STOCKS[ai].sym) return;
-    const lines=[[pos.entry,'rgba(255,255,255,0.8)','Entry'],[pos.sl,'#ff4560','SL'],[pos.tgt,'#00e87a','TGT']];
-    lines.forEach(([price,col,lbl])=>{
+    [[pos.entry,'rgba(255,255,255,0.8)','Entry'],[pos.sl,'#ff4560','SL'],[pos.tgt,'#00e87a','TGT']].forEach(([price,col,lbl])=>{
       if(!price||price<vB||price>vT) return;
-      const y=sy(price).toFixed(1);
-      s+=`<line x1="${PL}" y1="${y}" x2="${PL+CW}" y2="${y}" stroke="${col}" stroke-width="1.2" stroke-dasharray="4,3" opacity="0.9"/>`;
-      s+=`<rect x="${(PL+2).toFixed(1)}" y="${(+y-9).toFixed(1)}" width="${lbl.length*6+6}" height="11" rx="2" fill="${col}" opacity="0.8"/>`;
-      s+=`<text x="${(PL+5).toFixed(1)}" y="${(+y+0).toFixed(1)}" fill="#000" font-size="7.5" font-family="sans-serif" font-weight="bold">${lbl}</text>`;
+      const y=sy(price);
+      ctx.strokeStyle=col; ctx.lineWidth=1.2; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+      ctx.setLineDash([]);
+      const tw=lbl.length*6+8;
+      ctx.fillStyle=col; ctx.beginPath();
+      ctx.roundRect?ctx.roundRect(PL+2,y-9,tw,11,2):ctx.rect(PL+2,y-9,tw,11);
+      ctx.fill();
+      ctx.fillStyle='#000'; ctx.font='bold 7.5px sans-serif'; ctx.textAlign='left';
+      ctx.fillText(lbl,PL+5,y+1);
     });
   });
-  // Candles
-  show.forEach((c,i)=>{
-    const bull=c.c>=c.o,col=bull?clrs.bull:clrs.bear,x=sx(i).toFixed(1);
-    s+=`<line x1="${x}" y1="${sy(c.h).toFixed(1)}" x2="${x}" y2="${sy(c.l).toFixed(1)}" stroke="${col}" stroke-width="1"/>`;
-    const bT=Math.min(sy(c.o),sy(c.c)).toFixed(1),bH=Math.max(1.5,Math.abs(sy(c.c)-sy(c.o))).toFixed(1);
-    s+=`<rect x="${(sx(i)-bW/2).toFixed(1)}" y="${bT}" width="${bW}" height="${bH}" fill="${col}"/>`;
-  });
-  // Price tag
-  const last=show[show.length-1],ly=sy(last.c).toFixed(1),bull=last.c>=last.o,tc=bull?clrs.bull:clrs.bear;
-  s+=`<line x1="${PL}" y1="${ly}" x2="${PL+CW}" y2="${ly}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="3,3"/>`;
-  s+=`<rect x="${PL+CW+1}" y="${(+ly-8).toFixed(1)}" width="${PR-4}" height="16" rx="3" fill="${tc}"/>`;
-  s+=`<text x="${(PL+CW+1+(PR-4)/2).toFixed(1)}" y="${(+ly+4).toFixed(1)}" fill="${bull?'#000':'#fff'}" font-size="8" font-family="sans-serif" font-weight="bold" text-anchor="middle">₹${Math.round(last.c).toLocaleString('en-IN')}</text>`;
-  // HA label
-  if(inds.ha) s+=`<rect x="${PL+2}" y="${H-18}" width="18" height="12" rx="3" fill="rgba(0,180,255,0.3)"/><text x="${PL+5}" y="${H-8}" fill="var(--blue)" font-size="7" font-family="sans-serif" font-weight="bold">HA</text>`;
-  s+=`</svg>`;
 
-  const svgEl=document.getElementById('chartSvg');
-  if(svgEl){
-    svgEl.setAttribute('width',W); svgEl.setAttribute('height',H);
-    svgEl.innerHTML=s.replace(/<svg[^>]*>/,'').replace('</svg>','');
+  // ── Candlesticks ──
+  show.forEach((c,i)=>{
+    const bull=c.c>=c.o;
+    const col=bull?clrs.bull:clrs.bear;
+    const x=sx(i);
+    // Wick
+    ctx.strokeStyle=col; ctx.lineWidth=1; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(x,sy(c.h)); ctx.lineTo(x,sy(c.l)); ctx.stroke();
+    // Body
+    ctx.fillStyle=col;
+    const bTop=Math.min(sy(c.o),sy(c.c));
+    const bH=Math.max(1.5,Math.abs(sy(c.c)-sy(c.o)));
+    ctx.fillRect(x-bW/2, bTop, bW, bH);
+  });
+
+  // ── HA label ──
+  if(inds.ha){
+    ctx.fillStyle='rgba(0,180,255,0.3)';
+    ctx.beginPath(); ctx.roundRect?ctx.roundRect(PL+2,H-18,18,12,3):ctx.rect(PL+2,H-18,18,12); ctx.fill();
+    ctx.fillStyle='var(--blue)'; ctx.font='bold 7px sans-serif'; ctx.textAlign='left';
+    ctx.fillText('HA',PL+5,H-8);
   }
+
+  // ── Live price tag ──
+  const last=show[show.length-1];
+  const ly=sy(last.c);
+  const bull2=last.c>=last.o;
+  const tc=bull2?clrs.bull:clrs.bear;
+  ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+  ctx.beginPath(); ctx.moveTo(PL,ly); ctx.lineTo(PL+CW,ly); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=tc;
+  ctx.beginPath(); ctx.roundRect?ctx.roundRect(PL+CW+1,ly-8,PR-4,16,3):ctx.rect(PL+CW+1,ly-8,PR-4,16); ctx.fill();
+  ctx.fillStyle=bull2?'#000':'#fff'; ctx.font='bold 8px sans-serif'; ctx.textAlign='center';
+  ctx.fillText('₹'+Math.round(last.c).toLocaleString('en-IN'), PL+CW+1+(PR-4)/2, ly+4);
+
+  // ── Sub-panels ──
+  drawSubPanels(show);
   updatePnlOverlay();
+}
+
+// ── Sub-panel helper (RSI / Volume / MACD) ──
+let subInds={rsi:false,vol:false,macd2:false};
+function toggleSubInd(key){
+  subInds[key]=!subInds[key];
+  const ids={rsi:'rsiWrap',vol:'volWrap',macd2:'macdWrap'};
+  const btns={rsi:'toolRSI',vol:'toolVOL',macd2:'toolMACD2'};
+  const wrap=document.getElementById(ids[key]);
+  if(wrap) wrap.style.display=subInds[key]?'block':'none';
+  const btn=document.getElementById(btns[key]);
+  if(btn) btn.classList.toggle('on',subInds[key]);
+  drawChart();
+}
+
+function setupSubCanvas(id,h){
+  const canvas=document.getElementById(id);
+  if(!canvas) return null;
+  const wrap=document.getElementById('chartWrap');
+  const W=wrap.offsetWidth||wrap.clientWidth||(window.innerWidth-60);
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=W*dpr; canvas.height=h*dpr;
+  canvas.style.width=W+'px'; canvas.style.height=h+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+  return {ctx,W,H:h};
+}
+
+function drawSubPanels(show){
+  const N=show.length;
+  const PL=4,PR=56;
+  const sx=i=>PL+(i+0.5)*((0)||1);
+
+  // Get W from main canvas
+  const mc=document.getElementById('mainChartCanvas');
+  const W=mc?mc.offsetWidth:(window.innerWidth-60);
+  const CW=W-PL-PR;
+  const sxi=i=>PL+(i+0.5)*(CW/N);
+
+  // ── RSI ──
+  if(subInds.rsi){
+    const r=setupSubCanvas('rsiCanvas',70);
+    if(r){
+      const {ctx,H}=r;
+      ctx.fillStyle='#0a1626'; ctx.fillRect(0,0,W,H);
+      // RSI calculation per candle
+      const rsiArr=[];
+      for(let i=0;i<show.length;i++){
+        if(i<14){rsiArr.push(50);continue;}
+        let g2=0,l2=0;
+        for(let j=i-13;j<=i;j++){const d=show[j].c-show[j-1].c;d>0?g2+=d:l2-=d;}
+        rsiArr.push(l2===0?100:100-(100/(1+g2/l2)));
+      }
+      // OB/OS zones
+      const rToY=v=>4+(1-v/100)*(H-8);
+      ctx.strokeStyle='rgba(255,69,96,0.3)'; ctx.lineWidth=0.7;
+      ctx.beginPath();ctx.moveTo(PL,rToY(70));ctx.lineTo(W-PR,rToY(70));ctx.stroke();
+      ctx.strokeStyle='rgba(0,232,122,0.3)';
+      ctx.beginPath();ctx.moveTo(PL,rToY(30));ctx.lineTo(W-PR,rToY(30));ctx.stroke();
+      ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.font='7px sans-serif'; ctx.textAlign='right';
+      ctx.fillText('70',PL-1,rToY(70)+3);ctx.fillText('30',PL-1,rToY(30)+3);
+      // RSI line
+      ctx.strokeStyle='#ffb830'; ctx.lineWidth=1.4;
+      ctx.beginPath();
+      rsiArr.forEach((v,i)=>{const x=sxi(i);i===0?ctx.moveTo(x,rToY(v)):ctx.lineTo(x,rToY(v));});
+      ctx.stroke();
+      // RSI value label
+      const lastRSI=rsiArr[rsiArr.length-1];
+      const relEl=document.getElementById('rsiLive');
+      if(relEl) relEl.textContent=lastRSI.toFixed(1);
+      ctx.fillStyle=lastRSI>70?'#ff4560':lastRSI<30?'#00e87a':'#ffb830';
+      ctx.textAlign='left'; ctx.font='bold 8px sans-serif';
+      ctx.fillText(lastRSI.toFixed(1),W-PR+2,rToY(lastRSI)+3);
+    }
+  }
+
+  // ── Volume ──
+  if(subInds.vol){
+    const r=setupSubCanvas('volCanvas',60);
+    if(r){
+      const {ctx,H}=r;
+      ctx.fillStyle='#0a1626'; ctx.fillRect(0,0,W,H);
+      const maxVol=Math.max(...show.map(c=>c.v||1));
+      const bW2=Math.max(1.5,CW/N*0.65);
+      show.forEach((c,i)=>{
+        const bH=Math.max(1,((c.v||1)/maxVol)*(H-10));
+        ctx.fillStyle=c.c>=c.o?'rgba(0,232,122,0.55)':'rgba(255,69,96,0.55)';
+        ctx.fillRect(sxi(i)-bW2/2, H-5-bH, bW2, bH);
+      });
+    }
+  }
+
+  // ── MACD ──
+  if(subInds.macd2){
+    const r=setupSubCanvas('macdCanvas',70);
+    if(r){
+      const {ctx,H}=r;
+      ctx.fillStyle='#0a1626'; ctx.fillRect(0,0,W,H);
+      const cl2=show.map(c=>c.c);
+      const fast=calcEMA(cl2,12), slow2=calcEMA(cl2,26);
+      const macdLine=cl2.map((_,i)=>fast[i]-slow2[i]);
+      let sig2=macdLine[0]; const k2=2/10;
+      const sigLine=macdLine.map(m=>{sig2=m*k2+sig2*(1-k2);return sig2;});
+      const hist2=macdLine.map((m,i)=>m-sigLine[i]);
+      const allM=[...macdLine,...sigLine,...hist2];
+      const minM=Math.min(...allM),maxM=Math.max(...allM),rngM=maxM-minM||0.01;
+      const mToY=v=>4+(1-(v-minM)/rngM)*(H-8);
+      // Zero line
+      ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.moveTo(PL,mToY(0));ctx.lineTo(W-PR,mToY(0));ctx.stroke();
+      // Histogram
+      const bW3=Math.max(1.5,CW/N*0.6);
+      hist2.forEach((v,i)=>{
+        ctx.fillStyle=v>=0?'rgba(0,232,122,0.5)':'rgba(255,69,96,0.5)';
+        const y0=mToY(0),y1=mToY(v);
+        ctx.fillRect(sxi(i)-bW3/2,Math.min(y0,y1),bW3,Math.abs(y0-y1)||1);
+      });
+      // MACD line
+      ctx.strokeStyle='#00b4ff'; ctx.lineWidth=1.2;
+      ctx.beginPath();macdLine.forEach((v,i)=>{const x=sxi(i);i===0?ctx.moveTo(x,mToY(v)):ctx.lineTo(x,mToY(v));});ctx.stroke();
+      // Signal line
+      ctx.strokeStyle='#ff6b35'; ctx.lineWidth=1;
+      ctx.beginPath();sigLine.forEach((v,i)=>{const x=sxi(i);i===0?ctx.moveTo(x,mToY(v)):ctx.lineTo(x,mToY(v));});ctx.stroke();
+    }
+  }
 }
 
 function updatePnlOverlay(){
@@ -1228,7 +1484,8 @@ function pickStrike(k,type){
   const btn=document.getElementById('sk'+k);
   if(btn){btn.style.background='rgba(0,180,255,0.15)';btn.style.borderColor='var(--blue)';}
 }
-function chLot(d){lot=Math.max(1,lot+d);document.getElementById('lotN').textContent=lot;updateLotInfo();}
+function chLot(d){lot=Math.max(1,lot+d);var el=document.getElementById('lotN');if(el.tagName==='INPUT')el.value=lot;else el.textContent=lot;updateLotInfo();}
+function setLotDirect(v){lot=Math.max(1,parseInt(v)||1);updateLotInfo();}
 function updateLotInfo(){
   const ls=tt==='EQ'?1:(LOTS[STOCKS[ai].sym]||50);
   const qty=lot*(tt==='EQ'?1:ls);
@@ -1271,9 +1528,9 @@ function toggleTSL(id){
 }
 function chTSL(id,d){
   const p=positions.find(x=>x.id===id); if(!p||p.trail===0) return;
-  p.trail=+Math.max(0.5,Math.min(5,p.trail+d)).toFixed(1); renderPositions();
+  p.trail=+Math.max(0.5,Math.min(20,p.trail+d)).toFixed(1); renderPositions();
 }
-function renderPositions(){
+function renderPositions(){redrawCanvas();
   const card=document.getElementById('posCard'), list=document.getElementById('posList');
   if(!positions.length){card.style.display='none';updatePnlHeader();return;}
   card.style.display='block';
@@ -1312,7 +1569,10 @@ function renderPositions(){
           </div>
         </div>
       </div>
-      <button onclick="closePos(${p.id})" style="width:100%;padding:9px;background:rgba(255,69,96,0.12);color:var(--red);border:1px solid rgba(255,69,96,0.3);border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;">❌ Close</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px;">
+        <button onclick="openOptChart(${p.id})" style="padding:9px;background:rgba(0,180,255,0.1);color:var(--blue);border:1px solid rgba(0,180,255,0.3);border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;">📊 Chart</button>
+        <button onclick="closePos(${p.id})" style="padding:9px;background:rgba(255,69,96,0.12);color:var(--red);border:1px solid rgba(255,69,96,0.3);border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;">❌ Close</button>
+      </div>
     </div>`;
   }).join('');
 }
@@ -1342,8 +1602,22 @@ function feed(){
     const lp=p.livePrice;
     // TSL
     if(p.trail>0){
-      if(p.type==='BUY'){const ns=+(lp*(1-p.trail/100)).toFixed(2);if(ns>p.sl)p.sl=ns;}
-      else{const ns=+(lp*(1+p.trail/100)).toFixed(2);if(ns<p.sl)p.sl=ns;}
+      if(p.tslMode==='profit'){
+        // Profit-based: track max profit, trail behind it
+        const pnlPct = p.type==='BUY' ? (lp-p.entry)/p.entry*100 : (p.entry-lp)/p.entry*100;
+        if(pnlPct > (p.maxProfit||0)) p.maxProfit = pnlPct;
+        if((p.maxProfit||0) > 1){ // फक्त 1%+ profit झाल्यावरच activate
+          // TSL% नेहमी profit% पेक्षा कमी असेल — किमान 1% lock राहतो
+          const safeTSL = Math.min(p.trail, p.maxProfit - 1);
+          const lockPct = Math.max(0, p.maxProfit - safeTSL);
+          if(p.type==='BUY'){const ns=+(p.entry*(1+lockPct/100)).toFixed(2);if(ns>p.sl)p.sl=ns;}
+          else{const ns=+(p.entry*(1-lockPct/100)).toFixed(2);if(ns<p.sl)p.sl=ns;}
+        }
+      } else {
+        // LTP-based (default)
+        if(p.type==='BUY'){const ns=+(lp*(1-p.trail/100)).toFixed(2);if(ns>p.sl)p.sl=ns;}
+        else{const ns=+(lp*(1+p.trail/100)).toFixed(2);if(ns<p.sl)p.sl=ns;}
+      }
     }
     // SL/TGT hit
     if(p.type==='BUY'&&lp<=p.sl){closePos(p.id);return;}
@@ -1597,6 +1871,9 @@ function saveStrat(){
     tgt:+document.getElementById('sTG').value||3,
     strike:document.getElementById('sStrike').value||'ATM',
     optLot:+document.getElementById('sOptLot').value||1,
+    tslNIFTY:+document.getElementById('sTSL_NIFTY').value||10,
+    tslBANKNIFTY:+document.getElementById('sTSL_BANKNIFTY').value||12,
+    tslSENSEX:+document.getElementById('sTSL_SENSEX').value||12,
     pnl:0,trades:0};
   if(editSid){const i=strats.findIndex(x=>x.id===editSid);if(i>=0)strats[i]={...strats[i],...s};}
   else strats.push(s);
@@ -1689,12 +1966,14 @@ function stratManualTrade(id, action){
   const s=strats.find(x=>x.id===id); if(!s) return;
   const stock=STOCKS.find(x=>x.sym===s.sym)||STOCKS[0];
   const ls=LOTS[s.sym]||50;
+  const tslKey = 'tsl'+s.sym;
+  const stratTSL = s[tslKey] || s.tslNIFTY || 10;
   openTradeConfirm({
     sym: s.sym,
     action,
     ltp: stock.p,
     ls, isOpt:false, isCrd:false,
-    stratSL: s.sl, stratTGT: s.tgt, stratLot: s.lot
+    stratSL: s.sl, stratTGT: s.tgt, stratLot: s.lot, stratTSL: stratTSL
   });
 }
 function editStrat(id){
@@ -1703,7 +1982,11 @@ function editStrat(id){
   document.getElementById('sN').value=s.name; document.getElementById('sTP').value=s.type;
   document.getElementById('sSY').value=s.sym; document.getElementById('sTF2').value=s.tf;
   document.getElementById('sLT').value=s.lot; document.getElementById('sSL').value=s.sl;
-  document.getElementById('sTG').value=s.tgt; document.getElementById('mStrat').classList.add('on');
+  document.getElementById('sTG').value=s.tgt;
+  document.getElementById('sTSL_NIFTY').value=s.tslNIFTY||10;
+  document.getElementById('sTSL_BANKNIFTY').value=s.tslBANKNIFTY||12;
+  document.getElementById('sTSL_SENSEX').value=s.tslSENSEX||12;
+  document.getElementById('mStrat').classList.add('on');
 }
 function delStrat(id){if(!confirm('Delete?'))return;strats=strats.filter(x=>x.id!==id);save();renderStrats();}
 
@@ -1731,7 +2014,7 @@ async function renderOC(){
       const expiry = expEl ? expEl.value : '';
 
       // Angel One Option Chain API
-      const res = await fetch('https://apiconnect.angelone.in/rest/secure/angelbroking/marketData/v1/optionChain',{
+      const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
         method:'POST',
         headers:{
           'Authorization':'Bearer '+jwtData.jwt,
@@ -1742,7 +2025,7 @@ async function renderOC(){
           'X-ClientLocalIP':'CLIENT_LOCAL_IP',
           'X-ClientPublicIP':'CLIENT_PUBLIC_IP',
           'X-MACAddress':'MAC_ADDRESS',
-          'X-PrivateKey': jwtData.clientId
+          'X-PrivateKey': document.getElementById('aApiKey')?.value || jwtData.clientId
         },
         body: JSON.stringify({
           name: sym,
@@ -1861,13 +2144,33 @@ function renderOCReal(data, sym, step, ls){
 
   const maxCEOI = Math.max(...strikes.map(s=>s.CE?.openInterest||0));
   const maxPEOI = Math.max(...strikes.map(s=>s.PE?.openInterest||0));
+  const avgCEOI = strikes.reduce((a,s)=>a+(s.CE?.openInterest||0),0)/Math.max(strikes.length,1);
+  const avgPEOI = strikes.reduce((a,s)=>a+(s.PE?.openInterest||0),0)/Math.max(strikes.length,1);
+
+  // Max Pain calculate
+  let maxPainStrike = atm;
+  let minPain = Infinity;
+  strikes.forEach(s=>{
+    const k = s.strikePrice;
+    let pain = 0;
+    strikes.forEach(s2=>{
+      const k2 = s2.strikePrice;
+      pain += (s2.CE?.openInterest||0)*Math.max(0,k-k2);
+      pain += (s2.PE?.openInterest||0)*Math.max(0,k2-k);
+    });
+    if(pain<minPain){minPain=pain;maxPainStrike=k;}
+  });
+  const mpEl = document.getElementById('ocMaxPain');
+  if(mpEl) mpEl.textContent='₹'+maxPainStrike.toLocaleString('en-IN');
 
   strikes.forEach(s=>{
     const k = s.strikePrice;
     const isATM = k===atm;
     const isITMc = k<spotPrice;
     const isITMp = k>spotPrice;
+    const isOTM = !isATM && !isITMc && !isITMp;
     const tag = isATM?'ATM':isITMc?'ITM':'OTM';
+    const isMaxPain = k===maxPainStrike;
 
     const ce = s.CE||{};
     const pe = s.PE||{};
@@ -1883,28 +2186,56 @@ function renderOCReal(data, sym, step, ls){
     const ceBar = maxCEOI>0?Math.round((ceOI/maxCEOI)*32):0;
     const peBar = maxPEOI>0?Math.round((peOI/maxPEOI)*32):0;
 
-    const bg = isATM?'background:rgba(255,184,48,0.10);':isITMc?'background:rgba(0,232,122,0.04);':isITMp?'background:rgba(255,69,96,0.04);':'';
+    // बडे Player detection: OI > 1.5x average
+    const ceBigPlayer = ceOI > avgCEOI*1.5;
+    const peBigPlayer = peOI > avgPEOI*1.5;
+
+    // Hero-Zero detection: OTM + LTP ₹0.5 to ₹5 + OI spike
+    const ceHeroZero = !isITMc && !isATM && ceLTP>=0.5 && ceLTP<=5 && ceBigPlayer;
+    const peHeroZero = !isITMp && !isATM && peLTP>=0.5 && peLTP<=5 && peBigPlayer;
+    const anyHeroZero = ceHeroZero || peHeroZero;
+
+    const bg = anyHeroZero?'background:rgba(0,232,122,0.12);border-left:3px solid var(--green);':
+               isATM?'background:rgba(255,184,48,0.10);':
+               isMaxPain?'background:rgba(0,180,255,0.08);':
+               isITMc?'background:rgba(0,232,122,0.04);':
+               isITMp?'background:rgba(255,69,96,0.04);':'';
+
     const ceObj = JSON.stringify({sym,k,type:'CE',ltp:ceLTP,ls});
     const peObj = JSON.stringify({sym,k,type:'PE',ltp:peLTP,ls});
 
+    // Hero-Zero badge
+    const hzBadge = anyHeroZero?`<div style="font-size:7px;font-weight:900;color:#000;background:var(--green);border-radius:3px;padding:1px 3px;margin-top:2px;display:inline-block;">🦸 HERO-ZERO</div>`:'';
+    const mpBadge = isMaxPain?`<div style="font-size:7px;color:var(--blue);font-weight:800;">MAX PAIN</div>`:'';
+
+    // बडे Player OI color
+    const ceOIColor = ceBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--green);';
+    const peOIColor = peBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--red);';
+
     html+=`<tr style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
-      <td style="text-align:right;"><div style="font-size:8px;font-weight:700;color:var(--green);">${oif(ceOI)}</div><div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:var(--green);width:${ceBar}px;"></div></div></td>
+      <td style="text-align:right;">
+        <div style="font-size:8px;font-weight:700;${ceOIColor}">${oif(ceOI)}${ceBigPlayer?'🔥':''}</div>
+        <div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:${ceBigPlayer?'#00ff88':'var(--green)'};width:${ceBar}px;"></div></div>
+      </td>
       <td style="color:rgba(255,255,255,0.4);">${ceIV}%</td>
       <td style="color:${+ceChg>=0?'var(--green)':'var(--red)'};">${+ceChg>=0?'+':''}${ceChg}</td>
-      <td style="font-weight:800;">₹${ceLTP}</td>
+      <td style="font-weight:800;${ceHeroZero?'color:var(--green);':''}">₹${ceLTP}${ceHeroZero?'⭐':''}</td>
       <td><div style="display:flex;flex-direction:column;gap:2px;">
         <button onclick='ocTrade(${ceObj},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
         <button onclick='ocTrade(${ceObj},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
       </div></td>
-      <td style="font-weight:800;font-size:11px;${isATM?'color:var(--gold);':''}">${k.toLocaleString('en-IN')}<div style="font-size:7px;color:${isATM?'var(--gold)':isITMc?'var(--green)':'var(--muted)'};">${tag}</div></td>
+      <td style="font-weight:800;font-size:11px;${isATM?'color:var(--gold);':isMaxPain?'color:var(--blue);':''}">${k.toLocaleString('en-IN')}<div style="font-size:7px;color:${isATM?'var(--gold)':isITMc?'var(--green)':'var(--muted)'};">${tag}</div>${mpBadge}${hzBadge}</td>
       <td><div style="display:flex;flex-direction:column;gap:2px;">
         <button onclick='ocTrade(${peObj},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
         <button onclick='ocTrade(${peObj},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
       </div></td>
-      <td style="font-weight:800;">₹${peLTP}</td>
+      <td style="font-weight:800;${peHeroZero?'color:var(--green);':''}">₹${peLTP}${peHeroZero?'⭐':''}</td>
       <td style="color:${+peChg>=0?'var(--green)':'var(--red)'};">${+peChg>=0?'+':''}${peChg}</td>
       <td style="color:rgba(255,255,255,0.4);">${peIV}%</td>
-      <td><div style="font-size:8px;font-weight:700;color:var(--red);">${oif(peOI)}</div><div style="height:2px;background:rgba(255,69,96,0.12);margin-top:2px;width:32px;"><div style="height:2px;background:var(--red);width:${peBar}px;"></div></div></td>
+      <td>
+        <div style="font-size:8px;font-weight:700;${peOIColor}">${oif(peOI)}${peBigPlayer?'🔥':''}</div>
+        <div style="height:2px;background:rgba(255,69,96,0.12);margin-top:2px;width:32px;"><div style="height:2px;background:${peBigPlayer?'#00ff88':'var(--red)'};width:${peBar}px;"></div></div>
+      </td>
     </tr>`;
   });
 
@@ -1969,9 +2300,19 @@ function addWatch(sym){
   if(!sym) return;
   sym=sym.toUpperCase().trim();
   if(watchlist.includes(sym)){ flash('⚠️ आधीच आहे!',false); return; }
+  // Add to ALL_STOCKS if not present (custom stock)
+  if(!ALL_STOCKS.find(x=>x.sym===sym)){
+    ALL_STOCKS.push({sym:sym, p:0, chg:0, base:0, custom:true});
+    fetchCustomPrice(sym);
+  }
   watchlist.push(sym);save();
   document.getElementById('waPanel').style.display='none';
   renderWatch();flash('✅ '+sym+' added',true);
+}
+function fetchCustomPrice(sym){
+  // Simulate price for custom stocks - show as pending
+  const s=ALL_STOCKS.find(x=>x.sym===sym);
+  if(s && s.p===0){ s.p=0; s.chg=0; }
 }
 function removeWatch(sym){watchlist=watchlist.filter(s=>s!==sym);save();renderWatch();}
 
@@ -2027,7 +2368,7 @@ function renderWatch(){
           </div>
         </div>
         <div style="text-align:right;">
-          <div style="font-size:16px;font-weight:800;color:${isUp?'var(--green)':'var(--red)'};">₹${s.p.toLocaleString('en-IN')}</div>
+          <div style="font-size:16px;font-weight:800;color:${isUp?'var(--green)':'var(--red)'};">${s.p>0?'₹'+s.p.toLocaleString('en-IN'):'<span style=\"font-size:11px;color:var(--muted)\">Live नाही</span>'}</div>
           <div style="font-size:11px;color:${isUp?'var(--green)':'var(--red)'};">${isUp?'▲':'▼'} ${Math.abs(s.chg)}%</div>
         </div>
       </div>
@@ -2218,7 +2559,7 @@ async function autoLoadJWT(){
   st.style.color='var(--gold)';
   st.textContent='⏳ Local server कडून token घेत आहे...';
   try {
-    const res = await fetch('http://127.0.0.1:5050/token');
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/token');
     if(res.ok){
       const data = await res.json();
       const token = (data.token||'').replace('Bearer ','').trim();
@@ -2292,6 +2633,22 @@ async function connectAngel(){
       document.getElementById('aOrderTest').style.display='block';
       st.innerHTML='<span style="color:var(--green);">✅ Connected!</span>';
       flash('✅ Angel One Connected!',true);
+      // Auto IP update
+      const apiKey = document.getElementById('aApiKey')?.value||clientId;
+      setTimeout(()=>autoUpdateIP(jwt, apiKey, clientId), 300);
+      // Fetch real P&L and positions
+      setTimeout(()=>fetchAngelPnl(jwt, clientId), 500);
+      // Fetch balance
+      setTimeout(()=>fetchAngelBalance(), 800);
+      // Load real expiry dates
+      setTimeout(()=>loadOCExpiry(), 1000);
+      // Auto refresh every 30s
+      if(window._angelPnlInterval) clearInterval(window._angelPnlInterval);
+      window._angelPnlInterval = setInterval(()=>{
+        const stored2=localStorage.getItem('angel_jwt');
+        if(stored2){ const d=JSON.parse(stored2); fetchAngelPnl(d.jwt, d.clientId); }
+        else clearInterval(window._angelPnlInterval);
+      }, 30000);
     } else {
       st.innerHTML='<span style="color:var(--red);">❌ '+(data.message||'Login failed')+'</span>';
     }
@@ -2340,18 +2697,11 @@ function placeRealOrder(){
     quantity:qty.toString()
   };
 
-  fetch('https://apiconnect.angelone.in/rest/secure/angelbroking/order/v1/placeOrder',{
+  // Proxy server मधून order पाठवा
+  fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/order/v1/placeOrder',{
     method:'POST',
     headers:{
-      'Authorization':'Bearer '+jwt,
       'Content-Type':'application/json',
-      'Accept':'application/json',
-      'X-UserType':'USER',
-      'X-SourceID':'WEB',
-      'X-ClientLocalIP':'CLIENT_LOCAL_IP',
-      'X-ClientPublicIP':'CLIENT_PUBLIC_IP',
-      'X-MACAddress':'MAC_ADDRESS',
-      'X-PrivateKey':clientId
     },
     body:JSON.stringify(orderPayload)
   })
@@ -2596,8 +2946,19 @@ function feedCrd(){
     const lp = p.livePrice;
     // TSL logic
     if(p.trail>0){
-      if(p.type==='BUY'){const ns=+(lp*(1-p.trail/100)).toFixed(0);if(ns>p.sl)p.sl=ns;}
-      else{const ns=+(lp*(1+p.trail/100)).toFixed(0);if(ns<p.sl)p.sl=ns;}
+      if(p.tslMode==='profit'){
+        const pnlPct = p.type==='BUY' ? (lp-p.entry)/p.entry*100 : (p.entry-lp)/p.entry*100;
+        if(pnlPct > (p.maxProfit||0)) p.maxProfit = pnlPct;
+        if((p.maxProfit||0) > 1){
+          const safeTSL = Math.min(p.trail, p.maxProfit - 1);
+          const lockPct = Math.max(0, p.maxProfit - safeTSL);
+          if(p.type==='BUY'){const ns=+(p.entry*(1+lockPct/100)).toFixed(0);if(ns>p.sl)p.sl=ns;}
+          else{const ns=+(p.entry*(1-lockPct/100)).toFixed(0);if(ns<p.sl)p.sl=ns;}
+        }
+      } else {
+        if(p.type==='BUY'){const ns=+(lp*(1-p.trail/100)).toFixed(0);if(ns>p.sl)p.sl=ns;}
+        else{const ns=+(lp*(1+p.trail/100)).toFixed(0);if(ns<p.sl)p.sl=ns;}
+      }
     }
     if(p.type==='BUY'&&lp<=p.sl){closePos(p.id);renderCrdPositions();return;}
     if(p.type==='BUY'&&lp>=p.tgt){closePos(p.id);renderCrdPositions();return;}
@@ -2719,7 +3080,7 @@ function togCrdTSL(id){
 }
 function chCrdTSL(id,d){
   const p=positions.find(x=>x.id===id); if(!p||p.trail===0) return;
-  p.trail=+Math.max(0.5,Math.min(5,p.trail+d)).toFixed(1); renderCrdPositions();
+  p.trail=+Math.max(0.5,Math.min(20,p.trail+d)).toFixed(1); renderCrdPositions();
 }
 
 // ══ TRADE CONFIRMATION MODAL ════════════════════════════════
@@ -2727,6 +3088,7 @@ let tcPending = null; // pending trade data
 
 function openTradeConfirm(tradeData){
   tcPending = {...tradeData};
+  if(tradeData.stratTSL) tcPending.trail = tradeData.stratTSL;
   const isBuy = tradeData.action === 'BUY';
   const ls = tradeData.ls || 50;
   const isCrd = tradeData.isCrd || false;
@@ -2742,6 +3104,7 @@ function openTradeConfirm(tradeData){
     ? +(tradeData.ltp * (1 + tgtPct/100)).toFixed(isCrd?0:1)
     : +(tradeData.ltp * (1 - tgtPct/100)).toFixed(isCrd?0:1);
   tcPending.trail = 0;
+  tcPending.tslMode = 'ltp'; // default: LTP based
 
   // Title
   document.getElementById('tcTitle').innerHTML =
@@ -2795,12 +3158,36 @@ function tcChTGT(d){
 }
 
 function tcTogTSL(){
-  tcPending.trail = tcPending.trail > 0 ? 0 : 0.5;
+  if(tcPending.trail > 0){ tcPending.trail = 0; }
+  else {
+    const sym = tcPending.sym ? tcPending.sym.split(' ')[0] : '';
+    if(sym==='BANKNIFTY') tcPending.trail = 12;
+    else if(sym==='SENSEX') tcPending.trail = 12;
+    else if(sym==='NIFTY') tcPending.trail = 10;
+    else tcPending.trail = 10;
+  }
   tcUpdateTSL();
 }
 
 function tcChTSL(d){
-  tcPending.trail = +Math.max(0.5, Math.min(5, tcPending.trail + d)).toFixed(1);
+  tcPending.trail = +Math.max(0.5, Math.min(20, tcPending.trail + d)).toFixed(1);
+  tcUpdateTSL();
+}
+
+function tcSetTSLMode(mode){
+  tcPending.tslMode = mode;
+  const btnLTP = document.getElementById('tcTSLModeLTP');
+  const btnProfit = document.getElementById('tcTSLModeProfit');
+  const desc = document.getElementById('tcTSLModeDesc');
+  if(mode==='ltp'){
+    btnLTP.style.background='rgba(0,180,255,0.2)'; btnLTP.style.borderColor='rgba(0,180,255,0.4)'; btnLTP.style.color='#00b4ff';
+    btnProfit.style.background='transparent'; btnProfit.style.borderColor='rgba(255,184,48,0.2)'; btnProfit.style.color='var(--muted)';
+    desc.textContent='📈 LTP च्या मागे SL जातो';
+  } else {
+    btnProfit.style.background='rgba(255,184,48,0.2)'; btnProfit.style.borderColor='rgba(255,184,48,0.5)'; btnProfit.style.color='var(--gold)';
+    btnLTP.style.background='transparent'; btnLTP.style.borderColor='rgba(0,180,255,0.2)'; btnLTP.style.color='var(--muted)';
+    desc.textContent='💰 Max Profit मधून TSL% वजा → किमान 1% lock';
+  }
   tcUpdateTSL();
 }
 
@@ -2812,11 +3199,14 @@ function tcUpdateTSL(){
   const pct = document.getElementById('tcTSLPct');
   const minus = document.getElementById('tcTSLMinus');
   const plus = document.getElementById('tcTSLPlus');
+  const modeRow = document.getElementById('tcTSLModeRow');
   tog.style.background = on ? 'var(--gold)' : 'var(--muted)';
   knob.style.left = on ? '23px' : '3px';
-  desc.textContent = on ? 'SL auto-move होतो · ' + tcPending.trail + '%' : 'TSL बंद';
+  const modeLabel = (tcPending.tslMode==='profit') ? '💰 Profit' : '📈 LTP';
+  desc.textContent = on ? modeLabel + ' · ' + tcPending.trail + '%' : 'TSL बंद';
   pct.textContent = tcPending.trail + '%';
   [pct, minus, plus].forEach(el => el.style.display = on ? 'inline-block' : 'none');
+  modeRow.style.display = on ? 'block' : 'none';
 }
 
 function tcExecute(){
@@ -2831,6 +3221,8 @@ function tcExecute(){
     sl: tcPending.sl,
     tgt: tcPending.tgt,
     trail: tcPending.trail,
+    tslMode: tcPending.tslMode || 'ltp',
+    maxProfit: 0,
     qty,
     isOpt: tcPending.isOpt || false,
     isCrd: tcPending.isCrd || false,
@@ -2990,7 +3382,7 @@ async function fetchAngelCandles(sym,jwt){
     const from=new Date(now-7*24*3600*1000);
     const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     const body={exchange:'NSE',symboltoken:token,interval:tfMap[curTF]||'FIVE_MINUTE',fromdate:fmt(from),todate:fmt(now)};
-    const res=await fetch('https://apiconnect.angelone.in/rest/secure/angelbroking/historical/v1/getCandleData',{
+    const res=await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/historical/v1/getCandleData',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'192.168.1.1','X-ClientPublicIP':'106.193.147.98','X-MACAddress':'fe80::1','X-PrivateKey':'Y4IDCPLI'},
       body:JSON.stringify(body),
@@ -3136,6 +3528,34 @@ function initDrawCanvas(){
   });
 }
 
+function drawPriceLine(ctx, price, color, label, W, H, dash){
+  const y = priceToCanvasY(price);
+  if(y < 0 || y > H) return;
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash(dash);
+  ctx.globalAlpha = 0.85;
+  ctx.beginPath();
+  ctx.moveTo(0, y);
+  ctx.lineTo(W, y);
+  ctx.stroke();
+  // Label background
+  const lw = ctx.measureText(label).width + 10;
+  ctx.globalAlpha = 0.9;
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.roundRect ? ctx.roundRect(W-lw-2, y-9, lw, 14, 3) : ctx.rect(W-lw-2, y-9, lw, 14);
+  ctx.fill();
+  // Label text
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 8.5px sans-serif';
+  ctx.fillText(label, W-lw+2, y+2);
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
 function redrawCanvas(){
   const c=document.getElementById('drawCanvas');
   if(!c) return;
@@ -3144,6 +3564,21 @@ function redrawCanvas(){
   const ctx=c.getContext('2d');
   ctx.clearRect(0,0,c.width,c.height);
   const W=c.width;
+  // ── Position Lines (Entry/SL/TGT) ──────────────────────
+  const curSym = typeof STOCKS !== 'undefined' ? STOCKS[ai]?.sym : null;
+  if(curSym){
+    positions.forEach(pos=>{
+      const baseSym = pos.sym.split(' ')[0];
+      if(baseSym !== curSym) return;
+      // Entry line
+      drawPriceLine(ctx, pos.entry, '#00b4ff', 'ENTRY ₹'+Math.round(pos.entry).toLocaleString('en-IN'), W, c.height, []);
+      // SL line
+      if(pos.sl) drawPriceLine(ctx, pos.sl, '#ff4560', 'SL ₹'+Math.round(pos.sl).toLocaleString('en-IN'), W, c.height, [5,3]);
+      // TGT line
+      if(pos.tgt) drawPriceLine(ctx, pos.tgt, '#00e87a', 'TGT ₹'+Math.round(pos.tgt).toLocaleString('en-IN'), W, c.height, [5,3]);
+    });
+  }
+
   drawings.forEach(d=>{
     ctx.strokeStyle=d.color||'#ffb830';
     ctx.lineWidth=1.5;
@@ -3206,7 +3641,598 @@ function init(){
   }, 100);
   setInterval(feed, 2000);
 }
+
+// ── Option Price Chart ─────────────────────────────────────
+let _optChartPos = null;
+let _optChartInterval = null;
+
+function openOptChart(posId){
+  const pos = positions.find(p=>p.id===posId);
+  if(!pos) return;
+  _optChartPos = pos;
+
+  document.getElementById('optChartTitle').textContent = pos.sym;
+  document.getElementById('optChartSub').textContent = pos.type + ' · Entry ₹' + pos.entry + ' · Qty ' + pos.qty;
+  document.getElementById('optChartModal').style.display = 'block';
+
+  updateOptChart();
+  _optChartInterval = setInterval(updateOptChart, 2000);
+}
+
+function updateOptChart(){
+  const pos = _optChartPos;
+  if(!pos) return;
+
+  const cur = pos.livePrice || pos.entry;
+  const raw = pos.type==='BUY' ? cur - pos.entry : pos.entry - cur;
+  const pnl = +(raw * pos.qty).toFixed(0);
+  const pct = +((raw/pos.entry)*100).toFixed(1);
+  const col = pnl>=0 ? 'var(--green)' : 'var(--red)';
+
+  // P&L strip — only show real P&L if livePrice is set
+  const hasLive = pos.livePrice && pos.livePrice !== pos.entry;
+  document.getElementById('optChartPnl').innerHTML = `
+    <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:10px;color:var(--muted);">P&L</div>
+      <div style="font-size:18px;font-weight:900;color:${hasLive?col:'var(--muted)'};">${hasLive?(pnl>=0?'+':'')+'₹'+Math.abs(pnl).toLocaleString('en-IN'):'—'}</div>
+      <div style="font-size:10px;color:${hasLive?col:'var(--muted)'};">${hasLive?((pct>=0?'+':'')+pct+'%'):'Live येईपर्यंत'}</div>
+    </div>
+    <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:10px;color:var(--muted);">LTP</div>
+      <div style="font-size:18px;font-weight:900;">₹${cur.toFixed(1)}</div>
+      <div style="font-size:10px;color:var(--muted);">Entry ₹${pos.entry}</div>
+    </div>
+  `;
+
+  // Levels
+  document.getElementById('optChartLevels').innerHTML = `
+    <div style="background:rgba(0,180,255,0.08);border:1px solid rgba(0,180,255,0.3);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:9px;color:var(--muted);">ENTRY</div>
+      <div style="font-size:14px;font-weight:800;color:var(--blue);">₹${pos.entry}</div>
+    </div>
+    <div style="background:rgba(255,69,96,0.08);border:1px solid rgba(255,69,96,0.3);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:9px;color:var(--muted);">SL</div>
+      <div style="font-size:14px;font-weight:800;color:var(--red);">₹${pos.sl||'—'}</div>
+    </div>
+    <div style="background:rgba(0,232,122,0.08);border:1px solid rgba(0,232,122,0.3);border-radius:10px;padding:10px;text-align:center;">
+      <div style="font-size:9px;color:var(--muted);">TARGET</div>
+      <div style="font-size:14px;font-weight:800;color:var(--green);">₹${pos.tgt||'—'}</div>
+    </div>
+  `;
+
+  // Draw chart
+  drawOptPriceChart(pos);
+}
+
+function drawOptPriceChart(pos){
+  const canvas = document.getElementById('optChartCanvas');
+  if(!canvas) return;
+  const W = canvas.parentElement.offsetWidth - 24;
+  const H = 240;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  // Use index candles (NIFTY/BANKNIFTY/SENSEX)
+  const baseSym = pos.sym.split(' ')[0];
+  const stockIdx = STOCKS.findIndex(s=>s.sym===baseSym);
+  const chartCandles = (stockIdx>=0 && candles.length>0) ? candles : null;
+
+  const PL=4, PR=52, PT=10, PB=6;
+  const CW=W-PL-PR, CH=H-PT-PB;
+
+  // Background
+  ctx.fillStyle = '#060f1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // For options: generate simulated candles from entry price
+  let displayCandles = chartCandles;
+  if(pos.isOpt || pos.sym.includes('CE') || pos.sym.includes('PE')){
+    if(!pos._optCandles) pos._optCandles = [];
+    const cur2 = pos.livePrice || pos.entry;
+    if(pos._optCandles.length===0){
+      // Seed with 30 realistic candles from entry
+      let p = pos.entry;
+      for(let i=0;i<30;i++){
+        const volatility = p * 0.025; // 2.5% volatility per candle
+        const o = p;
+        const c = +(p + (Math.random()-0.48)*volatility).toFixed(1);
+        const wickUp = Math.random()*volatility*0.5;
+        const wickDn = Math.random()*volatility*0.5;
+        const h = +(Math.max(o,c) + wickUp).toFixed(1);
+        const l = +(Math.min(o,c) - wickDn).toFixed(1);
+        pos._optCandles.push({o,h,l,c});
+        p = c;
+      }
+      // Last candle closes at current price
+      const lc = pos._optCandles[pos._optCandles.length-1];
+      pos._optCandles.push({
+        o: lc.c,
+        h: +(Math.max(lc.c, cur2)*1.005).toFixed(1),
+        l: +(Math.min(lc.c, cur2)*0.995).toFixed(1),
+        c: cur2
+      });
+    } else {
+      const last = pos._optCandles[pos._optCandles.length-1];
+      const o = last.c;
+      const c = cur2;
+      const volatility = o * 0.02;
+      const h = +(Math.max(o,c) + Math.random()*volatility*0.4).toFixed(1);
+      const l = +(Math.min(o,c) - Math.random()*volatility*0.4).toFixed(1);
+      pos._optCandles.push({o,h,l,c});
+      if(pos._optCandles.length>40) pos._optCandles.shift();
+    }
+    displayCandles = pos._optCandles;
+  }
+
+  if(displayCandles && displayCandles.length > 1){
+    const show = displayCandles.slice(-40);
+    const N = show.length;
+
+    // Price range — always use candle range + small padding
+    // SL/TGT shown as dashed lines even if outside visible range
+    const isOptTrade = pos.isOpt || pos.sym.includes('CE') || pos.sym.includes('PE');
+    let pH = Math.max(...show.map(c=>c.h));
+    let pL = Math.min(...show.map(c=>c.l));
+    // Add entry to visible range
+    pH = Math.max(pH, pos.entry);
+    pL = Math.min(pL, pos.entry);
+    // Add live price
+    const livePr = pos.livePrice||pos.entry;
+    pH = Math.max(pH, livePr);
+    pL = Math.min(pL, livePr);
+    const rng = pH - pL || pH * 0.02;
+    const vT = pH + rng*0.15, vB = pL - rng*0.15, vR = vT - vB;
+
+    const sx = i => PL + (i+0.5)*(CW/N);
+    const sy = p => PT + (vT-p)/vR*CH;
+    const bW = Math.max(2, Math.floor(CW/N*0.6));
+
+    // Grid
+    for(let i=0;i<=3;i++){
+      const p=vB+(i/3)*vR, y=sy(p);
+      ctx.strokeStyle='rgba(255,255,255,0.04)';
+      ctx.lineWidth=1; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+      ctx.fillStyle='rgba(180,210,240,0.7)';
+      ctx.font='bold 8px sans-serif';
+      ctx.fillText('₹'+Math.round(p).toLocaleString('en-IN'), PL+CW+3, y+3);
+    }
+
+    // Helper: draw price line with clamp to visible area
+    const drawLine = (price, color, lbl, dash) => {
+      const y = Math.max(PT+2, Math.min(PT+CH-2, sy(price)));
+      const inRange = price>=vB && price<=vT;
+      ctx.strokeStyle=color; ctx.lineWidth=inRange?1.5:1;
+      ctx.globalAlpha=inRange?0.85:0.4;
+      ctx.setLineDash(dash);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha=1;
+      // Label
+      ctx.fillStyle=color;
+      const tw=ctx.measureText(lbl).width+8;
+      ctx.fillRect(PL+CW+2,y-9,tw,13);
+      ctx.fillStyle=color==='#00e87a'?'#000':'#fff';
+      ctx.font='bold 8px sans-serif';
+      ctx.fillText(lbl, PL+CW+4, y+1);
+    };
+
+    if(pos.sl)  drawLine(pos.sl,  '#ff4560', 'SL ₹'+Math.round(pos.sl),  [5,3]);
+    if(pos.tgt) drawLine(pos.tgt, '#00e87a', 'TGT ₹'+Math.round(pos.tgt),[5,3]);
+    drawLine(pos.entry, '#00b4ff', 'BUY ₹'+Math.round(pos.entry), [3,3]);
+
+    // Candles
+    show.forEach((c,i)=>{
+      const bull=c.c>=c.o;
+      const col=bull?'#00e87a':'#ff4560';
+      const x=sx(i);
+      ctx.setLineDash([]);
+      // Wick
+      ctx.strokeStyle=col; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x,sy(c.h)); ctx.lineTo(x,sy(c.l)); ctx.stroke();
+      // Body
+      const bT=Math.min(sy(c.o),sy(c.c));
+      const bH=Math.max(1.5,Math.abs(sy(c.c)-sy(c.o)));
+      ctx.fillStyle=col;
+      ctx.fillRect(x-bW/2, bT, bW, bH);
+    });
+
+    // ── EMA 9 & EMA 21 ──────────────────────────────────────
+    const optCalcEMA = (data, period) => {
+      const k = 2/(period+1);
+      let ema = data[0];
+      return data.map((v,i) => { if(i===0){ema=v;return v;} ema=v*k+ema*(1-k); return +ema.toFixed(2); });
+    };
+    const closes = show.map(c=>c.c);
+    if(closes.length >= 9){
+      const ema9 = optCalcEMA(closes, 9);
+      const ema21 = closes.length>=21 ? optCalcEMA(closes, 21) : null;
+
+      // EMA9 line (gold)
+      ctx.strokeStyle='#ffd700'; ctx.lineWidth=1.5; ctx.setLineDash([]); ctx.globalAlpha=0.9;
+      ctx.beginPath();
+      ema9.forEach((v,i)=>{ const y=sy(v); i===0?ctx.moveTo(sx(i),y):ctx.lineTo(sx(i),y); });
+      ctx.stroke();
+      // EMA9 label
+      ctx.fillStyle='#ffd700'; ctx.font='bold 7px sans-serif';
+      ctx.fillText('E9', PL+CW+3, sy(ema9[ema9.length-1])+3);
+
+      // EMA21 line (blue)
+      if(ema21){
+        ctx.strokeStyle='#4488ff'; ctx.lineWidth=1.5; ctx.globalAlpha=0.9;
+        ctx.beginPath();
+        ema21.forEach((v,i)=>{ const y=sy(v); i===0?ctx.moveTo(sx(i),y):ctx.lineTo(sx(i),y); });
+        ctx.stroke();
+        ctx.fillStyle='#4488ff'; ctx.font='bold 7px sans-serif';
+        ctx.fillText('E21', PL+CW+3, sy(ema21[ema21.length-1])+3);
+      }
+      ctx.globalAlpha=1;
+    }
+
+    // ── Double Supertrend (3,1 and 5,2) ───────────────────────────
+    function calcSTLine(cndls, period, mult){
+      if(cndls.length < period+1) return [];
+      const result=[];
+      // calc ATR
+      const atrs=[];
+      for(let i=1;i<cndls.length;i++){
+        const tr=Math.max(cndls[i].h-cndls[i].l, Math.abs(cndls[i].h-cndls[i-1].c), Math.abs(cndls[i].l-cndls[i-1].c));
+        atrs.push(tr);
+      }
+      // smooth ATR (RMA)
+      const atrArr=[];
+      let atrVal=atrs.slice(0,period).reduce((s,v)=>s+v,0)/period;
+      atrArr.push(atrVal);
+      for(let i=period;i<atrs.length;i++){
+        atrVal=(atrVal*(period-1)+atrs[i])/period;
+        atrArr.push(atrVal);
+      }
+      // supertrend
+      let dir=1, upper=0, lower=0;
+      for(let i=0;i<atrArr.length;i++){
+        const ci=i+1; // candle index (offset by 1 due to TR calc)
+        const c=cndls[ci];
+        const a=atrArr[i];
+        const mid=(c.h+c.l)/2;
+        const basicUpper=mid+mult*a;
+        const basicLower=mid-mult*a;
+        const prevUpper=i>0?result[i-1].upper:basicUpper;
+        const prevLower=i>0?result[i-1].lower:basicLower;
+        const prevDir=i>0?result[i-1].dir:1;
+        upper = basicUpper < prevUpper || cndls[ci-1]?.c > prevUpper ? basicUpper : prevUpper;
+        lower = basicLower > prevLower || cndls[ci-1]?.c < prevLower ? basicLower : prevLower;
+        if(prevDir===-1 && c.c > prevUpper) dir=1;
+        else if(prevDir===1 && c.c < prevLower) dir=-1;
+        else dir=prevDir;
+        result.push({dir, upper, lower, line: dir===1?lower:upper});
+      }
+      return result;
+    }
+
+    // Draw ST1 (3,1) — bright green/red
+    if(show.length >= 10){
+      const st1=calcSTLine(show,3,1);
+      if(st1.length>0){
+        ctx.lineWidth=1.8; ctx.setLineDash([]);
+        let curDir=null; let started=false;
+        st1.forEach((s,i)=>{
+          if(s.dir!==curDir){
+            if(started) ctx.stroke();
+            curDir=s.dir;
+            ctx.strokeStyle=curDir===1?'rgba(0,232,122,0.9)':'rgba(255,69,96,0.9)';
+            ctx.beginPath();
+            ctx.moveTo(sx(i),sy(s.line));
+            started=true;
+          } else {
+            ctx.lineTo(sx(i),sy(s.line));
+          }
+          if(i===st1.length-1){
+            ctx.stroke();
+            const last=st1[st1.length-1];
+            ctx.fillStyle=last.dir===1?'#00e87a':'#ff4560';
+            ctx.font='bold 7px sans-serif';
+            ctx.fillText('ST1', PL+2, sy(last.line)-3);
+          }
+        });
+      }
+    }
+
+    // Draw ST2 (5,2) — orange/pink, dashed
+    if(show.length >= 14){
+      const st2=calcSTLine(show,5,2);
+      if(st2.length>0){
+        ctx.lineWidth=1.5; ctx.setLineDash([3,2]);
+        let curDir=null; let started=false;
+        st2.forEach((s,i)=>{
+          if(s.dir!==curDir){
+            if(started) ctx.stroke();
+            curDir=s.dir;
+            ctx.strokeStyle=curDir===1?'rgba(255,200,0,0.85)':'rgba(255,100,180,0.85)';
+            ctx.beginPath();
+            ctx.moveTo(sx(i),sy(s.line));
+            started=true;
+          } else {
+            ctx.lineTo(sx(i),sy(s.line));
+          }
+          if(i===st2.length-1){
+            ctx.stroke();
+            ctx.setLineDash([]);
+            const last=st2[st2.length-1];
+            ctx.fillStyle=last.dir===1?'#ffc800':'#ff64b4';
+            ctx.font='bold 7px sans-serif';
+            ctx.fillText('ST2', PL+2, sy(last.line)+9);
+          }
+        });
+        ctx.setLineDash([]);
+      }
+    }
+
+    // Trade entry marker (triangle)
+    if(pos.entry>=vB && pos.entry<=vT){
+      const y=sy(pos.entry);
+      ctx.fillStyle='#00b4ff';
+      ctx.beginPath();
+      ctx.moveTo(PL+8, y); ctx.lineTo(PL+2, y-6); ctx.lineTo(PL+14, y-6);
+      ctx.closePath(); ctx.fill();
+    }
+
+  } else {
+    // No candles — show message
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.font='13px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('Chart loading...', W/2, H/2);
+    ctx.textAlign='left';
+  }
+
+  // Current price line
+  const cur = pos.livePrice || pos.entry;
+  if(displayCandles && displayCandles.length > 1){
+    const show2 = displayCandles.slice(-40);
+    const N2 = show2.length;
+    let pH2 = Math.max(...show2.map(c=>c.h)); if(pos.tgt) pH2=Math.max(pH2,pos.tgt);
+    let pL2 = Math.min(...show2.map(c=>c.l)); if(pos.sl) pL2=Math.min(pL2,pos.sl);
+    const rng2 = pH2-pL2||pH2*0.02;
+    const vT2=pH2+rng2*0.08, vB2=pL2-rng2*0.08, vR2=vT2-vB2;
+    const sx2 = i => PL+(i+0.5)*(CW/N2);
+    const sy2 = p => PT+(vT2-p)/vR2*CH;
+    if(cur>=vB2&&cur<=vT2){
+      const y=sy2(cur);
+      const isProfitable = cur>=pos.entry;
+      ctx.strokeStyle=isProfitable?'rgba(0,232,122,0.6)':'rgba(255,69,96,0.6)';
+      ctx.lineWidth=1; ctx.setLineDash([2,2]);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+      ctx.setLineDash([]);
+      // Dot at last candle
+      const lastX=sx2(N2-1);
+      ctx.beginPath(); ctx.arc(lastX,y,4,0,Math.PI*2);
+      ctx.fillStyle=isProfitable?'#00e87a':'#ff4560'; ctx.fill();
+      // LTP label
+      ctx.fillStyle='#fff'; ctx.font='bold 8px sans-serif';
+      ctx.fillText('LTP ₹'+cur.toFixed(0), lastX+6, y-3);
+    }
+  }
+}
+
+function closeOptChart(){
+  document.getElementById('optChartModal').style.display='none';
+  if(_optChartInterval){ clearInterval(_optChartInterval); _optChartInterval=null; }
+  _optChartPos = null;
+}
+
+
+// ── Angel One Real P&L Fetch ───────────────────────────────
+async function fetchAngelPnl(jwt, clientId){
+  try{
+    // Fetch positions
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/order/v1/getPosition',{
+      method:'GET',
+      headers:{
+        'Authorization':'Bearer '+jwt,
+        'Content-Type':'application/json',
+        'Accept':'application/json',
+        'X-UserType':'USER',
+        'X-SourceID':'WEB',
+        'X-ClientLocalIP':'CLIENT_LOCAL_IP',
+        'X-ClientPublicIP':'CLIENT_PUBLIC_IP',
+        'X-MACAddress':'MAC_ADDRESS',
+        'X-PrivateKey': clientId
+      }
+    });
+    const data = await res.json();
+    if(data.status && data.data && data.data.length){
+      renderAngelPnl(data.data);
+    } else {
+      showAngelPnlPanel('कोणतीही open position नाही');
+    }
+  } catch(e){
+    console.log('Angel P&L error:', e);
+  }
+}
+
+function renderAngelPnl(positions){
+  let totalPnl = 0;
+  let html = '';
+  positions.forEach(p=>{
+    const pnl = parseFloat(p.unrealisedpnl||p.pnl||0);
+    totalPnl += pnl;
+    const col = pnl>=0 ? 'var(--green)' : 'var(--red)';
+    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <div>
+        <div style="font-size:12px;font-weight:800;">${p.tradingsymbol||p.symbolname||'—'}</div>
+        <div style="font-size:10px;color:var(--muted);">${p.netqty||0} qty · Avg ₹${parseFloat(p.netavgprice||0).toFixed(1)}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:13px;font-weight:900;color:${col};">${pnl>=0?'+':''}₹${Math.abs(pnl).toFixed(0)}</div>
+        <div style="font-size:10px;color:var(--muted);">LTP ₹${parseFloat(p.ltp||0).toFixed(1)}</div>
+      </div>
+    </div>`;
+  });
+
+  const totCol = totalPnl>=0 ? 'var(--green)' : 'var(--red)';
+  const panel = `<div style="background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.08);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <span style="font-size:13px;font-weight:800;color:var(--blue);">📊 Angel One Positions</span>
+      <span style="font-size:16px;font-weight:900;color:${totCol};">${totalPnl>=0?'+':''}₹${Math.abs(totalPnl).toFixed(0)}</span>
+    </div>
+    ${html}
+    <div style="text-align:right;margin-top:8px;">
+      <button onclick="fetchAngelPnl(getJWT()?.jwt, getJWT()?.clientId)" style="font-size:10px;padding:4px 10px;background:rgba(0,180,255,0.1);color:var(--blue);border:1px solid rgba(0,180,255,0.3);border-radius:6px;cursor:pointer;">🔄 Refresh</button>
+    </div>
+  </div>`;
+
+  // Show in P&L page
+  const pnlEl = document.getElementById('angelPnlPanel');
+  if(pnlEl) pnlEl.innerHTML = panel;
+
+  // Also update header
+  const hdr = document.getElementById('aoRealPnl');
+  if(hdr){ hdr.textContent = (totalPnl>=0?'+':'')+'₹'+Math.abs(totalPnl).toFixed(0); hdr.style.color=totCol; }
+}
+
+function showAngelPnlPanel(msg){
+  const pnlEl = document.getElementById('angelPnlPanel');
+  if(pnlEl) pnlEl.innerHTML = `<div style="text-align:center;color:var(--muted);padding:16px;font-size:12px;">${msg}</div>`;
+}
+
+async function loadOCExpiry(){
+  const sym = document.getElementById('ocSym')?.value||'NIFTY';
+  const jwtData = getJWT();
+  if(!jwtData) return; // use default static dates
+  try{
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+jwtData.jwt,
+        'Content-Type':'application/json',
+        'Accept':'application/json',
+        'X-UserType':'USER',
+        'X-SourceID':'WEB',
+        'X-ClientLocalIP':'CLIENT_LOCAL_IP',
+        'X-ClientPublicIP':'CLIENT_PUBLIC_IP',
+        'X-MACAddress':'MAC_ADDRESS',
+        'X-PrivateKey': document.getElementById('aApiKey')?.value || jwtData.apiKey || ''
+      },
+      body: JSON.stringify({name: sym, expirydate:''})
+    });
+    const json = await res.json();
+    if(json.status && json.data?.expiry_list){
+      const sel = document.getElementById('ocExp');
+      sel.innerHTML = json.data.expiry_list.map(e=>`<option>${e}</option>`).join('');
+    }
+  } catch(e){ console.log('Expiry load error:', e); }
+}
+
+async function fetchAngelBalance(){
+  const jwtData = getJWT();
+  if(!jwtData) return;
+  try{
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/user/v1/getRMS',{
+      method:'GET',
+      headers:{
+        'Authorization':'Bearer '+jwtData.jwt,
+        'Content-Type':'application/json',
+        'Accept':'application/json',
+        'X-UserType':'USER',
+        'X-SourceID':'WEB',
+        'X-ClientLocalIP':'CLIENT_LOCAL_IP',
+        'X-ClientPublicIP':'CLIENT_PUBLIC_IP',
+        'X-MACAddress':'MAC_ADDRESS',
+        'X-PrivateKey': document.getElementById('aApiKey')?.value || jwtData.apiKey || ''
+      }
+    });
+    const data = await res.json();
+    if(data.status && data.data){
+      const d = data.data;
+      const avail = parseFloat(d.availablecash||d.net||0).toFixed(0);
+      const used = parseFloat(d.utilisedamount||0).toFixed(0);
+      const net = parseFloat(d.net||d.availablecash||0).toFixed(0);
+      const fmt = v => '₹'+Math.abs(parseFloat(v)).toLocaleString('en-IN');
+      document.getElementById('aBalAvail').textContent = fmt(avail);
+      document.getElementById('aBalUsed').textContent = fmt(used);
+      document.getElementById('aBalNet').textContent = fmt(net);
+    } else {
+      console.log('Balance error:', data.message);
+    }
+  } catch(e){
+    console.log('Balance fetch error:', e);
+  }
+}
+
+
+// ── Auto IP Update ─────────────────────────────────────────
+async function autoUpdateIP(jwt, apiKey, clientId){
+  try{
+    // Get current IP
+    const ipRes = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipRes.json();
+    const currentIP = ipData.ip;
+    if(!currentIP) return;
+
+    // Check saved IP
+    let savedIP = '';
+    try{ savedIP = localStorage.getItem('angel_static_ip')||''; }catch(e){}
+    
+    if(savedIP === currentIP){
+      console.log('IP same:', currentIP, '— no update needed');
+      return;
+    }
+
+    // Update IP on Angel One
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/user/v1/updateIPAddress',{
+      method:'POST',
+      headers:{
+        'Authorization':'Bearer '+jwt,
+        'Content-Type':'application/json',
+        'Accept':'application/json',
+        'X-UserType':'USER',
+        'X-SourceID':'WEB',
+        'X-ClientLocalIP':currentIP,
+        'X-ClientPublicIP':currentIP,
+        'X-MACAddress':'MAC_ADDRESS',
+        'X-PrivateKey': apiKey||clientId
+      },
+      body: JSON.stringify({clientLocalIP: currentIP, clientPublicIP: currentIP})
+    });
+    const data = await res.json();
+    try{ localStorage.setItem('angel_static_ip', currentIP); }catch(e){}
+    console.log('IP update result:', data);
+    if(data.status){
+      flash('✅ IP Auto-Updated: '+currentIP, true);
+    }
+  } catch(e){
+    console.log('Auto IP update error:', e);
+  }
+}
+
 window.addEventListener('load', init);
 </script>
+
+<!-- ══ OPTION PRICE CHART MODAL ════════════════════════════ -->
+<div id="optChartModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.8);">
+  <div style="position:absolute;bottom:0;left:0;right:0;background:#0d1e30;border-radius:20px 20px 0 0;padding:0 0 24px;max-height:90vh;overflow-y:auto;">
+    <div style="text-align:center;padding:10px 0 4px;"><div style="width:36px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;display:inline-block;"></div></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 18px 10px;">
+      <div>
+        <div id="optChartTitle" style="font-size:14px;font-weight:900;"></div>
+        <div id="optChartSub" style="font-size:11px;color:var(--muted);margin-top:2px;"></div>
+      </div>
+      <button onclick="closeOptChart()" style="background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;">×</button>
+    </div>
+    <!-- P&L Strip -->
+    <div id="optChartPnl" style="display:flex;gap:10px;padding:0 16px 10px;"></div>
+    <!-- Chart -->
+    <div style="padding:0 12px;">
+      <canvas id="optChartCanvas" style="width:100%;border-radius:10px;background:#060f1a;display:block;"></canvas>
+    </div>
+    <!-- Entry/SL/TGT info -->
+    <div id="optChartLevels" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 16px 0;"></div>
+  </div>
+</div>
 </body>
 </html>
