@@ -2105,7 +2105,7 @@ async function renderOC(){
   const mPE=Math.max(...strikes.map(k=>Math.max(0.3,8-Math.abs(k-spot)/step)*100000));
   // Dummy BP Trend - PCR वरून calculate
   const dummyPCR=+pcrVal;
-  const dummyTrend = dummyPCR>1.1?'BULLISH':dummyPCR<0.8?'BEARISH':'NEUTRAL';
+  const dummyTrend = dummyPCR>1.1?'BEARISH':dummyPCR<0.8?'BULLISH':'NEUTRAL';
   const dummyColor = dummyTrend==='BULLISH'?'#00e87a':dummyTrend==='BEARISH'?'#ff4560':'#ffd700';
   const dummyIcon  = dummyTrend==='BULLISH'?'📈':dummyTrend==='BEARISH'?'📉':'➡️';
   const dBPEl=document.getElementById('ocBPTrend');
