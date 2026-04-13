@@ -2225,7 +2225,7 @@ function renderOCReal(data, sym, step, ls){
     if((s.CE?.openInterest||0) > avgCEOI*1.5) bpCECount++;
     if((s.PE?.openInterest||0) > avgPEOI*1.5) bpPECount++;
   });
-  const bpTrend = bpCECount > bpPECount ? 'BEARISH' : bpPECount > bpCECount ? 'BULLISH' : 'NEUTRAL';
+  const bpTrend = bpCECount > bpPECount ? 'BULLISH' : bpPECount > bpCECount ? 'BEARISH' : 'NEUTRAL';
   const bpColor = bpTrend==='BULLISH'?'#00e87a':bpTrend==='BEARISH'?'#ff4560':'#ffd700';
   const bpIcon  = bpTrend==='BULLISH'?'📈':bpTrend==='BEARISH'?'📉':'➡️';
   const bpHZEl  = document.getElementById('ocBPTrend');
