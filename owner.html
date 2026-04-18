@@ -3892,6 +3892,10 @@ function getTrialInfo(){
     return JSON.parse(t);
   }catch(e){ return null; }
 }
+function autoActivateOwner(){
+  localStorage.setItem('valgo_license_key','VALGO-OWNER-V23');
+}
+autoActivateOwner();
 function startTrial(){
   const today = getTodayStr();
   const info = { start: today, trades: {} };
