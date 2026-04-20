@@ -4126,8 +4126,8 @@ const TRIAL_DAYS = 5;
 let licenseData = null;
 let tradeCountToday = 0;
 
-function getLicenseKey(){ try{ return localStorage.getItem('valgo_license_key')||''; }catch(e){ return ''; } }
-function setLicenseKey(k){ try{ localStorage.setItem('valgo_license_key', k); }catch(e){} }
+function getLicenseKey(){ try{ return localStorage.getItem('valgo_lic_v2')||''; }catch(e){ return ''; } }
+function setLicenseKey(k){ try{ localStorage.setItem('valgo_lic_v2', k); }catch(e){} }
 
 function getTodayStr(){ return new Date().toISOString().slice(0,10); }
 
@@ -4238,7 +4238,7 @@ function updateLicenseBadge(){
 }
 
 function initLicense(){
-  try{localStorage.removeItem('valgo_license_key');localStorage.removeItem('valgo_install_date');}catch(e){}
+  try{localStorage.removeItem('valgo_lic_v2');localStorage.removeItem('valgo_inst_v2');}catch(e){}
   // ── ADMIN FILE: Owner key auto-activate ──────────────────
   const OWNER_KEY = 'VALGO-OWNER-V23';
   setLicenseKey(OWNER_KEY);
