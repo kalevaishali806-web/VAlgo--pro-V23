@@ -4238,6 +4238,7 @@ function updateLicenseBadge(){
 }
 
 function initLicense(){
+  try{localStorage.removeItem('valgo_license_key');localStorage.removeItem('valgo_install_date');}catch(e){}
   // ── ADMIN FILE: Owner key auto-activate ──────────────────
   const OWNER_KEY = 'VALGO-OWNER-V23';
   setLicenseKey(OWNER_KEY);
