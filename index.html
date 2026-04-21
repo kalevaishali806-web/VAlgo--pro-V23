@@ -516,13 +516,13 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
 <!-- ═ COMMODITY ═ -->
 <div class="pg" id="pg-comm">
   <div style="font-size:18px;font-weight:900;margin:4px 0 8px;">⚡ Commodity</div>
-  <!-- Tabs -->
   <div style="display:flex;gap:6px;margin-bottom:12px;background:var(--card);border-radius:12px;padding:6px;">
     <button id="commTab-crude" onclick="switchComm('crude')" style="flex:1;padding:8px 4px;border-radius:8px;border:none;background:var(--gold);color:#000;font-size:11px;font-weight:900;cursor:pointer;">🛢️ Crude</button>
     <button id="commTab-gold"  onclick="switchComm('gold')"  style="flex:1;padding:8px 4px;border-radius:8px;border:none;background:rgba(255,184,48,0.1);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">🥇 Gold</button>
     <button id="commTab-silver" onclick="switchComm('silver')" style="flex:1;padding:8px 4px;border-radius:8px;border:none;background:rgba(255,184,48,0.1);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer;">🥈 Silver</button>
   </div>
 <div id="commSec-crude">
+  <div style="font-size:16px;font-weight:900;margin:4px 0 12px;">🛢️ Crude Oil</div>
 
   <!-- Live Price Card -->
   <div class="card" style="background:linear-gradient(135deg,#1a0f05,#2a1a08);">
@@ -604,7 +604,8 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
       <div style="font-size:13px;font-weight:800;">📋 Crude Oil Option Chain</div>
       <div style="display:flex;align-items:center;gap:6px;">
         <select id="crdExp" style="margin-bottom:0;padding:5px 8px;font-size:11px;border-radius:7px;width:auto;">
-          <option>लोड होत आहे...</option>
+          <option>17-Mar-26</option>
+          <option>21-Mar-26</option>
         </select>
         <button onclick="renderCrdOC()" style="padding:5px 10px;border-radius:7px;border:1px solid rgba(0,180,255,0.4);background:rgba(0,180,255,0.15);color:var(--blue);font-size:11px;cursor:pointer;">🔄</button>
       </div>
@@ -640,19 +641,15 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
       • Best Time: 7:00 PM – 9:00 PM (US market open)
     </div>
   </div>
+</div>
 </div><!-- end commSec-crude -->
 
-<!-- ══ GOLD ══ -->
+<!-- GOLD -->
 <div id="commSec-gold" style="display:none;">
   <div class="card" style="background:linear-gradient(135deg,#1a1405,#2a2008);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div><div style="font-size:13px;font-weight:800;color:var(--gold);">MCX GOLD</div><div style="font-size:10px;color:var(--muted);">Lot: 100 gm · MCX Exchange</div></div>
-      <div style="text-align:right;"><div style="font-size:26px;font-weight:900;" id="goldPrice">₹—</div><div style="font-size:11px;font-weight:700;" id="goldChg">—</div></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-      <div class="stat"><div class="v" id="goldHigh" style="color:var(--green);font-size:12px;">—</div><div class="k">High</div></div>
-      <div class="stat"><div class="v" id="goldLow" style="color:var(--red);font-size:12px;">—</div><div class="k">Low</div></div>
-      <div class="stat"><div class="v" id="goldOI" style="color:var(--gold);font-size:12px;">—</div><div class="k">OI</div></div>
+      <div><div style="font-size:13px;font-weight:800;color:var(--gold);">MCX GOLD</div><div style="font-size:10px;color:var(--muted);">Lot: 100 gm</div></div>
+      <div style="text-align:right;"><div style="font-size:26px;font-weight:900;" id="goldPrice">₹—</div><div style="font-size:11px;" id="goldChg">—</div></div>
     </div>
   </div>
   <div class="card" style="padding:10px;">
@@ -663,40 +660,17 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <button onclick="loadGoldOC()" style="padding:5px 10px;border-radius:7px;border:1px solid rgba(255,184,48,0.4);background:rgba(255,184,48,0.15);color:var(--gold);font-size:11px;cursor:pointer;">🔄</button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
-      <div class="stat"><div class="v" id="goldOCSpot" style="color:var(--green);font-size:11px;">—</div><div class="k">Spot</div></div>
-      <div class="stat" style="background:rgba(255,184,48,0.1);border:1px solid rgba(255,184,48,0.3);"><div class="v" id="goldOCATM" style="color:var(--gold);font-size:11px;">—</div><div class="k">ATM</div></div>
-      <div class="stat"><div class="v" id="goldOCPCR" style="font-size:11px;">—</div><div class="k">PCR</div></div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card2);border-radius:8px;padding:7px 10px;margin-bottom:8px;">
-      <span style="font-size:10px;color:var(--muted);font-weight:700;">LOT (100 gm)</span>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <button onclick="chGoldOCLot(-1)" style="width:26px;height:26px;border-radius:6px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:14px;font-weight:900;cursor:pointer;">−</button>
-        <span id="goldOCLotN" style="font-size:14px;font-weight:900;min-width:20px;text-align:center;">1</span>
-        <button onclick="chGoldOCLot(1)" style="width:26px;height:26px;border-radius:6px;background:rgba(0,232,122,0.15);color:var(--green);border:1px solid rgba(0,232,122,0.3);font-size:14px;font-weight:900;cursor:pointer;">+</button>
-        <span id="goldOCLotQ" style="font-size:10px;color:var(--muted);">= 100 gm</span>
-      </div>
-    </div>
     <div id="goldOCStatus" style="text-align:center;padding:16px;color:var(--gold);font-size:12px;">🔄 दाबा — Gold OC लोड होईल</div>
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><div id="goldOCTable"></div></div>
-  </div>
-  <div class="card" style="background:rgba(255,184,48,0.05);border:1px solid rgba(255,184,48,0.15);">
-    <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:8px;">ℹ️ Gold Info</div>
-    <div style="font-size:11px;color:var(--muted);line-height:1.8;">• Exchange: MCX · Lot: 100 gm · Tick: ₹1<br>• Global: COMEX Gold (XAU/USD) · Symbol: GOLD</div>
+    <div style="overflow-x:auto;"><div id="goldOCTable"></div></div>
   </div>
 </div><!-- end commSec-gold -->
 
-<!-- ══ SILVER ══ -->
+<!-- SILVER -->
 <div id="commSec-silver" style="display:none;">
   <div class="card" style="background:linear-gradient(135deg,#0d1520,#1a2535);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <div><div style="font-size:13px;font-weight:800;color:#c0c0c0;">MCX SILVER</div><div style="font-size:10px;color:var(--muted);">Lot: 30 kg · MCX Exchange</div></div>
-      <div style="text-align:right;"><div style="font-size:26px;font-weight:900;" id="silverPrice">₹—</div><div style="font-size:11px;font-weight:700;" id="silverChg">—</div></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
-      <div class="stat"><div class="v" id="silverHigh" style="color:var(--green);font-size:12px;">—</div><div class="k">High</div></div>
-      <div class="stat"><div class="v" id="silverLow" style="color:var(--red);font-size:12px;">—</div><div class="k">Low</div></div>
-      <div class="stat"><div class="v" id="silverOI" style="color:#c0c0c0;font-size:12px;">—</div><div class="k">OI</div></div>
+      <div><div style="font-size:13px;font-weight:800;color:#c0c0c0;">MCX SILVER</div><div style="font-size:10px;color:var(--muted);">Lot: 30 kg</div></div>
+      <div style="text-align:right;"><div style="font-size:26px;font-weight:900;" id="silverPrice">₹—</div><div style="font-size:11px;" id="silverChg">—</div></div>
     </div>
   </div>
   <div class="card" style="padding:10px;">
@@ -707,26 +681,8 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <button onclick="loadSilverOC()" style="padding:5px 10px;border-radius:7px;border:1px solid rgba(192,192,192,0.4);background:rgba(192,192,192,0.1);color:#c0c0c0;font-size:11px;cursor:pointer;">🔄</button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
-      <div class="stat"><div class="v" id="silverOCSpot" style="color:var(--green);font-size:11px;">—</div><div class="k">Spot</div></div>
-      <div class="stat" style="background:rgba(192,192,192,0.1);border:1px solid rgba(192,192,192,0.3);"><div class="v" id="silverOCATM" style="color:#c0c0c0;font-size:11px;">—</div><div class="k">ATM</div></div>
-      <div class="stat"><div class="v" id="silverOCPCR" style="font-size:11px;">—</div><div class="k">PCR</div></div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card2);border-radius:8px;padding:7px 10px;margin-bottom:8px;">
-      <span style="font-size:10px;color:var(--muted);font-weight:700;">LOT (30 kg)</span>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <button onclick="chSilverOCLot(-1)" style="width:26px;height:26px;border-radius:6px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:14px;font-weight:900;cursor:pointer;">−</button>
-        <span id="silverOCLotN" style="font-size:14px;font-weight:900;min-width:20px;text-align:center;">1</span>
-        <button onclick="chSilverOCLot(1)" style="width:26px;height:26px;border-radius:6px;background:rgba(0,232,122,0.15);color:var(--green);border:1px solid rgba(0,232,122,0.3);font-size:14px;font-weight:900;cursor:pointer;">+</button>
-        <span id="silverOCLotQ" style="font-size:10px;color:var(--muted);">= 30 kg</span>
-      </div>
-    </div>
     <div id="silverOCStatus" style="text-align:center;padding:16px;color:#c0c0c0;font-size:12px;">🔄 दाबा — Silver OC लोड होईल</div>
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><div id="silverOCTable"></div></div>
-  </div>
-  <div class="card" style="background:rgba(192,192,192,0.05);border:1px solid rgba(192,192,192,0.15);">
-    <div style="font-size:12px;font-weight:800;color:#c0c0c0;margin-bottom:8px;">ℹ️ Silver Info</div>
-    <div style="font-size:11px;color:var(--muted);line-height:1.8;">• Exchange: MCX · Lot: 30 kg · Tick: ₹1<br>• Global: COMEX Silver (XAG/USD) · Symbol: SILVER</div>
+    <div style="overflow-x:auto;"><div id="silverOCTable"></div></div>
   </div>
 </div><!-- end commSec-silver -->
 
@@ -3274,158 +3230,6 @@ function feedCrd(){
   });
 }
 
-// ══ COMMODITY TAB SWITCH ═════════════════════════════════════
-function switchComm(tab){
-  ['crude','gold','silver'].forEach(t=>{
-    const sec=document.getElementById('commSec-'+t);
-    const btn=document.getElementById('commTab-'+t);
-    if(sec) sec.style.display=(t===tab)?'':'none';
-    if(btn){
-      if(t===tab){ btn.style.background='var(--gold)'; btn.style.color='#000'; btn.style.fontWeight='900'; }
-      else { btn.style.background='rgba(255,184,48,0.1)'; btn.style.color='var(--muted)'; btn.style.fontWeight='700'; }
-    }
-  });
-  if(tab==='gold') fetchGoldPrice();
-  if(tab==='silver') fetchSilverPrice();
-}
-
-let goldOCLot=1;
-function chGoldOCLot(d){ goldOCLot=Math.max(1,goldOCLot+d); document.getElementById('goldOCLotN').textContent=goldOCLot; document.getElementById('goldOCLotQ').textContent='= '+(goldOCLot*100)+' gm'; }
-
-let silverOCLot=1;
-function chSilverOCLot(d){ silverOCLot=Math.max(1,silverOCLot+d); document.getElementById('silverOCLotN').textContent=silverOCLot; document.getElementById('silverOCLotQ').textContent='= '+(silverOCLot*30)+' kg'; }
-
-async function fetchGoldPrice(){
-  const jwtData=getJWT(); if(!jwtData) return;
-  try{
-    const res=await fetch('https://gaming-representatives-lbs-gate.trycloudflare.com/rest/secure/angelbroking/market/v1/quote/',{
-      method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
-      body:JSON.stringify({mode:'FULL',exchangeTokens:{'MCX':['234804']}})
-    });
-    const d=await res.json();
-    if(d.status&&d.data?.fetched?.[0]){
-      const q=d.data.fetched[0]; const ltp=q.ltp||0; const prev=q.close||ltp; const chgPct=prev?(((ltp-prev)/prev)*100).toFixed(2):0;
-      document.getElementById('goldPrice').textContent='₹'+ltp.toLocaleString('en-IN');
-      const ce=document.getElementById('goldChg'); ce.textContent=(chgPct>=0?'+':'')+chgPct+'%'; ce.style.color=chgPct>=0?'var(--green)':'var(--red)';
-      if(q.high) document.getElementById('goldHigh').textContent='₹'+q.high.toLocaleString('en-IN');
-      if(q.low)  document.getElementById('goldLow').textContent='₹'+q.low.toLocaleString('en-IN');
-      if(q.openInterest) document.getElementById('goldOI').textContent=(q.openInterest/100000).toFixed(1)+'L';
-    }
-  } catch(e){ console.log('Gold price err:',e); }
-}
-
-async function fetchSilverPrice(){
-  const jwtData=getJWT(); if(!jwtData) return;
-  try{
-    const res=await fetch('https://gaming-representatives-lbs-gate.trycloudflare.com/rest/secure/angelbroking/market/v1/quote/',{
-      method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
-      body:JSON.stringify({mode:'FULL',exchangeTokens:{'MCX':['234796']}})
-    });
-    const d=await res.json();
-    if(d.status&&d.data?.fetched?.[0]){
-      const q=d.data.fetched[0]; const ltp=q.ltp||0; const prev=q.close||ltp; const chgPct=prev?(((ltp-prev)/prev)*100).toFixed(2):0;
-      document.getElementById('silverPrice').textContent='₹'+ltp.toLocaleString('en-IN');
-      const se=document.getElementById('silverChg'); se.textContent=(chgPct>=0?'+':'')+chgPct+'%'; se.style.color=chgPct>=0?'var(--green)':'var(--red)';
-      if(q.high) document.getElementById('silverHigh').textContent='₹'+q.high.toLocaleString('en-IN');
-      if(q.low)  document.getElementById('silverLow').textContent='₹'+q.low.toLocaleString('en-IN');
-      if(q.openInterest) document.getElementById('silverOI').textContent=(q.openInterest/100000).toFixed(1)+'L';
-    }
-  } catch(e){ console.log('Silver price err:',e); }
-}
-
-async function loadGoldOC(){
-  const sEl=document.getElementById('goldOCStatus'); const tEl=document.getElementById('goldOCTable');
-  const jwtData=getJWT(); if(!jwtData){ sEl.innerHTML='<span style="color:var(--red);">⚠️ Angel One login करा</span>'; return; }
-  sEl.innerHTML='<span style="color:var(--gold);">⏳ Gold OC लोड होत आहे...</span>'; tEl.innerHTML='';
-  try{
-    const exp=document.getElementById('goldExp').value;
-    const res=await fetch('https://gaming-representatives-lbs-gate.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
-      method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
-      body:JSON.stringify({name:'GOLD',expirydate:exp})
-    });
-    const json=await res.json();
-    if(json.status&&json.data){ renderCommOC('gold',json.data,100); sEl.style.display='none'; }
-    else { sEl.innerHTML='<span style="color:var(--red);">❌ '+(json.message||'Error')+'</span>'; }
-  } catch(e){ sEl.innerHTML='<span style="color:var(--red);">❌ Proxy Error: '+e.message+'</span>'; }
-}
-
-async function loadSilverOC(){
-  const sEl=document.getElementById('silverOCStatus'); const tEl=document.getElementById('silverOCTable');
-  const jwtData=getJWT(); if(!jwtData){ sEl.innerHTML='<span style="color:var(--red);">⚠️ Angel One login करा</span>'; return; }
-  sEl.innerHTML='<span style="color:#c0c0c0;">⏳ Silver OC लोड होत आहे...</span>'; tEl.innerHTML='';
-  try{
-    const exp=document.getElementById('silverExp').value;
-    const res=await fetch('https://gaming-representatives-lbs-gate.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
-      method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
-      body:JSON.stringify({name:'SILVER',expirydate:exp})
-    });
-    const json=await res.json();
-    if(json.status&&json.data){ renderCommOC('silver',json.data,30000); sEl.style.display='none'; }
-    else { sEl.innerHTML='<span style="color:var(--red);">❌ '+(json.message||'Error')+'</span>'; }
-  } catch(e){ sEl.innerHTML='<span style="color:var(--red);">❌ Proxy Error: '+e.message+'</span>'; }
-}
-
-function renderCommOC(sym,data,lotSize){
-  const ac=sym==='gold'?'var(--gold)':'#c0c0c0'; const ab=sym==='gold'?'rgba(255,184,48,0.4)':'rgba(192,192,192,0.4)';
-  const tId=sym+'OCTable'; const oc=data.oc||data.optionChain||[];
-  if(!oc.length){ document.getElementById(tId).innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);">Data नाही</div>'; return; }
-  const spot=data.ltp||data.spotprice||0; const step=sym==='gold'?500:1000; const atm=step?Math.round(spot/step)*step:spot;
-  const el=id=>document.getElementById(id);
-  if(el(sym+'OCSpot')) el(sym+'OCSpot').textContent='₹'+spot.toLocaleString('en-IN');
-  if(el(sym+'OCATM'))  el(sym+'OCATM').textContent=atm.toLocaleString('en-IN');
-  const oif=v=>v>=100000?(v/100000).toFixed(1)+'L':(v/1000).toFixed(0)+'K';
-  let maxOI=1,totCE=0,totPE=0;
-  oc.forEach(r=>{ maxOI=Math.max(maxOI,r.CE?.openInterest||0,r.PE?.openInterest||0); });
-  let html=`<table class="oc-t"><thead><tr style="background:rgba(0,0,0,0.3);">
-    <th colspan="5" style="color:var(--green);border-bottom:1px solid rgba(0,232,122,0.2);">── CALLS ──</th>
-    <th style="color:${ac};border-bottom:1px solid ${ab};">STRIKE</th>
-    <th colspan="5" style="color:var(--red);border-bottom:1px solid rgba(255,69,96,0.2);">── PUTS ──</th></tr>
-    <tr style="background:rgba(255,255,255,0.02);font-size:8px;color:var(--muted);">
-    <th>OI</th><th>IV</th><th>Chg</th><th>LTP</th><th style="color:var(--green);">B/S</th>
-    <th style="color:${ac};">Strike</th>
-    <th style="color:var(--red);">B/S</th><th>LTP</th><th>Chg</th><th>IV</th><th>OI</th>
-    </tr></thead><tbody>`;
-  oc.forEach(row=>{
-    const k=row.strikePrice; const ce=row.CE||{}; const pe=row.PE||{};
-    const isATM=k===atm; const isITMc=k<spot; const isITMp=k>spot;
-    const tag=isATM?'ATM':isITMc?'ITM':'OTM';
-    const bg=isATM?'background:rgba(255,184,48,0.10);':isITMc?'background:rgba(0,232,122,0.04);':isITMp?'background:rgba(255,69,96,0.04);':'';
-    totCE+=ce.openInterest||0; totPE+=pe.openInterest||0;
-    const cB=Math.round(((ce.openInterest||0)/maxOI)*32); const pB=Math.round(((pe.openInterest||0)/maxOI)*32);
-    const cL=ce.lastPrice||0; const pL=pe.lastPrice||0; const cC=+(ce.netChange||0); const pC=+(pe.netChange||0);
-    const cI=(ce.impliedVolatility||0).toFixed(1); const pI=(pe.impliedVolatility||0).toFixed(1);
-    const cD=JSON.stringify({sym:sym.toUpperCase(),k,type:'CE',ltp:cL,ls:lotSize});
-    const pD=JSON.stringify({sym:sym.toUpperCase(),k,type:'PE',ltp:pL,ls:lotSize});
-    html+=`<tr style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
-      <td style="text-align:right;"><div style="font-size:8px;font-weight:700;color:var(--green);">${oif(ce.openInterest||0)}</div><div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:var(--green);width:${cB}px;"></div></div></td>
-      <td style="color:rgba(255,255,255,0.4);">${cI}%</td>
-      <td style="color:${cC>=0?'var(--green)':'var(--red)'};">${cC>=0?'+':''}${cC.toFixed(1)}</td>
-      <td style="font-weight:800;">₹${cL}</td>
-      <td><div style="display:flex;flex-direction:column;gap:2px;">
-        <button onclick='commOCTrade(${cD},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
-        <button onclick='commOCTrade(${cD},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
-      </div></td>
-      <td style="font-weight:800;font-size:11px;${isATM?'color:'+ac+';':''}">${k.toLocaleString('en-IN')}<div style="font-size:7px;color:${isATM?ac:isITMc?'var(--green)':'var(--muted)'};">${tag}</div></td>
-      <td><div style="display:flex;flex-direction:column;gap:2px;">
-        <button onclick='commOCTrade(${pD},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
-        <button onclick='commOCTrade(${pD},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
-      </div></td>
-      <td style="font-weight:800;">₹${pL}</td>
-      <td style="color:${pC>=0?'var(--green)':'var(--red)'};">${pC>=0?'+':''}${pC.toFixed(1)}</td>
-      <td style="color:rgba(255,255,255,0.4);">${pI}%</td>
-      <td><div style="font-size:8px;font-weight:700;color:var(--red);">${oif(pe.openInterest||0)}</div><div style="height:2px;background:rgba(255,69,96,0.12);margin-top:2px;width:32px;"><div style="height:2px;background:var(--red);width:${pB}px;"></div></div></td>
-    </tr>`;
-  });
-  html+='</tbody></table>';
-  document.getElementById(tId).innerHTML=html;
-  const pcr=totCE>0?(totPE/totCE).toFixed(2):'—';
-  if(el(sym+'OCPCR')) el(sym+'OCPCR').textContent=pcr;
-}
-
-function commOCTrade(opt,action){
-  openTradeConfirm({sym:opt.sym+' '+opt.k+' '+opt.type,ltp:opt.ltp,type:action,qty:(opt.sym==='GOLD'?goldOCLot:silverOCLot)*opt.ls,isOpt:true,isCrd:false});
-}
-
 // ══ CRUDE OIL OPTION CHAIN ══════════════════════════════════
 let crdOCLot = 1;
 
@@ -4126,8 +3930,8 @@ const TRIAL_DAYS = 5;
 let licenseData = null;
 let tradeCountToday = 0;
 
-function getLicenseKey(){ try{ return localStorage.getItem('valgo_lic_v2')||''; }catch(e){ return ''; } }
-function setLicenseKey(k){ try{ localStorage.setItem('valgo_lic_v2', k); }catch(e){} }
+function getLicenseKey(){ try{ return localStorage.getItem('valgo_license_key')||''; }catch(e){ return ''; } }
+function setLicenseKey(k){ try{ localStorage.setItem('valgo_license_key', k); }catch(e){} }
 
 function getTodayStr(){ return new Date().toISOString().slice(0,10); }
 
@@ -4238,232 +4042,172 @@ function updateLicenseBadge(){
 }
 
 function initLicense(){
-  try{localStorage.removeItem('valgo_lic_v2');localStorage.removeItem('valgo_inst_v2');}catch(e){}
-  // ── ADMIN FILE: Owner key auto-activate ──────────────────
-  const OWNER_KEY = 'VALGO-OWNER-V23';
+  // ADMIN: clear old trial, set owner key
+  try{localStorage.removeItem('valgo_license_key');localStorage.removeItem('valgo_install_date');}catch(e){}
+  const OWNER_KEY='VALGO-OWNER-V23';
   setLicenseKey(OWNER_KEY);
-  licenseData = validateLicense(OWNER_KEY);
+  licenseData=validateLicense(OWNER_KEY);
   hideLicenseWall();
   updateLicenseBadge();
-  // Admin file मध्ये कधीही license wall येणार नाही
+  return;
+  const savedKey = getLicenseKey();
+  if(savedKey){
+    const lic = validateLicense(savedKey);
+    if(lic && !isLicenseExpired(lic)){
+      licenseData = lic;
+      updateLicenseBadge();
+      return;
+    }
+  }
+  const daysLeft = getTrialDaysLeft();
+  updateLicenseBadge();
+  if(daysLeft <= 0){
+    showLicenseWall('⏰ Trial संपला! License Key टाका.');
+  }
+  // else trial is active — allow access
 }
 
 // ══ INIT ═══════════════════════════════════════════════════
-// ══ AUTO EXPIRY DATE GENERATOR ════════════════════════════════
+
+// ══ COMMODITY TAB SWITCH ════════════════════════════════════
+function switchComm(tab){
+  ['crude','gold','silver'].forEach(function(t){
+    var sec=document.getElementById('commSec-'+t);
+    var btn=document.getElementById('commTab-'+t);
+    if(sec) sec.style.display=(t===tab)?'':'none';
+    if(btn){
+      if(t===tab){btn.style.background='var(--gold)';btn.style.color='#000';btn.style.fontWeight='900';}
+      else{btn.style.background='rgba(255,184,48,0.1)';btn.style.color='var(--muted)';btn.style.fontWeight='700';}
+    }
+  });
+}
+
+// ══ AUTO EXPIRY DATES ═══════════════════════════════════════
 function autoFillExpiries(){
-  const today = new Date();
-
-  // ── Helper: Format date as "DD-Mon-YY" e.g. "24-Apr-26"
-  function fmtDate(d){
-    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const dd = String(d.getDate()).padStart(2,'0');
-    const mm = months[d.getMonth()];
-    const yy = String(d.getFullYear()).slice(2);
-    return `${dd}-${mm}-${yy}`;
+  var today=new Date();
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function fmtD(d){
+    var dd=String(d.getDate()).padStart(2,'0');
+    var mm=months[d.getMonth()];
+    var yy=String(d.getFullYear()).slice(2);
+    return dd+'-'+mm+'-'+yy;
   }
-
-  // ── Helper: Get next N Thursdays from today (NSE weekly expiry)
-  function getNextThursdays(n){
-    const dates = [];
-    const d = new Date(today);
-    // Move to next Thursday or today if Thursday
-    while(d.getDay() !== 4) d.setDate(d.getDate()+1);
-    for(let i=0;i<n;i++){
-      dates.push(new Date(d));
-      d.setDate(d.getDate()+7);
+  // NSE: next 8 Thursdays
+  function getThursdays(n){
+    var dates=[];
+    var d=new Date(today);
+    while(d.getDay()!==4) d.setDate(d.getDate()+1);
+    for(var i=0;i<n;i++){dates.push(new Date(d));d.setDate(d.getDate()+7);}
+    return dates;
+  }
+  // MCX: approx monthly dates
+  function getMCXDates(n, dayOfWeek, weekNum){
+    var dates=[];
+    var m=today.getMonth();
+    var y=today.getFullYear();
+    for(var attempt=0;attempt<n+4;attempt++){
+      var d=new Date(y,m,1);
+      var count=0;
+      while(count<weekNum){if(d.getDay()===dayOfWeek) count++;if(count<weekNum) d.setDate(d.getDate()+1);}
+      if(d>=today) dates.push(new Date(d));
+      if(dates.length>=n) break;
+      m++;if(m>11){m=0;y++;}
     }
     return dates;
   }
 
-  // ── Helper: Get last Thursday of month (NSE monthly expiry)
-  function getLastThursdayOfMonth(year, month){
-    const lastDay = new Date(year, month+1, 0); // last day of month
-    while(lastDay.getDay() !== 4) lastDay.setDate(lastDay.getDate()-1);
-    return lastDay;
+  // Fill NSE expiry (Thursdays)
+  var ocSel=document.getElementById('ocExp');
+  if(ocSel && ocSel.options.length<=1){
+    var thursdays=getThursdays(8);
+    ocSel.innerHTML=thursdays.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
   }
 
-  // ── Helper: Get upcoming last Thursdays (monthly) — next 6 months
-  function getMonthlyThursdays(n){
-    const dates = [];
-    let m = today.getMonth();
-    let y = today.getFullYear();
-    for(let i=0;i<n+2;i++){
-      const d = getLastThursdayOfMonth(y, m);
-      if(d >= today) dates.push(d);
-      if(dates.length >= n) break;
-      m++; if(m>11){ m=0; y++; }
+  // Fill Crude (3rd Tuesday)
+  var crdSel=document.getElementById('crdExp');
+  if(crdSel){
+    var crdDates=getMCXDates(4,2,3);
+    if(crdDates.length>0) crdSel.innerHTML=crdDates.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
+  }
+
+  // Fill Gold expiry (approx 5th of next month, Friday)
+  var goldSel=document.getElementById('goldExp');
+  if(goldSel){
+    var gDates=[];
+    var gm=today.getMonth();var gy=today.getFullYear();
+    for(var i=0;i<4;i++){
+      gm++;if(gm>11){gm=0;gy++;}
+      var gd=new Date(gy,gm,5);
+      while(gd.getDay()!==5) gd.setDate(gd.getDate()+1);
+      gDates.push(gd);
     }
-    return dates;
+    goldSel.innerHTML=gDates.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
   }
 
-  // ── Helper: Get upcoming Tuesdays (MCX Crude Oil expiry — 3rd Tuesday)
-  function getMCXCrudeExpiries(n){
-    const dates = [];
-    let m = today.getMonth();
-    let y = today.getFullYear();
-    for(let attempt=0; attempt<n+6; attempt++){
-      // 3rd Tuesday of month
-      const d = new Date(y, m, 1);
-      let tueCount = 0;
-      while(tueCount < 3){
-        if(d.getDay() === 2) tueCount++;
-        if(tueCount < 3) d.setDate(d.getDate()+1);
-      }
-      // MCX expires 2 days before 3rd Tuesday → actual expiry = 3rd Tue - 2 = Sunday? 
-      // Actually MCX Crude: expiry is ~19th or 20th (vary). Use Angel API dates when logged in.
-      // Fallback: use 19th of each month (approx)
-      const approx = new Date(y, m, 19);
-      // Find nearest Tuesday to 19th
-      while(approx.getDay() !== 2) approx.setDate(approx.getDate()+1);
-      if(approx >= today) dates.push(new Date(approx));
-      if(dates.length >= n) break;
-      m++; if(m>11){ m=0; y++; }
+  // Fill Silver expiry (approx 5th of next month, Friday)
+  var silvSel=document.getElementById('silverExp');
+  if(silvSel){
+    var sDates=[];
+    var sm=today.getMonth();var sy=today.getFullYear();
+    for(var i=0;i<4;i++){
+      sm++;if(sm>11){sm=0;sy++;}
+      var sd=new Date(sy,sm,5);
+      while(sd.getDay()!==5) sd.setDate(sd.getDate()+1);
+      sDates.push(sd);
     }
-    return dates;
+    silvSel.innerHTML=sDates.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
   }
+}
 
-  // ── Helper: Get MCX Gold/Silver expiries (last Friday of month, or 5th of next month)
-  function getMCXGoldSilverExpiries(n){
-    const dates = [];
-    let m = today.getMonth();
-    let y = today.getFullYear();
-    for(let attempt=0; attempt<n+6; attempt++){
-      // MCX Gold/Silver: expiry around 5th of following month
-      // Actually: last day of month (Gold=last Fri, Silver=last Fri)
-      // Use approximate: 5th of next month
-      const nextM = m+1 > 11 ? 0 : m+1;
-      const nextY = m+1 > 11 ? y+1 : y;
-      const d = new Date(nextY, nextM, 5);
-      // Find nearest Friday
-      while(d.getDay() !== 5) d.setDate(d.getDate()+1);
-      if(d >= today) dates.push(new Date(d));
-      if(dates.length >= n) break;
-      m++; if(m>11){ m=0; y++; }
-    }
-    return dates;
-  }
-
-  // ── NIFTY/BANKNIFTY: Weekly Thursdays + Monthly last Thursdays
-  function fillNSEExpiry(selectId){
-    const sel = document.getElementById(selectId);
-    if(!sel) return;
-    const sym = document.getElementById('ocSym')?.value || 'NIFTY';
-    let dates = [];
-    if(sym === 'NIFTY' || sym === 'BANKNIFTY'){
-      // Weekly: next 8 Thursdays
-      dates = getNextThursdays(8);
-    } else {
-      // SENSEX: weekly + monthly
-      dates = getNextThursdays(6);
-    }
-    // Remove duplicates and sort
-    const seen = new Set();
-    const unique = dates.filter(d=>{ const k=fmtDate(d); if(seen.has(k)) return false; seen.add(k); return true; });
-    unique.sort((a,b)=>a-b);
-    sel.innerHTML = unique.map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-  }
-
-  // ── CRUDE OIL expiry
-  function fillCrudeExpiry(){
-    const sel = document.getElementById('crdExp');
-    if(!sel) return;
-    // Try Angel One API first (if logged in)
-    const jwtData = getJWT();
-    if(jwtData){
-      fetch('https://gaming-representatives-lbs-gate.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
-        method:'POST',
-        headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
-        body:JSON.stringify({name:'CRUDEOIL',expirydate:''})
-      }).then(r=>r.json()).then(json=>{
-        if(json.status && json.data?.expiry_list && json.data.expiry_list.length){
-          sel.innerHTML = json.data.expiry_list.map(e=>`<option value="${e}">${e}</option>`).join('');
-          return;
-        }
-        // Fallback: calculate
-        sel.innerHTML = getMCXCrudeExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-      }).catch(()=>{
-        sel.innerHTML = getMCXCrudeExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-      });
-    } else {
-      // Not logged in — calculate approximate
-      sel.innerHTML = getMCXCrudeExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-    }
-  }
-
-  // ── GOLD expiry
-  function fillGoldExpiry(){
-    const sel = document.getElementById('goldExp');
-    if(!sel) return;
-    const jwtData = getJWT();
-    if(jwtData){
-      fetch('https://gaming-representatives-lbs-gate.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
-        method:'POST',
-        headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
-        body:JSON.stringify({name:'GOLD',expirydate:''})
-      }).then(r=>r.json()).then(json=>{
-        if(json.status && json.data?.expiry_list && json.data.expiry_list.length){
-          sel.innerHTML = json.data.expiry_list.map(e=>`<option value="${e}">${e}</option>`).join('');
-          return;
-        }
-        sel.innerHTML = getMCXGoldSilverExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-      }).catch(()=>{
-        sel.innerHTML = getMCXGoldSilverExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-      });
-    } else {
-      sel.innerHTML = getMCXGoldSilverExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-    }
-  }
-
-  // ── SILVER expiry
-  function fillSilverExpiry(){
-    const sel = document.getElementById('silverExp');
-    if(!sel) return;
-    const jwtData = getJWT();
-    if(jwtData){
-      fetch('https://gaming-representatives-lbs-gate.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
-        method:'POST',
-        headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
-        body:JSON.stringify({name:'SILVER',expirydate:''})
-      }).then(r=>r.json()).then(json=>{
-        if(json.status && json.data?.expiry_list && json.data.expiry_list.length){
-          sel.innerHTML = json.data.expiry_list.map(e=>`<option value="${e}">${e}</option>`).join('');
-          return;
-        }
-        sel.innerHTML = getMCXGoldSilverExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-      }).catch(()=>{
-        sel.innerHTML = getMCXGoldSilverExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-      });
-    } else {
-      sel.innerHTML = getMCXGoldSilverExpiries(4).map(d=>`<option value="${fmtDate(d)}">${fmtDate(d)}</option>`).join('');
-    }
-  }
-
-  // ── NSE Option Chain expiry (already has loadOCExpiry, but fill fallback)
-  fillNSEExpiry('ocExp');
-  fillCrudeExpiry();
-  // Gold/Silver fill होईल जेव्हा tab उघडेल — पण आधीच fill करतो
-  fillGoldExpiry();
-  fillSilverExpiry();
-
-  // ocSym बदलला तर NSE expiry बदल
-  const ocSymSel = document.getElementById('ocSym');
-  if(ocSymSel){
-    ocSymSel.addEventListener('change', ()=>{
-      fillNSEExpiry('ocExp');
-      setTimeout(()=>loadOCExpiry(), 500); // Angel One API try
+async function loadGoldOC(){
+  document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--gold);">⏳ Gold OC लोड होत आहे...</span>';
+  document.getElementById('goldOCTable').innerHTML='';
+  var jwtData=getJWT();
+  if(!jwtData){document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--red);">⚠️ Angel One login करा</span>';return;}
+  try{
+    var exp=document.getElementById('goldExp').value;
+    var res=await fetch(PROXY+'/rest/secure/angelbroking/marketData/v1/optionChain',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':jwtData.apiKey||''},
+      body:JSON.stringify({name:'GOLD',expirydate:exp})
     });
-  }
+    var json=await res.json();
+    if(json.status&&json.data){
+      document.getElementById('goldOCStatus').style.display='none';
+      document.getElementById('goldOCTable').innerHTML='<div style="text-align:center;padding:20px;color:var(--gold);">✅ Gold OC लोड झाले — '+((json.data.oc||[]).length)+' strikes</div>';
+    } else {
+      document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--red);">❌ '+(json.message||'Error')+'</span>';
+    }
+  }catch(e){document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--red);">❌ Proxy Error</span>';}
 }
 
-// ── Angel One login झाल्यावर expiry refresh ─────────────────
-function refreshExpiriesAfterLogin(){
-  setTimeout(()=>{
-    const sel = document.getElementById('crdExp');
-    if(sel) { const jwtData=getJWT(); if(jwtData) autoFillExpiries(); }
-  }, 2000);
+async function loadSilverOC(){
+  document.getElementById('silverOCStatus').innerHTML='<span style="color:#c0c0c0;">⏳ Silver OC लोड होत आहे...</span>';
+  document.getElementById('silverOCTable').innerHTML='';
+  var jwtData=getJWT();
+  if(!jwtData){document.getElementById('silverOCStatus').innerHTML='<span style="color:var(--red);">⚠️ Angel One login करा</span>';return;}
+  try{
+    var exp=document.getElementById('silverExp').value;
+    var res=await fetch(PROXY+'/rest/secure/angelbroking/marketData/v1/optionChain',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':jwtData.apiKey||''},
+      body:JSON.stringify({name:'SILVER',expirydate:exp})
+    });
+    var json=await res.json();
+    if(json.status&&json.data){
+      document.getElementById('silverOCStatus').style.display='none';
+      document.getElementById('silverOCTable').innerHTML='<div style="text-align:center;padding:20px;color:#c0c0c0;">✅ Silver OC लोड झाले — '+((json.data.oc||[]).length)+' strikes</div>';
+    } else {
+      document.getElementById('silverOCStatus').innerHTML='<span style="color:var(--red);">❌ '+(json.message||'Error')+'</span>';
+    }
+  }catch(e){document.getElementById('silverOCStatus').innerHTML='<span style="color:var(--red);">❌ Proxy Error</span>';}
 }
 
-
+function init(){
+  initLicense();
+  autoFillExpiries();
+  load();
+  candles=genCandles();
   setTimeout(()=>{
     drawChart();
     updatePnlHeader();
