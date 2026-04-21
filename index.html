@@ -2108,7 +2108,7 @@ async function renderOC(){
       const expiry = expEl ? expEl.value : '';
 
       // Angel One Option Chain API
-      const res = await fetch('https://count-household-merchant-intervals.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+      const res = await fetch('https://mas-refresh-mono-redhead.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
         method:'POST',
         headers:{
           'Authorization':'Bearer '+jwtData.jwt,
@@ -2437,7 +2437,7 @@ async function fetchCustomPrice(sym){
   const jwt=getJWT();
   if(jwt && jwt.jwt){
     try{
-      const proxy='https://count-household-merchant-intervals.trycloudflare.com';
+      const proxy='https://mas-refresh-mono-redhead.trycloudflare.com';
       // NSE symbol to token mapping - common stocks
       const tokenMap={
         'RELIANCE':'2885','TCS':'11536','INFY':'1594','HDFCBANK':'1333',
@@ -2821,7 +2821,7 @@ async function autoLoadJWT(){
   st.style.color='var(--gold)';
   st.textContent='⏳ Local server कडून token घेत आहे...';
   try {
-    const res = await fetch('https://count-household-merchant-intervals.trycloudflare.com/token');
+    const res = await fetch('https://mas-refresh-mono-redhead.trycloudflare.com/token');
     if(res.ok){
       const data = await res.json();
       const token = (data.token||'').replace('Bearer ','').trim();
@@ -2960,7 +2960,7 @@ function placeRealOrder(){
   };
 
   // Proxy server मधून order पाठवा
-  fetch('https://count-household-merchant-intervals.trycloudflare.com/rest/secure/angelbroking/order/v1/placeOrder',{
+  fetch('https://mas-refresh-mono-redhead.trycloudflare.com/rest/secure/angelbroking/order/v1/placeOrder',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -3657,7 +3657,7 @@ async function fetchAngelCandles(sym,jwt){
     const from=new Date(now-7*24*3600*1000);
     const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     const body={exchange:'NSE',symboltoken:token,interval:tfMap[curTF]||'FIVE_MINUTE',fromdate:fmt(from),todate:fmt(now)};
-    const res=await fetch('https://count-household-merchant-intervals.trycloudflare.com/rest/secure/angelbroking/historical/v1/getCandleData',{
+    const res=await fetch('https://mas-refresh-mono-redhead.trycloudflare.com/rest/secure/angelbroking/historical/v1/getCandleData',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'192.168.1.1','X-ClientPublicIP':'106.193.147.98','X-MACAddress':'fe80::1','X-PrivateKey':'Y4IDCPLI'},
       body:JSON.stringify(body),
