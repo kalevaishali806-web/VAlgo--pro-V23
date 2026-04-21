@@ -4086,193 +4086,20 @@ function switchComm(tab){
 function autoFillExpiries(){
   var today=new Date();
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function fmtD(d){
-    var dd=String(d.getDate()).padStart(2,'0');
-    var mm=months[d.getMonth()];
-    var yy=String(d.getFullYear()).slice(2);
-    return dd+'-'+mm+'-'+yy;
-  }
-  // NSE: next 8 Thursdays
-  function getThursdays(n){
-    var dates=[];
-    var d=new Date(today);
-    while(d.getDay()!==4) d.setDate(d.getDate()+1);
-    for(var i=0;i<n;i++){dates.push(new Date(d));d.setDate(d.getDate()+7);}
-    return dates;
-  }
-  // MCX: approx monthly dates
-  function getMCXDates(n, dayOfWeek, weekNum){
-    var dates=[];
-    var m=today.getMonth();
-    var y=today.getFullYear();
-    for(var attempt=0;attempt<n+4;attempt++){
-      var d=new Date(y,m,1);
-      var count=0;
-      while(count<weekNum){if(d.getDay()===dayOfWeek) count++;if(count<weekNum) d.setDate(d.getDate()+1);}
-      if(d>=today) dates.push(new Date(d));
-      if(dates.length>=n) break;
-      m++;if(m>11){m=0;y++;}
-    }
-    return dates;
-  }
-
-  // Fill NSE expiry (Thursdays)
-  var ocSel=document.getElementById('ocExp');
-  if(ocSel && ocSel.options.length<=1){
-    var thursdays=getThursdays(8);
-    ocSel.innerHTML=thursdays.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
-  }
-
-  // Fill Crude (3rd Tuesday)
-  var crdSel=document.getElementById('crdExp');
-  if(crdSel){
-    var crdDates=getMCXDates(4,2,3);
-    if(crdDates.length>0) crdSel.innerHTML=crdDates.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
-  }
-
-  // Fill Gold expiry (approx 5th of next month, Friday)
-  var goldSel=document.getElementById('goldExp');
-  if(goldSel){
-    var gDates=[];
-    var gm=today.getMonth();var gy=today.getFullYear();
-    for(var i=0;i<4;i++){
-      gm++;if(gm>11){gm=0;gy++;}
-      var gd=new Date(gy,gm,5);
-      while(gd.getDay()!==5) gd.setDate(gd.getDate()+1);
-      gDates.push(gd);
-    }
-    goldSel.innerHTML=gDates.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
-  }
-
-  // Fill Silver expiry (approx 5th of next month, Friday)
-  var silvSel=document.getElementById('silverExp');
-  if(silvSel){
-    var sDates=[];
-    var sm=today.getMonth();var sy=today.getFullYear();
-    for(var i=0;i<4;i++){
-      sm++;if(sm>11){sm=0;sy++;}
-      var sd=new Date(sy,sm,5);
-      while(sd.getDay()!==5) sd.setDate(sd.getDate()+1);
-      sDates.push(sd);
-    }
-    silvSel.innerHTML=sDates.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');
-  }
+  function fmtD(d){var dd=String(d.getDate()).padStart(2,'0');var mm=months[d.getMonth()];var yy=String(d.getFullYear()).slice(2);return dd+'-'+mm+'-'+yy;}
+  function getThursdays(n){var dates=[];var d=new Date(today);while(d.getDay()!==4)d.setDate(d.getDate()+1);for(var i=0;i<n;i++){dates.push(new Date(d));d.setDate(d.getDate()+7);}return dates;}
+  function getWednesdays(n){var dates=[];var d=new Date(today);while(d.getDay()!==3)d.setDate(d.getDate()+1);for(var i=0;i<n;i++){dates.push(new Date(d));d.setDate(d.getDate()+7);}return dates;}
+  function getFridays(n){var dates=[];var d=new Date(today);while(d.getDay()!==5)d.setDate(d.getDate()+1);for(var i=0;i<n;i++){dates.push(new Date(d));d.setDate(d.getDate()+7);}return dates;}
+  function getMCX5th(n){var dates=[];var m=today.getMonth();var y=today.getFullYear();for(var i=0;i<n+2;i++){m++;if(m>11){m=0;y++;}dates.push(new Date(y,m,5));if(dates.length>=n)break;}return dates;}
+  function getMCXDates(n,dow,wn){var dates=[];var m=today.getMonth();var y=today.getFullYear();for(var a=0;a<n+4;a++){var d=new Date(y,m,1);var c=0;while(c<wn){if(d.getDay()===dow)c++;if(c<wn)d.setDate(d.getDate()+1);}if(d>=today)dates.push(new Date(d));if(dates.length>=n)break;m++;if(m>11){m=0;y++;}}return dates;}
+  var ocSel=document.getElementById('ocExp');if(ocSel&&ocSel.options.length<=1){ocSel.innerHTML=getThursdays(8).map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');}
+  var bnSel=document.getElementById('bnExp');if(bnSel&&bnSel.options.length<=1){bnSel.innerHTML=getWednesdays(8).map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');}
+  var sxSel=document.getElementById('sxExp');if(sxSel&&sxSel.options.length<=1){sxSel.innerHTML=getFridays(8).map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');}
+  var crdSel=document.getElementById('crdExp');if(crdSel){var crdDates=getMCXDates(4,1,3);if(crdDates.length>0)crdSel.innerHTML=crdDates.map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');}
+  var goldSel=document.getElementById('goldExp');if(goldSel){goldSel.innerHTML=getMCX5th(4).map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');}
+  var silvSel=document.getElementById('silverExp');if(silvSel){silvSel.innerHTML=getMCX5th(4).map(function(d){return '<option>'+fmtD(d)+'</option>';}).join('');}
 }
 
-async function loadGoldOC(){
-  document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--gold);">⏳ Gold OC लोड होत आहे...</span>';
-  document.getElementById('goldOCTable').innerHTML='';
-  var jwtData=getJWT();
-  if(!jwtData){document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--red);">⚠️ Angel One login करा</span>';return;}
-  try{
-    var exp=document.getElementById('goldExp').value;
-    var res=await fetch(PROXY+'/rest/secure/angelbroking/marketData/v1/optionChain',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':jwtData.apiKey||''},
-      body:JSON.stringify({name:'GOLD',expirydate:exp})
-    });
-    var json=await res.json();
-    if(json.status&&json.data){
-      document.getElementById('goldOCStatus').style.display='none';
-      document.getElementById('goldOCTable').innerHTML='<div style="text-align:center;padding:20px;color:var(--gold);">✅ Gold OC लोड झाले — '+((json.data.oc||[]).length)+' strikes</div>';
-    } else {
-      document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--red);">❌ '+(json.message||'Error')+'</span>';
-    }
-  }catch(e){document.getElementById('goldOCStatus').innerHTML='<span style="color:var(--red);">❌ Proxy Error</span>';}
-}
-
-async function loadSilverOC(){
-  document.getElementById('silverOCStatus').innerHTML='<span style="color:#c0c0c0;">⏳ Silver OC लोड होत आहे...</span>';
-  document.getElementById('silverOCTable').innerHTML='';
-  var jwtData=getJWT();
-  if(!jwtData){document.getElementById('silverOCStatus').innerHTML='<span style="color:var(--red);">⚠️ Angel One login करा</span>';return;}
-  try{
-    var exp=document.getElementById('silverExp').value;
-    var res=await fetch(PROXY+'/rest/secure/angelbroking/marketData/v1/optionChain',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':jwtData.apiKey||''},
-      body:JSON.stringify({name:'SILVER',expirydate:exp})
-    });
-    var json=await res.json();
-    if(json.status&&json.data){
-      document.getElementById('silverOCStatus').style.display='none';
-      document.getElementById('silverOCTable').innerHTML='<div style="text-align:center;padding:20px;color:#c0c0c0;">✅ Silver OC लोड झाले — '+((json.data.oc||[]).length)+' strikes</div>';
-    } else {
-      document.getElementById('silverOCStatus').innerHTML='<span style="color:var(--red);">❌ '+(json.message||'Error')+'</span>';
-    }
-  }catch(e){document.getElementById('silverOCStatus').innerHTML='<span style="color:var(--red);">❌ Proxy Error</span>';}
-}
-
-function init(){
-  initLicense();
-  autoFillExpiries();
-  load();
-  candles=genCandles();
-  setTimeout(()=>{
-    drawChart();
-    updatePnlHeader();
-    renderStrats();
-    renderWatch();
-    showInd('rsi');
-    updateLotInfo();
-    startCandleTimer();
-    initDrawCanvas();
-  }, 100);
-  setInterval(feed, 2000);
-}
-
-// ── Option Price Chart ─────────────────────────────────────
-let _optChartPos = null;
-let _optChartInterval = null;
-
-function openOptChart(posId){
-  const pos = positions.find(p=>p.id===posId);
-  if(!pos) return;
-  _optChartPos = pos;
-
-  document.getElementById('optChartTitle').textContent = pos.sym;
-  document.getElementById('optChartSub').textContent = pos.type + ' · Entry ₹' + pos.entry + ' · Qty ' + pos.qty;
-  document.getElementById('optChartModal').style.display = 'block';
-
-  updateOptChart();
-  _optChartInterval = setInterval(updateOptChart, 2000);
-}
-
-function updateOptChart(){
-  const pos = _optChartPos;
-  if(!pos) return;
-
-  const cur = pos.livePrice || pos.entry;
-  const raw = pos.type==='BUY' ? cur - pos.entry : pos.entry - cur;
-  const pnl = +(raw * pos.qty).toFixed(0);
-  const pct = +((raw/pos.entry)*100).toFixed(1);
-  const col = pnl>=0 ? 'var(--green)' : 'var(--red)';
-
-  // P&L strip — only show real P&L if livePrice is set
-  const hasLive = pos.livePrice && pos.livePrice !== pos.entry;
-  document.getElementById('optChartPnl').innerHTML = `
-    <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;">
-      <div style="font-size:10px;color:var(--muted);">P&L</div>
-      <div style="font-size:18px;font-weight:900;color:${hasLive?col:'var(--muted)'};">${hasLive?(pnl>=0?'+':'')+'₹'+Math.abs(pnl).toLocaleString('en-IN'):'—'}</div>
-      <div style="font-size:10px;color:${hasLive?col:'var(--muted)'};">${hasLive?((pct>=0?'+':'')+pct+'%'):'Live येईपर्यंत'}</div>
-    </div>
-    <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;">
-      <div style="font-size:10px;color:var(--muted);">LTP</div>
-      <div style="font-size:18px;font-weight:900;">₹${cur.toFixed(1)}</div>
-      <div style="font-size:10px;color:var(--muted);">Entry ₹${pos.entry}</div>
-    </div>
-  `;
-
-  // Levels
-  document.getElementById('optChartLevels').innerHTML = `
-    <div style="background:rgba(0,180,255,0.08);border:1px solid rgba(0,180,255,0.3);border-radius:10px;padding:10px;text-align:center;">
-      <div style="font-size:9px;color:var(--muted);">ENTRY</div>
-      <div style="font-size:14px;font-weight:800;color:var(--blue);">₹${pos.entry}</div>
-    </div>
-    <div style="background:rgba(255,69,96,0.08);border:1px solid rgba(255,69,96,0.3);border-radius:10px;padding:10px;text-align:center;">
-      <div style="font-size:9px;color:var(--muted);">SL</div>
-      <div style="font-size:14px;font-weight:800;color:var(--red);">₹${pos.sl||'—'}</div>
-    </div>
     <div style="background:rgba(0,232,122,0.08);border:1px solid rgba(0,232,122,0.3);border-radius:10px;padding:10px;text-align:center;">
       <div style="font-size:9px;color:var(--muted);">TARGET</div>
       <div style="font-size:14px;font-weight:800;color:var(--green);">₹${pos.tgt||'—'}</div>
