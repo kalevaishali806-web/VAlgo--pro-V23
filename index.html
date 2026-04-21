@@ -2152,7 +2152,7 @@ async function renderOC(){
       const expiry = expEl ? expEl.value : '';
 
       // Angel One Option Chain API
-      const res = await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+      const res = await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
         method:'POST',
         headers:{
           'Authorization':'Bearer '+jwtData.jwt,
@@ -2481,7 +2481,7 @@ async function fetchCustomPrice(sym){
   const jwt=getJWT();
   if(jwt && jwt.jwt){
     try{
-      const proxy='https://holder-birth-celebrate-jun.trycloudflare.com';
+      const proxy='https://harry-arise-courts-magical.trycloudflare.com';
       // NSE symbol to token mapping - common stocks
       const tokenMap={
         'RELIANCE':'2885','TCS':'11536','INFY':'1594','HDFCBANK':'1333',
@@ -2865,7 +2865,7 @@ async function autoLoadJWT(){
   st.style.color='var(--gold)';
   st.textContent='⏳ Local server कडून token घेत आहे...';
   try {
-    const res = await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/token');
+    const res = await fetch('https://harry-arise-courts-magical.trycloudflare.com/token');
     if(res.ok){
       const data = await res.json();
       const token = (data.token||'').replace('Bearer ','').trim();
@@ -3004,7 +3004,7 @@ function placeRealOrder(){
   };
 
   // Proxy server मधून order पाठवा
-  fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/order/v1/placeOrder',{
+  fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/order/v1/placeOrder',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -3298,7 +3298,7 @@ function chSilverOCLot(d){ silverOCLot=Math.max(1,silverOCLot+d); document.getEl
 async function fetchGoldPrice(){
   const jwtData=getJWT(); if(!jwtData) return;
   try{
-    const res=await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/market/v1/quote/',{
+    const res=await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/market/v1/quote/',{
       method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
       body:JSON.stringify({mode:'FULL',exchangeTokens:{'MCX':['234804']}})
     });
@@ -3317,7 +3317,7 @@ async function fetchGoldPrice(){
 async function fetchSilverPrice(){
   const jwtData=getJWT(); if(!jwtData) return;
   try{
-    const res=await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/market/v1/quote/',{
+    const res=await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/market/v1/quote/',{
       method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
       body:JSON.stringify({mode:'FULL',exchangeTokens:{'MCX':['234796']}})
     });
@@ -3339,7 +3339,7 @@ async function loadGoldOC(){
   sEl.innerHTML='<span style="color:var(--gold);">⏳ Gold OC लोड होत आहे...</span>'; tEl.innerHTML='';
   try{
     const exp=document.getElementById('goldExp').value;
-    const res=await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+    const res=await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
       method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
       body:JSON.stringify({name:'GOLD',expirydate:exp})
     });
@@ -3355,7 +3355,7 @@ async function loadSilverOC(){
   sEl.innerHTML='<span style="color:#c0c0c0;">⏳ Silver OC लोड होत आहे...</span>'; tEl.innerHTML='';
   try{
     const exp=document.getElementById('silverExp').value;
-    const res=await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+    const res=await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
       method:'POST', headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
       body:JSON.stringify({name:'SILVER',expirydate:exp})
     });
@@ -3853,7 +3853,7 @@ async function fetchAngelCandles(sym,jwt){
     const from=new Date(now-7*24*3600*1000);
     const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     const body={exchange:'NSE',symboltoken:token,interval:tfMap[curTF]||'FIVE_MINUTE',fromdate:fmt(from),todate:fmt(now)};
-    const res=await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/historical/v1/getCandleData',{
+    const res=await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/historical/v1/getCandleData',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'192.168.1.1','X-ClientPublicIP':'106.193.147.98','X-MACAddress':'fe80::1','X-PrivateKey':'Y4IDCPLI'},
       body:JSON.stringify(body),
@@ -4370,7 +4370,7 @@ function autoFillExpiries(){
     // Try Angel One API first (if logged in)
     const jwtData = getJWT();
     if(jwtData){
-      fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+      fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
         method:'POST',
         headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
         body:JSON.stringify({name:'CRUDEOIL',expirydate:''})
@@ -4396,7 +4396,7 @@ function autoFillExpiries(){
     if(!sel) return;
     const jwtData = getJWT();
     if(jwtData){
-      fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+      fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
         method:'POST',
         headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
         body:JSON.stringify({name:'GOLD',expirydate:''})
@@ -4420,7 +4420,7 @@ function autoFillExpiries(){
     if(!sel) return;
     const jwtData = getJWT();
     if(jwtData){
-      fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+      fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
         method:'POST',
         headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'CLIENT_LOCAL_IP','X-ClientPublicIP':'CLIENT_PUBLIC_IP','X-MACAddress':'MAC_ADDRESS','X-PrivateKey':document.getElementById('aApiKey')?.value||jwtData.apiKey||''},
         body:JSON.stringify({name:'SILVER',expirydate:''})
@@ -4865,7 +4865,7 @@ function closeOptChart(){
 async function fetchAngelPnl(jwt, clientId){
   try{
     // Fetch positions
-    const res = await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/order/v1/getPosition',{
+    const res = await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/order/v1/getPosition',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwt,
@@ -4940,7 +4940,7 @@ async function loadOCExpiry(){
   const jwtData = getJWT();
   if(!jwtData) return; // use default static dates
   try{
-    const res = await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+    const res = await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
       method:'POST',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
@@ -4967,7 +4967,7 @@ async function fetchAngelBalance(){
   const jwtData = getJWT();
   if(!jwtData) return;
   try{
-    const res = await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/user/v1/getRMS',{
+    const res = await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/user/v1/getRMS',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
@@ -5019,7 +5019,7 @@ async function autoUpdateIP(jwt, apiKey, clientId){
     }
 
     // Update IP on Angel One
-    const res = await fetch('https://holder-birth-celebrate-jun.trycloudflare.com/rest/secure/angelbroking/user/v1/updateIPAddress',{
+    const res = await fetch('https://harry-arise-courts-magical.trycloudflare.com/rest/secure/angelbroking/user/v1/updateIPAddress',{
       method:'POST',
       headers:{
         'Authorization':'Bearer '+jwt,
