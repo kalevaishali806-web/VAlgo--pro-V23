@@ -4093,6 +4093,24 @@ function autoFillExpiries(){
 }
 
 autoFillExpiries();
+
+function openOptChart(posId){
+  var p=null;
+  for(var i=0;i<positions.length;i++){if(positions[i].id===posId){p=positions[i];break;}}
+  if(!p) return;
+  var cur=p.livePrice||p.entry;
+  var pnl=p.type==='BUY'?+(cur-p.entry):+(p.entry-cur);
+  var col=pnl>=0?'#00e87a':'#ff4560';
+  document.getElementById('optChartTitle').textContent=p.sym+' '+p.type;
+  var d=document.getElementById('optChartPnl');
+  if(d) d.innerHTML='<div style="padding:8px"><span style="font-size:20px;font-weight:900;color:'+col+'">'+(pnl>=0?'+':'')+pnl.toFixed(0)+'</span> P&L</div>';
+  var lv=document.getElementById('optChartLevels');
+  if(lv) lv.innerHTML='<div style="background:rgba(0,0,0,0.3);border-radius:8px;padding:8px;text-align:center"><div style="font-weight:800">Rs'+p.entry+'</div><div style="font-size:9px;color:#5a7a9a">ENTRY</div></div><div style="background:rgba(255,69,96,0.15);border-radius:8px;padding:8px;text-align:center"><div style="font-weight:800;color:#ff4560">Rs'+p.sl+'</div><div style="font-size:9px;color:#5a7a9a">SL</div></div><div style="background:rgba(0,232,122,0.15);border-radius:8px;padding:8px;text-align:center"><div style="font-weight:800;color:#00e87a">Rs'+p.tgt+'</div><div style="font-size:9px;color:#5a7a9a">TGT</div></div>';
+  document.getElementById('optChartModal').style.display='block';
+}
+function closeOptChart(){
+  document.getElementById('optChartModal').style.display='none';
+}
 window.addEventListener('load', init);
 </script>
 
