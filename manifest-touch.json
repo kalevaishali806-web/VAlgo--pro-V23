@@ -1,0 +1,1 @@
+{"name": "VailGo Touch", "short_name": "VailGo", "start_url": "./vailgo-touch.html", "display": "standalone", "background_color": "#060f1a", "theme_color": "#00e87a", "icons": [{"src": "icon-touch.jpg", "sizes": "192x192", "type": "image/jpeg"}]}
