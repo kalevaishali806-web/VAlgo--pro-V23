@@ -1588,7 +1588,7 @@ function updateLotInfo(){
   const prev=document.getElementById('trPrev');
   if(prev) prev.textContent=tt==='EQ'?`Equity · ${qty} qty · ₹${(STOCKS[ai].p*qty).toLocaleString('en-IN')}`:`${tt} Option · Strike ${selStrike?.toLocaleString('en-IN')||'—'} · ${qty} qty`;
 }
-function doTrade(type){
+function doTrade(type){alert("BUY SELL TEST");
   const s=STOCKS[ai];
   const ls=LOTS[s.sym]||50;
   let sym=s.sym, ltp=s.p, isOpt=false;
