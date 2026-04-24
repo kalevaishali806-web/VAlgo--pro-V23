@@ -4134,8 +4134,8 @@ function openOptChart(posId){
     var mn=Math.min.apply(null,allL)-range*0.1;
     var mx=Math.max.apply(null,allH)+range*0.1;
     // Add SL/TGT to range
-    if(p.sl){mn=Math.min(mn,p.sl-range*0.05);}
-    if(p.tgt){mx=Math.max(mx,p.tgt+range*0.05);}
+    if(p.sl){mn=Math.min(mn,p.sl-range*0.2);}
+    if(p.tgt){mx=Math.max(mx,p.tgt+range*0.2);}
     var yR=mx-mn, pad=8;
     var cW=Math.floor((W-pad*2)/n);
     var bW=Math.max(2,cW-3);
