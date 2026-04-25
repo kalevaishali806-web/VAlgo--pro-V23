@@ -2919,6 +2919,25 @@ async function connectAngel(){
     st.innerHTML='<span style="color:var(--red);">❌ Error: '+e.message+'</span>';
   }
 }
+
+function fetchAngelBalance(){
+  var proxy=localStorage.getItem('angel_proxy')||'';
+  if(!proxy){alert('Proxy URL नाही!');return;}
+  fetch(proxy+'/balance')
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(data.status&&data.data){
+      var d=data.data;
+      var av=parseFloat(d.availablecash||0).toFixed(2);
+      var us=parseFloat(d.utilisedpayout||0).toFixed(2);
+      var nt=parseFloat(d.net||0).toFixed(2);
+      document.getElementById('aBalAvail').textContent='\u20b9'+av;
+      document.getElementById('aBalUsed').textContent='\u20b9'+us;
+      document.getElementById('aBalNet').textContent='\u20b9'+nt;
+    }
+  })
+  .catch(function(e){console.log('Balance error:'+e.message);});
+}
 function disconnectAngel(){
   try{localStorage.removeItem('angel_jwt');}catch(e){}
   document.getElementById('angelOK').style.display='none';
