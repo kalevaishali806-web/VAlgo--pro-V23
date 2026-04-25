@@ -2891,7 +2891,7 @@ async function connectAngel(){
       let jwt = data.data.jwtToken;
       if(jwt.toLowerCase().startsWith('bearer ')) jwt=jwt.substring(7).trim();
       document.getElementById('aJWT').value = jwt;
-      try{localStorage.setItem('angel_jwt',JSON.stringify({clientId,jwt,ts:Date.now()}));}catch(e){}
+      try{localStorage.setItem('angel_jwt',JSON.stringify({clientId,jwt,ts:Date.now()}));var pu=document.getElementById('aProxy')?.value||'';if(pu)localStorage.setItem('angel_proxy',pu);}catch(e){}
       document.getElementById('angelOK').style.display='block';
       document.getElementById('aOrderTest').style.display='block';
       st.innerHTML='<span style="color:var(--green);">✅ Connected!</span>';
