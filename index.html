@@ -2922,7 +2922,7 @@ async function connectAngel(){
 
 function fetchAngelBalance(){
   var proxy='https://compilation-configuring-promise-reprint.trycloudflare.com';
-  if(!proxy){alert('Proxy URL नाही!');return;}
+  
   fetch(proxy+'/balance')
   .then(function(r){return r.json();})
   .then(function(data){
