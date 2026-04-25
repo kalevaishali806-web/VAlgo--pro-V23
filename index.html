@@ -1043,7 +1043,7 @@ const STOCKS=[
   {sym:'HDFCBANK',p:1980,chg:-0.22,base:1980},
   {sym:'SBIN',p:830,chg:1.10,base:830},
 ];
-const LOTS={NIFTY:50,BANKNIFTY:15,SENSEX:10,RELIANCE:250,TCS:150,INFY:300,HDFCBANK:550,SBIN:1500};
+const LOTS={NIFTY:65,BANKNIFTY:15,SENSEX:10,RELIANCE:250,TCS:150,INFY:300,HDFCBANK:550,SBIN:1500};
 const ALL_STOCKS=[
   ...STOCKS,
   {sym:'ICICIBANK',p:1240,chg:0.85,base:1240},{sym:'AXISBANK',p:1180,chg:-0.33,base:1180},
@@ -1561,7 +1561,7 @@ function setTT(t){
   updateLotInfo();
 }
 function buildStrikeRow(type){
-  const sym=STOCKS[ai].sym, step={NIFTY:50,BANKNIFTY:100,SENSEX:100}[sym]||50;
+  const sym=STOCKS[ai].sym, step={NIFTY:65,BANKNIFTY:100,SENSEX:100}[sym]||50;
   const spot=STOCKS[ai].p, atm=Math.round(spot/step)*step;
   selStrike=atm;
   const row=document.getElementById('strikeRow');
@@ -2089,15 +2089,15 @@ function delStrat(id){if(!confirm('Delete?'))return;strats=strats.filter(x=>x.id
 let ocLotN=1;
 function chOCLot(d){
   const sym=document.getElementById('ocSym')?.value||'NIFTY';
-  const ls={NIFTY:50,BANKNIFTY:15,SENSEX:10}[sym]||50;
+  const ls={NIFTY:65,BANKNIFTY:15,SENSEX:10}[sym]||50;
   ocLotN=Math.max(1,ocLotN+d);
   document.getElementById('ocLotN').textContent=ocLotN;
   document.getElementById('ocLotQ').textContent=`= ${ocLotN*ls} qty`;
 }
 async function renderOC(){
   const sym=document.getElementById('ocSym')?.value||'NIFTY';
-  const step={NIFTY:50,BANKNIFTY:100,SENSEX:100}[sym]||50;
-  const ls={NIFTY:50,BANKNIFTY:15,SENSEX:10}[sym]||50;
+  const step={NIFTY:65,BANKNIFTY:100,SENSEX:100}[sym]||50;
+  const ls={NIFTY:65,BANKNIFTY:15,SENSEX:10}[sym]||50;
 
   // Angel One connected असेल तर real data वापरा
   const jwtData = getJWT();
