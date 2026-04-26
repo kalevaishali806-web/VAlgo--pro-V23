@@ -4235,7 +4235,7 @@ function drawOptPriceChart(pos){
       pos._optCandles.push({o,h,l,c});
       if(pos._optCandles.length>40) pos._optCandles.shift();
     }
-    displayCandles = candles.length>1 ? candles : pos._optCandles;
+    displayCandles = pos._optCandles;
   }
 
   if(displayCandles && displayCandles.length > 1){
