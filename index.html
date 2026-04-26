@@ -4487,6 +4487,322 @@ function drawOptPriceChart(pos){
   }
 }
 
+function drawOptPriceChart(pos){
+  const canvas = document.getElementById('optChartCanvas');
+  if(!canvas) return;
+  const W = canvas.parentElement.offsetWidth - 24;
+  const H = 240;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+
+  // Use index candles (NIFTY/BANKNIFTY/SENSEX)
+  const baseSym = pos.sym.split(' ')[0];
+  const stockIdx = STOCKS.findIndex(s=>s.sym===baseSym);
+  const chartCandles = (stockIdx>=0 && candles.length>0) ? candles : null;
+
+  const PL=4, PR=52, PT=10, PB=6;
+  const CW=W-PL-PR, CH=H-PT-PB;
+
+  // Background
+  ctx.fillStyle = '#060f1a';
+  ctx.fillRect(0, 0, W, H);
+
+  // For options: generate simulated candles from entry price
+  let displayCandles = chartCandles;
+  if(pos.isOpt || pos.sym.includes('CE') || pos.sym.includes('PE')){
+    if(!pos._optCandles) pos._optCandles = [];
+    const cur2 = pos.livePrice || pos.entry;
+    if(pos._optCandles.length===0){
+      // Seed with 30 realistic candles from entry
+      let p = pos.entry;
+      for(let i=0;i<30;i++){
+        const volatility = p * 0.025; // 2.5% volatility per candle
+        const o = p;
+        const c = +(p + (Math.random()-0.48)*volatility).toFixed(1);
+        const wickUp = Math.random()*volatility*0.5;
+        const wickDn = Math.random()*volatility*0.5;
+        const h = +(Math.max(o,c) + wickUp).toFixed(1);
+        const l = +(Math.min(o,c) - wickDn).toFixed(1);
+        pos._optCandles.push({o,h,l,c});
+        p = c;
+      }
+      // Last candle closes at current price
+      const lc = pos._optCandles[pos._optCandles.length-1];
+      pos._optCandles.push({
+        o: lc.c,
+        h: +(Math.max(lc.c, cur2)*1.005).toFixed(1),
+        l: +(Math.min(lc.c, cur2)*0.995).toFixed(1),
+        c: cur2
+      });
+    } else {
+      const last = pos._optCandles[pos._optCandles.length-1];
+      const o = last.c;
+      const c = cur2;
+      const volatility = o * 0.02;
+      const h = +(Math.max(o,c) + Math.random()*volatility*0.4).toFixed(1);
+      const l = +(Math.min(o,c) - Math.random()*volatility*0.4).toFixed(1);
+      pos._optCandles.push({o,h,l,c});
+      if(pos._optCandles.length>40) pos._optCandles.shift();
+    }
+    displayCandles = pos._optCandles;
+  }
+
+  if(displayCandles && displayCandles.length > 1){
+    const show = displayCandles.slice(-40);
+    const N = show.length;
+
+    // Price range — always use candle range + small padding
+    // SL/TGT shown as dashed lines even if outside visible range
+    const isOptTrade = pos.isOpt || pos.sym.includes('CE') || pos.sym.includes('PE');
+    let pH = Math.max(...show.map(c=>c.h));
+    let pL = Math.min(...show.map(c=>c.l));
+    // Add entry to visible range
+    pH = Math.max(pH, pos.entry);
+    pL = Math.min(pL, pos.entry);
+    // Add live price
+    const livePr = pos.livePrice||pos.entry;
+    pH = Math.max(pH, livePr);
+    pL = Math.min(pL, livePr);
+    const rng = pH - pL || pH * 0.02;
+    const vT = pH + rng*0.15, vB = pL - rng*0.15, vR = vT - vB;
+
+    const sx = i => PL + (i+0.5)*(CW/N);
+    const sy = p => PT + (vT-p)/vR*CH;
+    const bW = Math.max(2, Math.floor(CW/N*0.6));
+
+    // Grid
+    for(let i=0;i<=3;i++){
+      const p=vB+(i/3)*vR, y=sy(p);
+      ctx.strokeStyle='rgba(255,255,255,0.04)';
+      ctx.lineWidth=1; ctx.setLineDash([]);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+      ctx.fillStyle='rgba(180,210,240,0.7)';
+      ctx.font='bold 8px sans-serif';
+      ctx.fillText('₹'+Math.round(p).toLocaleString('en-IN'), PL+CW+3, y+3);
+    }
+
+    // Helper: draw price line with clamp to visible area
+    const drawLine = (price, color, lbl, dash) => {
+      const y = Math.max(PT+2, Math.min(PT+CH-2, sy(price)));
+      const inRange = price>=vB && price<=vT;
+      ctx.strokeStyle=color; ctx.lineWidth=inRange?1.5:1;
+      ctx.globalAlpha=inRange?0.85:0.4;
+      ctx.setLineDash(dash);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha=1;
+      // Label
+      ctx.fillStyle=color;
+      const tw=ctx.measureText(lbl).width+8;
+      ctx.fillRect(PL+CW+2,y-9,tw,13);
+      ctx.fillStyle=color==='#00e87a'?'#000':'#fff';
+      ctx.font='bold 8px sans-serif';
+      ctx.fillText(lbl, PL+CW+4, y+1);
+    };
+
+    if(pos.sl)  drawLine(pos.sl,  '#ff4560', 'SL ₹'+Math.round(pos.sl),  [5,3]);
+    if(pos.tgt) drawLine(pos.tgt, '#00e87a', 'TGT ₹'+Math.round(pos.tgt),[5,3]);
+    drawLine(pos.entry, '#00b4ff', 'BUY ₹'+Math.round(pos.entry), [3,3]);
+
+    // Candles
+    show.forEach((c,i)=>{
+      const bull=c.c>=c.o;
+      const col=bull?'#00e87a':'#ff4560';
+      const x=sx(i);
+      ctx.setLineDash([]);
+      // Wick
+      ctx.strokeStyle=col; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x,sy(c.h)); ctx.lineTo(x,sy(c.l)); ctx.stroke();
+      // Body
+      const bT=Math.min(sy(c.o),sy(c.c));
+      const bH=Math.max(1.5,Math.abs(sy(c.c)-sy(c.o)));
+      ctx.fillStyle=col;
+      ctx.fillRect(x-bW/2, bT, bW, bH);
+    });
+
+    // ── EMA 9 & EMA 21 ──────────────────────────────────────
+    const optCalcEMA = (data, period) => {
+      const k = 2/(period+1);
+      let ema = data[0];
+      return data.map((v,i) => { if(i===0){ema=v;return v;} ema=v*k+ema*(1-k); return +ema.toFixed(2); });
+    };
+    const closes = show.map(c=>c.c);
+    if(closes.length >= 9){
+      const ema9 = optCalcEMA(closes, 9);
+      const ema21 = closes.length>=21 ? optCalcEMA(closes, 21) : null;
+
+      // EMA9 line (gold)
+      ctx.strokeStyle='#ffd700'; ctx.lineWidth=1.5; ctx.setLineDash([]); ctx.globalAlpha=0.9;
+      ctx.beginPath();
+      ema9.forEach((v,i)=>{ const y=sy(v); i===0?ctx.moveTo(sx(i),y):ctx.lineTo(sx(i),y); });
+      ctx.stroke();
+      // EMA9 label
+      ctx.fillStyle='#ffd700'; ctx.font='bold 7px sans-serif';
+      ctx.fillText('E9', PL+CW+3, sy(ema9[ema9.length-1])+3);
+
+      // EMA21 line (blue)
+      if(ema21){
+        ctx.strokeStyle='#4488ff'; ctx.lineWidth=1.5; ctx.globalAlpha=0.9;
+        ctx.beginPath();
+        ema21.forEach((v,i)=>{ const y=sy(v); i===0?ctx.moveTo(sx(i),y):ctx.lineTo(sx(i),y); });
+        ctx.stroke();
+        ctx.fillStyle='#4488ff'; ctx.font='bold 7px sans-serif';
+        ctx.fillText('E21', PL+CW+3, sy(ema21[ema21.length-1])+3);
+      }
+      ctx.globalAlpha=1;
+    }
+
+    // ── Double Supertrend (3,1 and 5,2) ───────────────────────────
+    function calcSTLine(cndls, period, mult){
+      if(cndls.length < period+1) return [];
+      const result=[];
+      // calc ATR
+      const atrs=[];
+      for(let i=1;i<cndls.length;i++){
+        const tr=Math.max(cndls[i].h-cndls[i].l, Math.abs(cndls[i].h-cndls[i-1].c), Math.abs(cndls[i].l-cndls[i-1].c));
+        atrs.push(tr);
+      }
+      // smooth ATR (RMA)
+      const atrArr=[];
+      let atrVal=atrs.slice(0,period).reduce((s,v)=>s+v,0)/period;
+      atrArr.push(atrVal);
+      for(let i=period;i<atrs.length;i++){
+        atrVal=(atrVal*(period-1)+atrs[i])/period;
+        atrArr.push(atrVal);
+      }
+      // supertrend
+      let dir=1, upper=0, lower=0;
+      for(let i=0;i<atrArr.length;i++){
+        const ci=i+1; // candle index (offset by 1 due to TR calc)
+        const c=cndls[ci];
+        const a=atrArr[i];
+        const mid=(c.h+c.l)/2;
+        const basicUpper=mid+mult*a;
+        const basicLower=mid-mult*a;
+        const prevUpper=i>0?result[i-1].upper:basicUpper;
+        const prevLower=i>0?result[i-1].lower:basicLower;
+        const prevDir=i>0?result[i-1].dir:1;
+        upper = basicUpper < prevUpper || cndls[ci-1]?.c > prevUpper ? basicUpper : prevUpper;
+        lower = basicLower > prevLower || cndls[ci-1]?.c < prevLower ? basicLower : prevLower;
+        if(prevDir===-1 && c.c > prevUpper) dir=1;
+        else if(prevDir===1 && c.c < prevLower) dir=-1;
+        else dir=prevDir;
+        result.push({dir, upper, lower, line: dir===1?lower:upper});
+      }
+      return result;
+    }
+
+    // Draw ST1 (3,1) — bright green/red
+    if(show.length >= 10){
+      const st1=calcSTLine(show,3,1);
+      if(st1.length>0){
+        ctx.lineWidth=1.8; ctx.setLineDash([]);
+        let curDir=null; let started=false;
+        st1.forEach((s,i)=>{
+          if(s.dir!==curDir){
+            if(started) ctx.stroke();
+            curDir=s.dir;
+            ctx.strokeStyle=curDir===1?'rgba(0,232,122,0.9)':'rgba(255,69,96,0.9)';
+            ctx.beginPath();
+            ctx.moveTo(sx(i),sy(s.line));
+            started=true;
+          } else {
+            ctx.lineTo(sx(i),sy(s.line));
+          }
+          if(i===st1.length-1){
+            ctx.stroke();
+            const last=st1[st1.length-1];
+            ctx.fillStyle=last.dir===1?'#00e87a':'#ff4560';
+            ctx.font='bold 7px sans-serif';
+            ctx.fillText('ST1', PL+2, sy(last.line)-3);
+          }
+        });
+      }
+    }
+
+    // Draw ST2 (5,2) — orange/pink, dashed
+    if(show.length >= 14){
+      const st2=calcSTLine(show,5,2);
+      if(st2.length>0){
+        ctx.lineWidth=1.5; ctx.setLineDash([3,2]);
+        let curDir=null; let started=false;
+        st2.forEach((s,i)=>{
+          if(s.dir!==curDir){
+            if(started) ctx.stroke();
+            curDir=s.dir;
+            ctx.strokeStyle=curDir===1?'rgba(255,200,0,0.85)':'rgba(255,100,180,0.85)';
+            ctx.beginPath();
+            ctx.moveTo(sx(i),sy(s.line));
+            started=true;
+          } else {
+            ctx.lineTo(sx(i),sy(s.line));
+          }
+          if(i===st2.length-1){
+            ctx.stroke();
+            ctx.setLineDash([]);
+            const last=st2[st2.length-1];
+            ctx.fillStyle=last.dir===1?'#ffc800':'#ff64b4';
+            ctx.font='bold 7px sans-serif';
+            ctx.fillText('ST2', PL+2, sy(last.line)+9);
+          }
+        });
+        ctx.setLineDash([]);
+      }
+    }
+
+    // Trade entry marker (triangle)
+    if(pos.entry>=vB && pos.entry<=vT){
+      const y=sy(pos.entry);
+      ctx.fillStyle='#00b4ff';
+      ctx.beginPath();
+      ctx.moveTo(PL+8, y); ctx.lineTo(PL+2, y-6); ctx.lineTo(PL+14, y-6);
+      ctx.closePath(); ctx.fill();
+    }
+
+  } else {
+    // No candles — show message
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.font='13px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('Chart loading...', W/2, H/2);
+    ctx.textAlign='left';
+  }
+
+  // Current price line
+  const cur = pos.livePrice || pos.entry;
+  if(displayCandles && displayCandles.length > 1){
+    const show2 = displayCandles.slice(-40);
+    const N2 = show2.length;
+    let pH2 = Math.max(...show2.map(c=>c.h)); if(pos.tgt) pH2=Math.max(pH2,pos.tgt);
+    let pL2 = Math.min(...show2.map(c=>c.l)); if(pos.sl) pL2=Math.min(pL2,pos.sl);
+    const rng2 = pH2-pL2||pH2*0.02;
+    const vT2=pH2+rng2*0.08, vB2=pL2-rng2*0.08, vR2=vT2-vB2;
+    const sx2 = i => PL+(i+0.5)*(CW/N2);
+    const sy2 = p => PT+(vT2-p)/vR2*CH;
+    if(cur>=vB2&&cur<=vT2){
+      const y=sy2(cur);
+      const isProfitable = cur>=pos.entry;
+      ctx.strokeStyle=isProfitable?'rgba(0,232,122,0.6)':'rgba(255,69,96,0.6)';
+      ctx.lineWidth=1; ctx.setLineDash([2,2]);
+      ctx.beginPath(); ctx.moveTo(PL,y); ctx.lineTo(PL+CW,y); ctx.stroke();
+      ctx.setLineDash([]);
+      // Dot at last candle
+      const lastX=sx2(N2-1);
+      ctx.beginPath(); ctx.arc(lastX,y,4,0,Math.PI*2);
+      ctx.fillStyle=isProfitable?'#00e87a':'#ff4560'; ctx.fill();
+      // LTP label
+      ctx.fillStyle='#fff'; ctx.font='bold 8px sans-serif';
+      ctx.fillText('LTP ₹'+cur.toFixed(0), lastX+6, y-3);
+    }
+  }
+}
+
+
 function closeOptChart(){
   document.getElementById('optChartModal').style.display='none';
 }
