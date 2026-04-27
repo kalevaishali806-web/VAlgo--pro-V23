@@ -4128,7 +4128,7 @@ function openOptChart(posId){
 }
 
 function updateOptChart(){
-  const pos = _optChartPos;
+  const pos = positions.find(p=>p.id===_optChartPos?.id) || _optChartPos;
   if(!pos) return;
 
   const cur = pos.livePrice || pos.entry;
