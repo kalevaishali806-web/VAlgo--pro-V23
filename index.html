@@ -4138,7 +4138,7 @@ function updateOptChart(){
   const col = pnl>=0 ? 'var(--green)' : 'var(--red)';
 
   // P&L strip — only show real P&L if livePrice is set
-  const hasLive = pos.livePrice && pos.livePrice !== pos.entry;
+  const hasLive = true;
   document.getElementById('optChartPnl').innerHTML = `
     <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;">
       <div style="font-size:10px;color:var(--muted);">P&L</div>
