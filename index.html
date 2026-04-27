@@ -4128,7 +4128,7 @@ function openOptChart(posId){
 }
 
 function updateOptChart(){
-  const pos = positions.find(p=>p.id===_optChartPos?.id) || _optChartPos;
+  const pos = _optChartPos;
   if(!pos) return;
 
   const cur = pos.livePrice || pos.entry;
@@ -4138,7 +4138,7 @@ function updateOptChart(){
   const col = pnl>=0 ? 'var(--green)' : 'var(--red)';
 
   // P&L strip — only show real P&L if livePrice is set
-  const hasLive = true;
+  const hasLive = pos.livePrice && pos.livePrice !== pos.entry;
   document.getElementById('optChartPnl').innerHTML = `
     <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;">
       <div style="font-size:10px;color:var(--muted);">P&L</div>
@@ -4172,7 +4172,6 @@ function updateOptChart(){
   drawOptPriceChart(pos);
 }
 
-
 function drawOptPriceChart(pos){
   const canvas = document.getElementById('optChartCanvas');
   if(!canvas) return;
@@ -4202,7 +4201,7 @@ function drawOptPriceChart(pos){
   // For options: generate simulated candles from entry price
   let displayCandles = chartCandles;
   if(pos.isOpt || pos.sym.includes('CE') || pos.sym.includes('PE')){
-    if(!pos._optCandles || pos._optCandles.length===0) pos._optCandles = [];
+    if(!pos._optCandles) pos._optCandles = [];
     const cur2 = pos.livePrice || pos.entry;
     if(pos._optCandles.length===0){
       // Seed with 30 realistic candles from entry
@@ -4487,7 +4486,6 @@ function drawOptPriceChart(pos){
     }
   }
 }
-
 
 function closeOptChart(){
   document.getElementById('optChartModal').style.display='none';
