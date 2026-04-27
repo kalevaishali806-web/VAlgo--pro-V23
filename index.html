@@ -1689,7 +1689,7 @@ function feed(){
   positions.forEach(p=>{
     if(p.isCrd) return; // feedCrd() handles crude positions
     if(p.isOpt){
-      const mv=(Math.random()-0.45)*p.entry*0.008;
+      const mv=(Math.random()-0.45)*p.entry*0.025;
       p.livePrice=+Math.max(0.5,(p.livePrice||p.entry)+mv).toFixed(1);
     } else {
       p.livePrice=STOCKS.find(s=>s.sym===p.sym)?.p||p.entry;
