@@ -4202,7 +4202,7 @@ function drawOptPriceChart(pos){
   // For options: generate simulated candles from entry price
   let displayCandles = chartCandles;
   if(pos.isOpt || pos.sym.includes('CE') || pos.sym.includes('PE')){
-    if(!pos._optCandles) pos._optCandles = [];
+    if(!pos._optCandles || pos._optCandles.length===0) pos._optCandles = [];
     const cur2 = pos.livePrice || pos.entry;
     if(pos._optCandles.length===0){
       // Seed with 30 realistic candles from entry
