@@ -684,6 +684,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
   <button class="nav-btn" onclick="goPage('angel',this)"><span>🔗</span>Angel</button>
   <button class="nav-btn" onclick="goPage('tools',this)"><span>🔬</span>Tools</button>
   <button class="nav-btn" onclick="goPage('comm',this)"><span>🛢️</span>Commodity</button>
+  <button class="nav-btn" onclick="goPage('ai',this)"><span>🤖</span>AI</button>
 </nav>
 
 <!-- FLASH -->
@@ -4598,6 +4599,130 @@ async function autoUpdateIP(jwt, apiKey, clientId){
 window.addEventListener('load', init);
 </script>
 
+
+<!-- ══ AI ADVISOR PAGE ════════════════════════════════════ -->
+<div class="pg" id="pg-ai">
+  <div class="card" style="margin-bottom:10px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:22px;">🤖</span>
+      <div>
+        <div style="font-size:15px;font-weight:900;color:var(--green);">AI Trade Advisor</div>
+        <div style="font-size:10px;color:var(--muted);">Strike Price टाका → Entry / SL / Target मिळवा</div>
+      </div>
+    </div>
+    <span class="lbl">Capital (₹)</span>
+    <input type="number" id="ai-capital" value="1700" min="100" step="100">
+    <div class="row">
+      <div><span class="lbl">Symbol</span>
+        <select id="ai-symbol">
+          <option value="NIFTY">NIFTY</option>
+          <option value="BANKNIFTY">BANKNIFTY</option>
+          <option value="SENSEX">SENSEX</option>
+          <option value="CRUDEOIL">Crude Oil</option>
+        </select>
+      </div>
+      <div><span class="lbl">Option Type</span>
+        <select id="ai-opttype">
+          <option value="CE">CALL CE</option>
+          <option value="PE">PUT PE</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div><span class="lbl">Strike Price (₹)</span>
+        <input type="number" id="ai-strike" placeholder="उदा: 24400" step="50">
+      </div>
+      <div><span class="lbl">Option LTP (₹)</span>
+        <input type="number" id="ai-ltp" placeholder="उदा: 85.50" step="0.5">
+      </div>
+    </div>
+    <div class="row">
+      <div><span class="lbl">Index LTP (₹)</span>
+        <input type="number" id="ai-indexltp" placeholder="उदा: 24350" step="1">
+      </div>
+      <div><span class="lbl">Market Trend</span>
+        <select id="ai-trend">
+          <option value="bullish">Bullish 📈</option>
+          <option value="bearish">Bearish 📉</option>
+          <option value="sideways">Sideways ↔️</option>
+          <option value="volatile">Volatile ⚡</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-g" style="width:100%;margin-top:4px;" onclick="getAIAdvice()" id="ai-btn">🤖 AI सल्ला घे</button>
+  </div>
+  <div id="ai-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px;">AI विश्लेषण करतोय...</div>
+  <div id="ai-result" style="display:none;">
+    <div class="card" style="margin-bottom:10px;">
+      <div id="ai-action" style="font-size:16px;font-weight:900;margin-bottom:6px;"></div>
+      <div id="ai-reason" style="font-size:11px;color:var(--muted);"></div>
+    </div>
+    <div class="row" style="margin-bottom:10px;">
+      <div class="stat"><div class="v" id="ai-entry" style="color:var(--gold);">—</div><div class="k">ENTRY ₹</div></div>
+      <div class="stat"><div class="v" id="ai-sl" style="color:var(--red);">—</div><div class="k">STOPLOSS ₹</div></div>
+      <div class="stat"><div class="v" id="ai-tgt" style="color:var(--green);">—</div><div class="k">TARGET ₹</div></div>
+    </div>
+    <div class="row" style="margin-bottom:10px;">
+      <div class="stat"><div class="v" id="ai-qty" style="color:var(--blue);">—</div><div class="k">LOTS</div></div>
+      <div class="stat"><div class="v" id="ai-loss" style="color:var(--red);">—</div><div class="k">MAX LOSS ₹</div></div>
+      <div class="stat"><div class="v" id="ai-profit" style="color:var(--green);">—</div><div class="k">PROFIT ₹</div></div>
+      <div class="stat"><div class="v" id="ai-rr" style="color:var(--gold);">—</div><div class="k">R:R</div></div>
+    </div>
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;">📊 AI विश्लेषण</div>
+      <div id="ai-analysis" style="font-size:12px;color:var(--text);line-height:1.7;"></div>
+    </div>
+    <div style="margin-top:10px;background:#1a1000;border:1px solid #ff6d00;border-radius:10px;padding:10px;font-size:10px;color:#ff9800;text-align:center;">
+      ⚠️ AI सल्ला आहे — Angel One app मधून manually order टाक!
+    </div>
+  </div>
+</div>
+<script>
+async function getAIAdvice(){
+  const capital=parseFloat(document.getElementById('ai-capital').value)||1700;
+  const symbol=document.getElementById('ai-symbol').value;
+  const opttype=document.getElementById('ai-opttype').value;
+  const strike=document.getElementById('ai-strike').value;
+  const ltp=parseFloat(document.getElementById('ai-ltp').value);
+  const indexltp=parseFloat(document.getElementById('ai-indexltp').value);
+  const trend=document.getElementById('ai-trend').value;
+  if(!ltp||ltp<=0){flash('Option LTP टाका!',false);return;}
+  if(!strike){flash('Strike Price टाका!',false);return;}
+  const btn=document.getElementById('ai-btn');
+  const loading=document.getElementById('ai-loading');
+  const result=document.getElementById('ai-result');
+  btn.disabled=true;loading.style.display='block';result.style.display='none';
+  const lotSize={NIFTY:75,BANKNIFTY:30,SENSEX:10,CRUDEOIL:100}[symbol]||75;
+  const prompt=`You are expert Indian options trader AI. Capital: Rs${capital}, Symbol: ${symbol}, Strike: ${strike}${opttype}, Option LTP: Rs${ltp}, Index LTP: Rs${indexltp||'unknown'}, Trend: ${trend}, Lot size: ${lotSize}. Max risk 12% = Rs${Math.round(capital*0.12)}. SL=20-30% below entry. Target min 2:1 RR. If 1 lot cost > capital set qty 0. Respond ONLY pure JSON: {"action":"BUY_CE or BUY_PE or WAIT or AVOID","reason_short":"one line Marathi","entry":number,"stoploss":number,"target":number,"qty":number,"max_loss":number,"potential_profit":number,"rr_ratio":"X:1","analysis":"3-4 sentences Marathi"}`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+    const data=await res.json();
+    const text=data.content?.map(i=>i.text||'').join('')||'';
+    let r;
+    try{r=JSON.parse(text.replace(/```json|```/g,'').trim());}
+    catch(e){const m=text.match(/\{[\s\S]*\}/);if(m)r=JSON.parse(m[0]);else throw new Error('fail');}
+    const actionMap={'BUY_CE':'📈 CALL खरेदी कर (CE)','BUY_PE':'📉 PUT खरेदी कर (PE)','WAIT':'⏳ थांब — अजून नको','AVOID':'🚫 Trade टाळ आज'};
+    const colorMap={'BUY_CE':'var(--green)','BUY_PE':'var(--red)','WAIT':'var(--gold)','AVOID':'#ff6d00'};
+    document.getElementById('ai-action').style.color=colorMap[r.action]||'var(--text)';
+    document.getElementById('ai-action').textContent=actionMap[r.action]||r.action;
+    document.getElementById('ai-reason').textContent=r.reason_short||'';
+    document.getElementById('ai-entry').textContent=r.entry||ltp;
+    document.getElementById('ai-sl').textContent=r.stoploss||'-';
+    document.getElementById('ai-tgt').textContent=r.target||'-';
+    document.getElementById('ai-qty').textContent=(r.qty||0)+' lot';
+    document.getElementById('ai-loss').textContent=r.max_loss||'-';
+    document.getElementById('ai-profit').textContent=r.potential_profit||'-';
+    document.getElementById('ai-rr').textContent=r.rr_ratio||'-';
+    document.getElementById('ai-analysis').textContent=r.analysis||'';
+    result.style.display='block';
+    flash('✅ AI सल्ला तयार!',true);
+  }catch(err){
+    flash('AI connect झाला नाही!',false);
+  }finally{
+    btn.disabled=false;loading.style.display='none';
+  }
+}
+</script>
 <!-- ══ OPTION PRICE CHART MODAL ════════════════════════════ -->
 <div id="optChartModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.8);">
   <div style="position:absolute;bottom:0;left:0;right:0;background:#0d1e30;border-radius:20px 20px 0 0;padding:0 0 24px;max-height:90vh;overflow-y:auto;">
