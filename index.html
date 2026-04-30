@@ -1079,6 +1079,7 @@ function goPage(p,btn){
   if(p==='strat') renderStrats();
   if(p==='watch'){ refreshAllWatchPrices(); renderWatch(); renderIntradayPicks(); startWatchPriceRefresh(); }
   if(p==='comm'){crdCandles=genCrdCandles();setTimeout(()=>{drawCrdChart();renderCrdOC();},100);}
+  if(p==='ai'){window.ANTHROPIC_KEY=localStorage.getItem('anthropic_key')||'';const el=document.getElementById('anthropicKey');if(el&&window.ANTHROPIC_KEY)el.value=window.ANTHROPIC_KEY;}
 }
 
 // ══ FLASH ══════════════════════════════════════════════════
