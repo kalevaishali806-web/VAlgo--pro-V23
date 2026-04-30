@@ -85,7 +85,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div id="licWallMsg" style="font-size:13px;font-weight:700;color:#ffb830;background:rgba(255,184,48,0.1);border-radius:10px;padding:10px;margin-bottom:18px;">🔐 VAlgo Tech License आवश्यक आहे</div>
     <!-- Trial Info -->
     <div id="trialInfoBox" style="background:rgba(0,180,255,0.07);border:1px solid rgba(0,180,255,0.2);border-radius:10px;padding:10px;margin-bottom:16px;font-size:11px;color:#5a7a9a;">
-      ⏳ <b style="color:#00b4ff;">5 दिवस Free Trial</b> — Unlimited trades<br>
+      ⏳ <b style="color:#00b4ff;">5 दिवस Free Trial</b> — दररोज 2 trades<br>
       Trial key नको — आपोआप सुरू होतो!
     </div>
     <!-- Key Input -->
@@ -453,15 +453,6 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <button onclick="connectAngel()" style="width:100%;padding:15px;background:linear-gradient(135deg,#ff6b00,#ff9500);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">🔗 Connect</button>
   </div>
 
-  <!-- AI Key Card -->
-  <div class="card" style="margin-top:10px;border:1px solid rgba(0,232,122,0.3);">
-    <div style="font-size:13px;font-weight:900;color:var(--green);margin-bottom:8px;">🤖 AI Tool Key</div>
-    <span class="lbl">Anthropic API Key</span>
-    <input id="anthropicKey" type="password" placeholder="sk-ant-..." autocapitalize="none" autocorrect="off" spellcheck="false" style="margin-bottom:8px;">
-    <button onclick="saveAnthropicKey()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00e57a,#00b84d);color:#000;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;">💾 AI Key Save करा</button>
-    <div id="aiKeySt" style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;min-height:14px;"></div>
-  </div>
-
   <div id="angelOK" style="display:none;" class="card">
     <div style="color:var(--green);font-weight:800;font-size:15px;margin-bottom:10px;">✅ Angel One Connected!</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
@@ -693,7 +684,6 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
   <button class="nav-btn" onclick="goPage('angel',this)"><span>🔗</span>Angel</button>
   <button class="nav-btn" onclick="goPage('tools',this)"><span>🔬</span>Tools</button>
   <button class="nav-btn" onclick="goPage('comm',this)"><span>🛢️</span>Commodity</button>
-  <button class="nav-btn" onclick="goPage('ai',this)"><span>🤖</span>AI</button>
 </nav>
 
 <!-- FLASH -->
@@ -1077,9 +1067,8 @@ function goPage(p,btn){
   if(p==='oc') renderOC();
   if(p==='pnl') renderPnl();
   if(p==='strat') renderStrats();
-  if(p==='watch'){ refreshAllWatchPrices(); renderWatch(); renderIntradayPicks(); startWatchPriceRefresh(); }
+  if(p==='watch'){ renderWatch(); renderIntradayPicks(); startWatchPriceRefresh(); }
   if(p==='comm'){crdCandles=genCrdCandles();setTimeout(()=>{drawCrdChart();renderCrdOC();},100);}
-  if(p==='ai'){window.ANTHROPIC_KEY=localStorage.getItem('anthropic_key')||'';const el=document.getElementById('anthropicKey');if(el&&window.ANTHROPIC_KEY)el.value=window.ANTHROPIC_KEY;}
 }
 
 // ══ FLASH ══════════════════════════════════════════════════
@@ -2106,21 +2095,10 @@ async function renderOC(){
   document.getElementById('ocSpot').textContent='₹'+spot.toLocaleString('en-IN');
   document.getElementById('ocSpot').style.color = mktDir>=0 ? 'var(--green)' : 'var(--red)';
   document.getElementById('ocATM').textContent=atm.toLocaleString('en-IN');
-  const pcrVal=(mktDir<0 ? 1.2+Math.random()*0.4 : 0.6+Math.random()*0.3).toFixed(2);
-  document.getElementById('ocPCR').textContent=pcrVal;
+  document.getElementById('ocPCR').textContent=(mktDir<0 ? 1.2+Math.random()*0.4 : 0.6+Math.random()*0.3).toFixed(2);
   const strikes=[]; for(let i=-8;i<=8;i++) strikes.push(atm+i*step);
   const mCE=Math.max(...strikes.map(k=>Math.max(0.3,9-Math.abs(k-spot)/step)*100000));
   const mPE=Math.max(...strikes.map(k=>Math.max(0.3,8-Math.abs(k-spot)/step)*100000));
-  // Dummy BP Trend - PCR वरून calculate
-  const dummyPCR=+pcrVal;
-  const dummyTrend = dummyPCR>1.1?'BULLISH':dummyPCR<0.8?'BEARISH':'NEUTRAL';
-  const dummyColor = dummyTrend==='BULLISH'?'#00e87a':dummyTrend==='BEARISH'?'#ff4560':'#ffd700';
-  const dummyIcon  = dummyTrend==='BULLISH'?'📈':dummyTrend==='BEARISH'?'📉':'➡️';
-  const dBPEl=document.getElementById('ocBPTrend');
-  if(dBPEl){
-    dBPEl.innerHTML=`<span style="font-size:9px;color:var(--muted);">🐋 बडे Player HZ Trend:</span> <span style="font-size:11px;font-weight:800;color:${dummyColor};">${dummyIcon} ${dummyTrend}</span> <span style="font-size:9px;color:var(--muted);">PCR: ${pcrVal} · SIM Mode</span>`;
-    dBPEl.style.borderColor=dummyColor;
-  }
   const oif=v=>v>=100000?(v/100000).toFixed(1)+'L':(v/1000).toFixed(0)+'K';
   let html=`<table class="oc-t"><thead>
     <tr style="background:rgba(0,0,0,0.3);">
@@ -2391,100 +2369,34 @@ function addWatch(sym){
 async function fetchCustomPrice(sym){
   const s=ALL_STOCKS.find(x=>x.sym===sym);
   if(!s) return;
-
-  // Method 1: Angel One proxy (if logged in)
-  const jwt=getJWT();
-  if(jwt && jwt.jwt){
+  try{
+    // Yahoo Finance NSE API
+    const url=`https://query1.finance.yahoo.com/v8/finance/chart/${sym}.NS?interval=1d&range=1d`;
+    const res=await fetch(url,{signal:AbortSignal.timeout(6000)});
+    const json=await res.json();
+    const meta=json?.chart?.result?.[0]?.meta;
+    if(meta){
+      const price=+(meta.regularMarketPrice||0).toFixed(2);
+      const prev=+(meta.chartPreviousClose||meta.previousClose||price);
+      const chg=prev>0?+(((price-prev)/prev)*100).toFixed(2):0;
+      s.p=price; s.chg=chg; s.base=price;
+      renderWatch();
+    }
+  }catch(e){
+    // fallback: NSE India free API
     try{
-      const proxy='https://examinations-citysearch-scholarship-correspondence.trycloudflare.com';
-      // NSE symbol to token mapping - common stocks
-      const tokenMap={
-        'RELIANCE':'2885','TCS':'11536','INFY':'1594','HDFCBANK':'1333',
-        'SBIN':'3045','ICICIBANK':'4963','AXISBANK':'5900','WIPRO':'3787',
-        'TATAMOTORS':'3456','MARUTI':'10999','ITC':'1660','BAJFINANCE':'317',
-        'ADANIENT':'25','HINDUNILVR':'1394','KOTAKBANK':'1922','LT':'11483',
-        'SUNPHARMA':'3351','TITAN':'3506','ASIANPAINT':'236','ULTRACEMCO':'11532',
-        'POWERGRID':'14977','NTPC':'11630','ONGC':'2475','COALINDIA':'20374',
-        'BHARTIARTL':'10604','TECHM':'13538','NESTLEIND':'17963','DIVISLAB':'10940',
-        'CIPLA':'694','DRREDDY':'881','EICHERMOT':'910','GRASIM':'1232',
-        'HEROMOTOCO':'1348','HINDALCO':'1363','JSWSTEEL':'11723','M&M':'2031',
-        'TATACONSUM':'3432','TATASTEEL':'3408','UPL':'11287','VEDL':'3063',
-        'BPCL':'526','INDUSINDBK':'5258','APOLLOHOSP':'157'
-      };
-      const token=tokenMap[sym];
-      if(token){
-        const res=await fetch(`${proxy}/rest/secure/angelbroking/market/v1/quote/`,{
-          method:'POST',
-          headers:{
-            'Authorization':'Bearer '+jwt.jwt,
-            'Content-Type':'application/json',
-            'Accept':'application/json',
-            'X-UserType':'USER','X-SourceID':'WEB',
-            'X-ClientLocalIP':'CLIENT_LOCAL_IP',
-            'X-ClientPublicIP':'CLIENT_PUBLIC_IP',
-            'X-MACAddress':'MAC_ADDRESS',
-            'X-PrivateKey': document.getElementById('aApiKey')?.value||jwt.clientId
-          },
-          body:JSON.stringify({mode:'LTP',exchangeTokens:{'NSE':[token]}}),
-          signal:AbortSignal.timeout(5000)
-        });
-        const json=await res.json();
-        const ltp=json?.data?.fetched?.[0]?.ltp;
-        if(ltp && ltp>0){
-          const prev=s.base||ltp;
-          s.p=+ltp.toFixed(2);
-          s.chg=prev>0?+(((ltp-prev)/prev)*100).toFixed(2):0;
-          if(!s.base) s.base=ltp;
-          renderWatch(); renderIntradayPicks();
-          return;
-        }
+      const url2=`https://query2.finance.yahoo.com/v8/finance/chart/${sym}.NS?interval=1d&range=1d`;
+      const res2=await fetch(url2,{signal:AbortSignal.timeout(5000)});
+      const j2=await res2.json();
+      const m2=j2?.chart?.result?.[0]?.meta;
+      if(m2){
+        s.p=+(m2.regularMarketPrice||0).toFixed(2);
+        const prev2=+(m2.chartPreviousClose||m2.previousClose||s.p);
+        s.chg=prev2>0?+(((s.p-prev2)/prev2)*100).toFixed(2):0;
+        s.base=s.p;
+        renderWatch();
       }
-    }catch(e){ console.log('Angel price fetch:',e.message); }
-  }
-
-  // Method 2: NSE India free API (CORS proxy)
-  try{
-    const cors='https://corsproxy.io/?url=';
-    const nseUrl=`https://www.nseindia.com/api/quote-equity?symbol=${encodeURIComponent(sym)}`;
-    const res=await fetch(cors+encodeURIComponent(nseUrl),{
-      headers:{'x-requested-with':'XMLHttpRequest'},
-      signal:AbortSignal.timeout(7000)
-    });
-    const json=await res.json();
-    const price=json?.priceInfo?.lastPrice||json?.priceInfo?.close;
-    if(price && price>0){
-      const prev=json?.priceInfo?.previousClose||price;
-      s.p=+price.toFixed(2);
-      s.chg=prev>0?+(((price-prev)/prev)*100).toFixed(2):0;
-      s.base=s.base||price;
-      renderWatch(); renderIntradayPicks();
-      return;
-    }
-  }catch(e){ console.log('NSE fetch failed:',sym); }
-
-  // Method 3: Open Finance API (no CORS)
-  try{
-    const res=await fetch(`https://api.upstox.com/v2/market-quote/ltp?symbol=NSE_EQ%7C${sym}`,{
-      headers:{'Accept':'application/json'},
-      signal:AbortSignal.timeout(5000)
-    });
-    const json=await res.json();
-    const ltp=json?.data?.[`NSE_EQ:${sym}`]?.last_price;
-    if(ltp && ltp>0){
-      const prev=s.base||ltp;
-      s.p=+ltp.toFixed(2); s.chg=prev>0?+(((ltp-prev)/prev)*100).toFixed(2):0;
-      s.base=s.base||ltp;
-      renderWatch(); renderIntradayPicks();
-      return;
-    }
-  }catch(e){}
-
-  // Method 4: Fallback - random simulation जेणेकरून "Live नाही" न दिसता काही तरी दिसेल
-  // ALL_STOCKS मध्ये असेल तर त्याच price वापर
-  const known=STOCKS.find(x=>x.sym===sym)||ALL_STOCKS.find(x=>x.sym===sym&&!x.custom);
-  if(known && known.p>0){
-    s.p=known.p; s.chg=known.chg; s.base=known.p;
-    renderWatch(); renderIntradayPicks();
+    }catch(e2){ console.log('Price fetch failed:',sym); }
   }
 }
 
@@ -2498,15 +2410,6 @@ function startWatchPriceRefresh(){
       if(s && s.custom) fetchCustomPrice(sym);
     });
   },60000);
-}
-function refreshAllWatchPrices(){
-  watchlist.forEach(sym=>{
-    const s=ALL_STOCKS.find(x=>x.sym===sym);
-    if(!s) return;
-    if(s.custom || s.p===0){
-      fetchCustomPrice(sym);
-    }
-  });
 }
 function removeWatch(sym){watchlist=watchlist.filter(s=>s!==sym);save();renderWatch();}
 
@@ -3908,7 +3811,11 @@ function startTrial(){
   return info;
 }
 function getTrialTradesLeft(){
-  return 999;
+  let info = getTrialInfo();
+  if(!info) info = startTrial();
+  const today = getTodayStr();
+  const used = (info.trades && info.trades[today]) || 0;
+  return Math.max(0, 2 - used);
 }
 function recordTrialTrade(){
   let info = getTrialInfo();
@@ -3949,6 +3856,12 @@ function checkTradeAllowed(){
       showLicenseWall('⏰ Trial संपला! License Key टाका.');
       return false;
     }
+    if(tradesLeft <= 0){
+      flash('⚠️ आजचे 2 trades झाले! उद्या परत करा.', false);
+      return false;
+    }
+    recordTrialTrade();
+    flash(`📊 Trial: आज ${tradesLeft-1} trades शिल्लक`, true);
     return true;
   }
   if(isLicenseExpired(licenseData)){
@@ -4606,215 +4519,6 @@ async function autoUpdateIP(jwt, apiKey, clientId){
 }
 
 window.addEventListener('load', init);
-</script>
-
-<!-- ══ AI ADVISOR PAGE ════════════════════════════════════ -->
-<div class="pg" id="pg-ai" style="pointer-events:auto;position:relative;z-index:1;">
-  <div class="card" style="margin-bottom:10px;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-      <span style="font-size:22px;">🤖</span>
-      <div>
-        <div style="font-size:15px;font-weight:900;color:var(--green);">AI Trade Advisor</div>
-        <div style="font-size:10px;color:var(--muted);">Strike Price टाका → Entry / SL / Target मिळवा</div>
-      </div>
-    </div>
-
-    <!-- Capital -->
-    <span class="lbl">Capital (₹)</span>
-    <input type="text" inputmode="numeric" id="ai-capital" value="1700" min="100" step="100" style="margin-bottom:10px;">
-
-    <!-- Symbol + Option Type -->
-    <div class="row">
-      <div>
-        <span class="lbl">Symbol</span>
-        <select id="ai-symbol">
-          <option value="NIFTY">NIFTY</option>
-          <option value="BANKNIFTY">BANKNIFTY</option>
-          <option value="SENSEX">SENSEX</option>
-          <option value="CRUDEOIL">Crude Oil</option>
-        </select>
-      </div>
-      <div>
-        <span class="lbl">Option Type</span>
-        <select id="ai-opttype">
-          <option value="CE">CALL CE</option>
-          <option value="PE">PUT PE</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Strike Price + Option LTP -->
-    <div class="row">
-      <div>
-        <span class="lbl">Strike Price (₹)</span>
-        <input type="text" inputmode="numeric" id="ai-strike" placeholder="उदा: 24400" step="50">
-      </div>
-      <div>
-        <span class="lbl">Option LTP (₹)</span>
-        <input type="text" inputmode="decimal" id="ai-ltp" placeholder="उदा: 85.50" step="0.5">
-      </div>
-    </div>
-
-    <!-- Index LTP + Trend -->
-    <div class="row">
-      <div>
-        <span class="lbl">Index LTP (₹)</span>
-        <input type="text" inputmode="numeric" id="ai-indexltp" placeholder="उदा: 24350" step="1">
-      </div>
-      <div>
-        <span class="lbl">Market Trend</span>
-        <select id="ai-trend">
-          <option value="bullish">Bullish 📈</option>
-          <option value="bearish">Bearish 📉</option>
-          <option value="sideways">Sideways ↔️</option>
-          <option value="volatile">Volatile ⚡</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="btn-g" style="width:100%;margin-top:4px;" onclick="getAIAdvice()" id="ai-btn">🤖 AI सल्ला घे</button>
-  </div>
-
-  <!-- Loading -->
-  <div id="ai-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px;">AI विश्लेषण करतोय...</div>
-
-  <!-- Result -->
-  <div id="ai-result" style="display:none;">
-    <!-- Direction -->
-    <div class="card" style="margin-bottom:10px;">
-      <div id="ai-action" style="font-size:16px;font-weight:900;margin-bottom:6px;"></div>
-      <div id="ai-reason" style="font-size:11px;color:var(--muted);"></div>
-    </div>
-
-    <!-- Entry / SL / Target -->
-    <div class="row" style="margin-bottom:10px;">
-      <div class="stat">
-        <div class="v" id="ai-entry" style="color:var(--gold);">—</div>
-        <div class="k">ENTRY ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-sl" style="color:var(--red);">—</div>
-        <div class="k">STOPLOSS ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-tgt" style="color:var(--green);">—</div>
-        <div class="k">TARGET ₹</div>
-      </div>
-    </div>
-
-    <!-- Qty / Risk / Profit -->
-    <div class="row" style="margin-bottom:10px;">
-      <div class="stat">
-        <div class="v" id="ai-qty" style="color:var(--blue);">—</div>
-        <div class="k">LOTS</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-loss" style="color:var(--red);">—</div>
-        <div class="k">MAX LOSS ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-profit" style="color:var(--green);">—</div>
-        <div class="k">TARGET ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-rr" style="color:var(--gold);">—</div>
-        <div class="k">R:R</div>
-      </div>
-    </div>
-
-    <!-- Analysis -->
-    <div class="card" style="border-left:3px solid var(--green);">
-      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;">📊 AI विश्लेषण</div>
-      <div id="ai-analysis" style="font-size:12px;color:var(--text);line-height:1.7;"></div>
-    </div>
-
-    <div style="margin-top:10px;background:#1a1000;border:1px solid #ff6d00;border-radius:10px;padding:10px;font-size:10px;color:#ff9800;text-align:center;">
-      ⚠️ AI सल्ला आहे — Angel One app मधून manually order टाक!
-    </div>
-  </div>
-</div>
-
-<script>
-function saveAnthropicKey(){
-  const k = document.getElementById('anthropicKey').value.trim();
-  if(!k||!k.startsWith('sk-ant-')){
-    document.getElementById('aiKeySt').style.color='var(--red)';
-    document.getElementById('aiKeySt').textContent='❌ चुकीची key! sk-ant- ने सुरू होते';
-    return;
-  }
-  localStorage.setItem('anthropic_key',k);
-  window.ANTHROPIC_KEY=k;
-  document.getElementById('aiKeySt').style.color='var(--green)';
-  document.getElementById('aiKeySt').textContent='✅ AI Key saved!';
-  flash('✅ AI Key Save झाली!',true);
-}
-// Load key on startup
-window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
-if(window.ANTHROPIC_KEY){ const el=document.getElementById('anthropicKey'); if(el) el.value=window.ANTHROPIC_KEY; }
-
-async function getAIAdvice(){
-  // Load saved key
-  window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
-  const capital = parseFloat(document.getElementById('ai-capital').value)||1700;
-  const symbol = document.getElementById('ai-symbol').value;
-  const opttype = document.getElementById('ai-opttype').value;
-  const strike = document.getElementById('ai-strike').value;
-  const ltp = parseFloat(document.getElementById('ai-ltp').value);
-  const indexltp = parseFloat(document.getElementById('ai-indexltp').value);
-  const trend = document.getElementById('ai-trend').value;
-
-  if(!window.ANTHROPIC_KEY){flash('⚠️ Angel page मध्ये AI Key टाका!',false);return;}
-  if(!ltp||ltp<=0){flash('Option LTP टाका!',false);return;}
-  if(!strike){flash('Strike Price टाका!',false);return;}
-
-  const btn = document.getElementById('ai-btn');
-  const loading = document.getElementById('ai-loading');
-  const result = document.getElementById('ai-result');
-
-  btn.disabled=true;
-  loading.style.display='block';
-  result.style.display='none';
-
-  const lotSize={NIFTY:75,BANKNIFTY:30,SENSEX:10,CRUDEOIL:100}[symbol]||75;
-
-  const prompt=`You are an expert Indian options trader AI for NSE/BSE. Capital: Rs${capital}, Symbol: ${symbol}, Strike: ${strike}${opttype}, Option LTP: Rs${ltp}, Index LTP: Rs${indexltp||'unknown'}, Trend: ${trend}, Lot size: ${lotSize}. Max risk 12% = Rs${Math.round(capital*0.12)}. SL = 20-30% below entry. Target = min 2:1 RR. If 1 lot cost > capital suggest qty 0. Respond ONLY pure JSON no markdown: {"action":"BUY_CE or BUY_PE or WAIT or AVOID","reason_short":"one line Marathi","entry":number,"stoploss":number,"target":number,"qty":number,"max_loss":number,"potential_profit":number,"rr_ratio":"X:1","analysis":"3-4 sentences Marathi about setup entry exit plan"}`;
-
-  try{
-    const res = await fetch("https://bedford-brandon-bristol-clean.trycloudflare.com/ai",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","x-api-key":window.ANTHROPIC_KEY||"","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})
-    });
-    const data = await res.json();
-    const text = data.content?.map(i=>i.text||'').join('')||'';
-    let r;
-    try{r=JSON.parse(text.replace(/```json|```/g,'').trim());}
-    catch(e){const m=text.match(/\{[\s\S]*\}/);if(m)r=JSON.parse(m[0]);else throw new Error('fail');}
-
-    const actionMap={'BUY_CE':'📈 CALL खरेदी कर (CE)','BUY_PE':'📉 PUT खरेदी कर (PE)','WAIT':'⏳ थांब — अजून नको','AVOID':'🚫 Trade टाळ आज'};
-    const colorMap={'BUY_CE':'var(--green)','BUY_PE':'var(--red)','WAIT':'var(--gold)','AVOID':'#ff6d00'};
-
-    document.getElementById('ai-action').style.color = colorMap[r.action]||'var(--text)';
-    document.getElementById('ai-action').textContent = actionMap[r.action]||r.action;
-    document.getElementById('ai-reason').textContent = r.reason_short||'';
-    document.getElementById('ai-entry').textContent = r.entry||ltp;
-    document.getElementById('ai-sl').textContent = r.stoploss||'-';
-    document.getElementById('ai-tgt').textContent = r.target||'-';
-    document.getElementById('ai-qty').textContent = (r.qty||0)+' lot';
-    document.getElementById('ai-loss').textContent = r.max_loss||'-';
-    document.getElementById('ai-profit').textContent = r.potential_profit||'-';
-    document.getElementById('ai-rr').textContent = r.rr_ratio||'-';
-    document.getElementById('ai-analysis').textContent = r.analysis||'';
-
-    result.style.display='block';
-    flash('✅ AI सल्ला तयार!',true);
-  }catch(err){
-    flash('AI connect झाला नाही!',false);
-  }finally{
-    btn.disabled=false;
-    loading.style.display='none';
-  }
-}
 </script>
 
 <!-- ══ OPTION PRICE CHART MODAL ════════════════════════════ -->
