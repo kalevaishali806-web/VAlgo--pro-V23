@@ -4780,7 +4780,7 @@ async function getAIAdvice(){
   const prompt=`You are an expert Indian options trader AI for NSE/BSE. Capital: Rs${capital}, Symbol: ${symbol}, Strike: ${strike}${opttype}, Option LTP: Rs${ltp}, Index LTP: Rs${indexltp||'unknown'}, Trend: ${trend}, Lot size: ${lotSize}. Max risk 12% = Rs${Math.round(capital*0.12)}. SL = 20-30% below entry. Target = min 2:1 RR. If 1 lot cost > capital suggest qty 0. Respond ONLY pure JSON no markdown: {"action":"BUY_CE or BUY_PE or WAIT or AVOID","reason_short":"one line Marathi","entry":number,"stoploss":number,"target":number,"qty":number,"max_loss":number,"potential_profit":number,"rr_ratio":"X:1","analysis":"3-4 sentences Marathi about setup entry exit plan"}`;
 
   try{
-    const res = await fetch("https://past-standing-vip-willow.trycloudflare.com/ai",{
+    const res = await fetch("https://bedford-brandon-bristol-clean.trycloudflare.com/ai",{
       method:"POST",
       headers:{"Content-Type":"application/json","x-api-key":window.ANTHROPIC_KEY||"","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
       body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})
