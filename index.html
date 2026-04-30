@@ -263,7 +263,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
           <button onclick="chLot(-1)" style="width:32px;height:32px;border-radius:8px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:18px;font-weight:900;cursor:pointer;">−</button>
           <input id="lotN" type="number" min="1" max="999" value="1" oninput="setLotDirect(this.value)" style="width:52px;height:32px;border-radius:8px;background:rgba(255,255,255,0.08);color:#fff;border:1px solid rgba(255,255,255,0.2);font-size:16px;font-weight:900;text-align:center;outline:none;">
           <button onclick="chLot(1)" style="width:32px;height:32px;border-radius:8px;background:rgba(0,232,122,0.15);color:var(--green);border:1px solid rgba(0,232,122,0.3);font-size:18px;font-weight:900;cursor:pointer;">+</button>
-          <span id="lotQ" style="font-size:10px;color:var(--muted);">= 65 qty</span>
+          <span id="lotQ" style="font-size:10px;color:var(--muted);">= 50 qty</span>
         </div>
       </div>
       <!-- BUY SELL -->
@@ -318,7 +318,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <button onclick="chOCLot(-1)" style="width:30px;height:30px;border-radius:7px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:16px;font-weight:900;cursor:pointer;">−</button>
         <span id="ocLotN" style="font-size:16px;font-weight:900;min-width:22px;text-align:center;">1</span>
         <button onclick="chOCLot(1)" style="width:30px;height:30px;border-radius:7px;background:rgba(0,232,122,0.15);color:var(--green);border:1px solid rgba(0,232,122,0.3);font-size:16px;font-weight:900;cursor:pointer;">+</button>
-        <span id="ocLotQ" style="font-size:10px;color:var(--muted);">= 65 qty</span>
+        <span id="ocLotQ" style="font-size:10px;color:var(--muted);">= 50 qty</span>
       </div>
     </div>
         <!-- बडे Player HZ Trend Bar -->
@@ -451,6 +451,15 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <input type="hidden" id="aJWT">
     <div id="aSt" style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:8px;min-height:16px;"></div>
     <button onclick="connectAngel()" style="width:100%;padding:15px;background:linear-gradient(135deg,#ff6b00,#ff9500);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">🔗 Connect</button>
+  </div>
+
+  <!-- AI Key Card -->
+  <div class="card" style="margin-top:10px;border:1px solid rgba(0,232,122,0.3);">
+    <div style="font-size:13px;font-weight:900;color:var(--green);margin-bottom:8px;">🤖 AI Tool Key</div>
+    <span class="lbl">Anthropic API Key</span>
+    <input id="anthropicKey" type="password" placeholder="sk-ant-..." autocapitalize="none" autocorrect="off" spellcheck="false" style="margin-bottom:8px;">
+    <button onclick="saveAnthropicKey()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00e57a,#00b84d);color:#000;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;">💾 AI Key Save करा</button>
+    <div id="aiKeySt" style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;min-height:14px;"></div>
   </div>
 
   <div id="angelOK" style="display:none;" class="card">
@@ -684,6 +693,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
   <button class="nav-btn" onclick="goPage('angel',this)"><span>🔗</span>Angel</button>
   <button class="nav-btn" onclick="goPage('tools',this)"><span>🔬</span>Tools</button>
   <button class="nav-btn" onclick="goPage('comm',this)"><span>🛢️</span>Commodity</button>
+  <button class="nav-btn" onclick="goPage('ai',this)"><span>🤖</span>AI</button>
 </nav>
 
 <!-- FLASH -->
@@ -796,7 +806,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <button onclick="tcChLot(-1)" style="width:36px;height:36px;border-radius:9px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:20px;font-weight:900;cursor:pointer;">−</button>
         <span id="tcLotN" style="font-size:22px;font-weight:900;min-width:30px;text-align:center;">1</span>
         <button onclick="tcChLot(1)" style="width:36px;height:36px;border-radius:9px;background:rgba(0,232,122,0.15);color:var(--green);border:1px solid rgba(0,232,122,0.3);font-size:20px;font-weight:900;cursor:pointer;">+</button>
-        <span id="tcLotQ" style="font-size:11px;color:var(--muted);">= 65 qty</span>
+        <span id="tcLotQ" style="font-size:11px;color:var(--muted);">= 50 qty</span>
       </div>
     </div>
 
@@ -990,7 +1000,7 @@ const STOCKS=[
   {sym:'HDFCBANK',p:1980,chg:-0.22,base:1980},
   {sym:'SBIN',p:830,chg:1.10,base:830},
 ];
-const LOTS={NIFTY:65,BANKNIFTY:15,SENSEX:10,RELIANCE:250,TCS:150,INFY:300,HDFCBANK:550,SBIN:1500};
+const LOTS={NIFTY:50,BANKNIFTY:15,SENSEX:10,RELIANCE:250,TCS:150,INFY:300,HDFCBANK:550,SBIN:1500};
 const ALL_STOCKS=[
   ...STOCKS,
   {sym:'ICICIBANK',p:1240,chg:0.85,base:1240},{sym:'AXISBANK',p:1180,chg:-0.33,base:1180},
@@ -1508,7 +1518,7 @@ function setTT(t){
   updateLotInfo();
 }
 function buildStrikeRow(type){
-  const sym=STOCKS[ai].sym, step={NIFTY:65,BANKNIFTY:100,SENSEX:100}[sym]||50;
+  const sym=STOCKS[ai].sym, step={NIFTY:50,BANKNIFTY:100,SENSEX:100}[sym]||50;
   const spot=STOCKS[ai].p, atm=Math.round(spot/step)*step;
   selStrike=atm;
   const row=document.getElementById('strikeRow');
@@ -2036,15 +2046,15 @@ function delStrat(id){if(!confirm('Delete?'))return;strats=strats.filter(x=>x.id
 let ocLotN=1;
 function chOCLot(d){
   const sym=document.getElementById('ocSym')?.value||'NIFTY';
-  const ls={NIFTY:65,BANKNIFTY:15,SENSEX:10}[sym]||50;
+  const ls={NIFTY:50,BANKNIFTY:15,SENSEX:10}[sym]||50;
   ocLotN=Math.max(1,ocLotN+d);
   document.getElementById('ocLotN').textContent=ocLotN;
   document.getElementById('ocLotQ').textContent=`= ${ocLotN*ls} qty`;
 }
 async function renderOC(){
   const sym=document.getElementById('ocSym')?.value||'NIFTY';
-  const step={NIFTY:65,BANKNIFTY:100,SENSEX:100}[sym]||50;
-  const ls={NIFTY:65,BANKNIFTY:15,SENSEX:10}[sym]||50;
+  const step={NIFTY:50,BANKNIFTY:100,SENSEX:100}[sym]||50;
+  const ls={NIFTY:50,BANKNIFTY:15,SENSEX:10}[sym]||50;
 
   // Angel One connected असेल तर real data वापरा
   const jwtData = getJWT();
@@ -2056,7 +2066,7 @@ async function renderOC(){
       const expiry = expEl ? expEl.value : '';
 
       // Angel One Option Chain API
-      const res = await fetch('https://XXXXX.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+      const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
         method:'POST',
         headers:{
           'Authorization':'Bearer '+jwtData.jwt,
@@ -2385,7 +2395,7 @@ async function fetchCustomPrice(sym){
   const jwt=getJWT();
   if(jwt && jwt.jwt){
     try{
-      const proxy='https://XXXXX.trycloudflare.com';
+      const proxy='https://examinations-citysearch-scholarship-correspondence.trycloudflare.com';
       // NSE symbol to token mapping - common stocks
       const tokenMap={
         'RELIANCE':'2885','TCS':'11536','INFY':'1594','HDFCBANK':'1333',
@@ -2769,7 +2779,7 @@ async function autoLoadJWT(){
   st.style.color='var(--gold)';
   st.textContent='⏳ Local server कडून token घेत आहे...';
   try {
-    const res = await fetch('https://XXXXX.trycloudflare.com/token');
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/token');
     if(res.ok){
       const data = await res.json();
       const token = (data.token||'').replace('Bearer ','').trim();
@@ -2908,7 +2918,7 @@ function placeRealOrder(){
   };
 
   // Proxy server मधून order पाठवा
-  fetch('https://XXXXX.trycloudflare.com/rest/secure/angelbroking/order/v1/placeOrder',{
+  fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/order/v1/placeOrder',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -3605,7 +3615,7 @@ async function fetchAngelCandles(sym,jwt){
     const from=new Date(now-7*24*3600*1000);
     const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     const body={exchange:'NSE',symboltoken:token,interval:tfMap[curTF]||'FIVE_MINUTE',fromdate:fmt(from),todate:fmt(now)};
-    const res=await fetch('https://XXXXX.trycloudflare.com/rest/secure/angelbroking/historical/v1/getCandleData',{
+    const res=await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/historical/v1/getCandleData',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'192.168.1.1','X-ClientPublicIP':'106.193.147.98','X-MACAddress':'fe80::1','X-PrivateKey':'Y4IDCPLI'},
       body:JSON.stringify(body),
@@ -4009,8 +4019,7 @@ function initLicense(){
 }
 
 // ══ INIT ═══════════════════════════════════════════════════
-function autoFillExpiries(){var today=new Date();var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];function fmtD(d){var dd=String(d.getDate()).padStart(2,"0");var mm=months[d.getMonth()];var yy=String(d.getFullYear()).slice(2);return dd+"-"+mm+"-"+yy;}var dates=[];var d=new Date(today);while(d.getDay()!==4)d.setDate(d.getDate()+1);for(var i=0;i<8;i++){dates.push(new Date(d));d.setDate(d.getDate()+7);}var ocSel=document.getElementById("ocExp");if(ocSel){ocSel.innerHTML=dates.map(function(dt){return "<option>"+fmtD(dt)+"</option>";}).join("");}}
-function init(){autoFillExpiries();
+function init(){
   initLicense();
   load();
   candles=genCandles();
@@ -4415,7 +4424,7 @@ function closeOptChart(){
 async function fetchAngelPnl(jwt, clientId){
   try{
     // Fetch positions
-    const res = await fetch('https://XXXXX.trycloudflare.com/rest/secure/angelbroking/order/v1/getPosition',{
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/order/v1/getPosition',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwt,
@@ -4490,7 +4499,7 @@ async function loadOCExpiry(){
   const jwtData = getJWT();
   if(!jwtData) return; // use default static dates
   try{
-    const res = await fetch('https://XXXXX.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/marketData/v1/optionChain',{
       method:'POST',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
@@ -4517,7 +4526,7 @@ async function fetchAngelBalance(){
   const jwtData = getJWT();
   if(!jwtData) return;
   try{
-    const res = await fetch('https://XXXXX.trycloudflare.com/rest/secure/angelbroking/user/v1/getRMS',{
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/user/v1/getRMS',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
@@ -4569,7 +4578,7 @@ async function autoUpdateIP(jwt, apiKey, clientId){
     }
 
     // Update IP on Angel One
-    const res = await fetch('https://XXXXX.trycloudflare.com/rest/secure/angelbroking/user/v1/updateIPAddress',{
+    const res = await fetch('https://examinations-citysearch-scholarship-correspondence.trycloudflare.com/rest/secure/angelbroking/user/v1/updateIPAddress',{
       method:'POST',
       headers:{
         'Authorization':'Bearer '+jwt,
@@ -4596,6 +4605,215 @@ async function autoUpdateIP(jwt, apiKey, clientId){
 }
 
 window.addEventListener('load', init);
+</script>
+
+<!-- ══ AI ADVISOR PAGE ════════════════════════════════════ -->
+<div class="pg" id="pg-ai">
+  <div class="card" style="margin-bottom:10px;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span style="font-size:22px;">🤖</span>
+      <div>
+        <div style="font-size:15px;font-weight:900;color:var(--green);">AI Trade Advisor</div>
+        <div style="font-size:10px;color:var(--muted);">Strike Price टाका → Entry / SL / Target मिळवा</div>
+      </div>
+    </div>
+
+    <!-- Capital -->
+    <span class="lbl">Capital (₹)</span>
+    <input type="number" id="ai-capital" value="1700" min="100" step="100" style="margin-bottom:10px;">
+
+    <!-- Symbol + Option Type -->
+    <div class="row">
+      <div>
+        <span class="lbl">Symbol</span>
+        <select id="ai-symbol">
+          <option value="NIFTY">NIFTY</option>
+          <option value="BANKNIFTY">BANKNIFTY</option>
+          <option value="SENSEX">SENSEX</option>
+          <option value="CRUDEOIL">Crude Oil</option>
+        </select>
+      </div>
+      <div>
+        <span class="lbl">Option Type</span>
+        <select id="ai-opttype">
+          <option value="CE">CALL CE</option>
+          <option value="PE">PUT PE</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Strike Price + Option LTP -->
+    <div class="row">
+      <div>
+        <span class="lbl">Strike Price (₹)</span>
+        <input type="number" id="ai-strike" placeholder="उदा: 24400" step="50">
+      </div>
+      <div>
+        <span class="lbl">Option LTP (₹)</span>
+        <input type="number" id="ai-ltp" placeholder="उदा: 85.50" step="0.5">
+      </div>
+    </div>
+
+    <!-- Index LTP + Trend -->
+    <div class="row">
+      <div>
+        <span class="lbl">Index LTP (₹)</span>
+        <input type="number" id="ai-indexltp" placeholder="उदा: 24350" step="1">
+      </div>
+      <div>
+        <span class="lbl">Market Trend</span>
+        <select id="ai-trend">
+          <option value="bullish">Bullish 📈</option>
+          <option value="bearish">Bearish 📉</option>
+          <option value="sideways">Sideways ↔️</option>
+          <option value="volatile">Volatile ⚡</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-g" style="width:100%;margin-top:4px;" onclick="getAIAdvice()" id="ai-btn">🤖 AI सल्ला घे</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="ai-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px;">AI विश्लेषण करतोय...</div>
+
+  <!-- Result -->
+  <div id="ai-result" style="display:none;">
+    <!-- Direction -->
+    <div class="card" style="margin-bottom:10px;">
+      <div id="ai-action" style="font-size:16px;font-weight:900;margin-bottom:6px;"></div>
+      <div id="ai-reason" style="font-size:11px;color:var(--muted);"></div>
+    </div>
+
+    <!-- Entry / SL / Target -->
+    <div class="row" style="margin-bottom:10px;">
+      <div class="stat">
+        <div class="v" id="ai-entry" style="color:var(--gold);">—</div>
+        <div class="k">ENTRY ₹</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="ai-sl" style="color:var(--red);">—</div>
+        <div class="k">STOPLOSS ₹</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="ai-tgt" style="color:var(--green);">—</div>
+        <div class="k">TARGET ₹</div>
+      </div>
+    </div>
+
+    <!-- Qty / Risk / Profit -->
+    <div class="row" style="margin-bottom:10px;">
+      <div class="stat">
+        <div class="v" id="ai-qty" style="color:var(--blue);">—</div>
+        <div class="k">LOTS</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="ai-loss" style="color:var(--red);">—</div>
+        <div class="k">MAX LOSS ₹</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="ai-profit" style="color:var(--green);">—</div>
+        <div class="k">TARGET ₹</div>
+      </div>
+      <div class="stat">
+        <div class="v" id="ai-rr" style="color:var(--gold);">—</div>
+        <div class="k">R:R</div>
+      </div>
+    </div>
+
+    <!-- Analysis -->
+    <div class="card" style="border-left:3px solid var(--green);">
+      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;">📊 AI विश्लेषण</div>
+      <div id="ai-analysis" style="font-size:12px;color:var(--text);line-height:1.7;"></div>
+    </div>
+
+    <div style="margin-top:10px;background:#1a1000;border:1px solid #ff6d00;border-radius:10px;padding:10px;font-size:10px;color:#ff9800;text-align:center;">
+      ⚠️ AI सल्ला आहे — Angel One app मधून manually order टाक!
+    </div>
+  </div>
+</div>
+
+<script>
+function saveAnthropicKey(){
+  const k = document.getElementById('anthropicKey').value.trim();
+  if(!k||!k.startsWith('sk-ant-')){
+    document.getElementById('aiKeySt').style.color='var(--red)';
+    document.getElementById('aiKeySt').textContent='❌ चुकीची key! sk-ant- ने सुरू होते';
+    return;
+  }
+  localStorage.setItem('anthropic_key',k);
+  window.ANTHROPIC_KEY=k;
+  document.getElementById('aiKeySt').style.color='var(--green)';
+  document.getElementById('aiKeySt').textContent='✅ AI Key saved!';
+  flash('✅ AI Key Save झाली!',true);
+}
+// Load key on startup
+window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
+if(window.ANTHROPIC_KEY){ const el=document.getElementById('anthropicKey'); if(el) el.value=window.ANTHROPIC_KEY; }
+
+async function getAIAdvice(){
+  // Load saved key
+  window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
+  const capital = parseFloat(document.getElementById('ai-capital').value)||1700;
+  const symbol = document.getElementById('ai-symbol').value;
+  const opttype = document.getElementById('ai-opttype').value;
+  const strike = document.getElementById('ai-strike').value;
+  const ltp = parseFloat(document.getElementById('ai-ltp').value);
+  const indexltp = parseFloat(document.getElementById('ai-indexltp').value);
+  const trend = document.getElementById('ai-trend').value;
+
+  if(!window.ANTHROPIC_KEY){flash('⚠️ Angel page मध्ये AI Key टाका!',false);return;}
+  if(!ltp||ltp<=0){flash('Option LTP टाका!',false);return;}
+  if(!strike){flash('Strike Price टाका!',false);return;}
+
+  const btn = document.getElementById('ai-btn');
+  const loading = document.getElementById('ai-loading');
+  const result = document.getElementById('ai-result');
+
+  btn.disabled=true;
+  loading.style.display='block';
+  result.style.display='none';
+
+  const lotSize={NIFTY:75,BANKNIFTY:30,SENSEX:10,CRUDEOIL:100}[symbol]||75;
+
+  const prompt=`You are an expert Indian options trader AI for NSE/BSE. Capital: Rs${capital}, Symbol: ${symbol}, Strike: ${strike}${opttype}, Option LTP: Rs${ltp}, Index LTP: Rs${indexltp||'unknown'}, Trend: ${trend}, Lot size: ${lotSize}. Max risk 12% = Rs${Math.round(capital*0.12)}. SL = 20-30% below entry. Target = min 2:1 RR. If 1 lot cost > capital suggest qty 0. Respond ONLY pure JSON no markdown: {"action":"BUY_CE or BUY_PE or WAIT or AVOID","reason_short":"one line Marathi","entry":number,"stoploss":number,"target":number,"qty":number,"max_loss":number,"potential_profit":number,"rr_ratio":"X:1","analysis":"3-4 sentences Marathi about setup entry exit plan"}`;
+
+  try{
+    const res = await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":window.ANTHROPIC_KEY||"","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})
+    });
+    const data = await res.json();
+    const text = data.content?.map(i=>i.text||'').join('')||'';
+    let r;
+    try{r=JSON.parse(text.replace(/```json|```/g,'').trim());}
+    catch(e){const m=text.match(/\{[\s\S]*\}/);if(m)r=JSON.parse(m[0]);else throw new Error('fail');}
+
+    const actionMap={'BUY_CE':'📈 CALL खरेदी कर (CE)','BUY_PE':'📉 PUT खरेदी कर (PE)','WAIT':'⏳ थांब — अजून नको','AVOID':'🚫 Trade टाळ आज'};
+    const colorMap={'BUY_CE':'var(--green)','BUY_PE':'var(--red)','WAIT':'var(--gold)','AVOID':'#ff6d00'};
+
+    document.getElementById('ai-action').style.color = colorMap[r.action]||'var(--text)';
+    document.getElementById('ai-action').textContent = actionMap[r.action]||r.action;
+    document.getElementById('ai-reason').textContent = r.reason_short||'';
+    document.getElementById('ai-entry').textContent = r.entry||ltp;
+    document.getElementById('ai-sl').textContent = r.stoploss||'-';
+    document.getElementById('ai-tgt').textContent = r.target||'-';
+    document.getElementById('ai-qty').textContent = (r.qty||0)+' lot';
+    document.getElementById('ai-loss').textContent = r.max_loss||'-';
+    document.getElementById('ai-profit').textContent = r.potential_profit||'-';
+    document.getElementById('ai-rr').textContent = r.rr_ratio||'-';
+    document.getElementById('ai-analysis').textContent = r.analysis||'';
+
+    result.style.display='block';
+    flash('✅ AI सल्ला तयार!',true);
+  }catch(err){
+    flash('AI connect झाला नाही!',false);
+  }finally{
+    btn.disabled=false;
+    loading.style.display='none';
+  }
+}
 </script>
 
 <!-- ══ OPTION PRICE CHART MODAL ════════════════════════════ -->
