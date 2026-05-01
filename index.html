@@ -4749,12 +4749,12 @@ function saveAnthropicKey(){
   flash('✅ AI Key Save झाली!',true);
 }
 // Load key on startup
-window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
+window.ANTHROPIC_KEY = document.getElementById('anthropicKey').value.trim() || localStorage.getItem('anthropic_key')||'';
 if(window.ANTHROPIC_KEY){ const el=document.getElementById('anthropicKey'); if(el) el.value=window.ANTHROPIC_KEY; }
 
 async function getAIAdvice(){
   // Load saved key
-  window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
+  window.ANTHROPIC_KEY = document.getElementById('anthropicKey').value.trim() || localStorage.getItem('anthropic_key')||'';
   const capital = parseFloat(document.getElementById('ai-capital').value)||1700;
   const symbol = document.getElementById('ai-symbol').value;
   const opttype = document.getElementById('ai-opttype').value;
