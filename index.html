@@ -491,6 +491,8 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <div class="stat" style="background:rgba(0,180,255,0.08);"><div class="v" id="aBalNet" style="color:var(--blue);font-size:12px;">—</div><div class="k">Net</div></div>
       </div>
     </div>
+    <button onclick="manualUpdateIP()" id="ipUpdateBtn" style="width:100%;padding:10px;background:rgba(0,180,255,0.1);color:var(--blue);border:1px solid rgba(0,180,255,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px;">🌐 IP Update करा</button>
+    <div id="ipUpdateStatus" style="font-size:11px;text-align:center;margin-bottom:8px;min-height:16px;"></div>
     <button onclick="disconnectAngel()" style="width:100%;padding:11px;background:rgba(255,69,96,0.1);color:var(--red);border:1px solid rgba(255,69,96,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🔌 Disconnect</button>
   </div>
 
@@ -4684,6 +4686,34 @@ async function fetchAngelBalance(){
 }
 
 
+
+async function manualUpdateIP(){
+  const statusEl = document.getElementById('ipUpdateStatus');
+  const btn = document.getElementById('ipUpdateBtn');
+  if(statusEl) statusEl.innerHTML = '<span style="color:var(--gold);">⏳ IP मिळवतोय...</span>';
+  if(btn) btn.disabled = true;
+  try{
+    const ipRes = await fetch('https://api.ipify.org?format=json');
+    const ipData = await ipRes.json();
+    const currentIP = ipData.ip;
+    const jwtData = getJWT();
+    const apiKey = document.getElementById('aApiKey')?.value || jwtData.clientId || '';
+    const proxy = document.querySelector('[id*="JWT"]') ? (localStorage.getItem('angel_proxy')||'https://examinations-citysearch-scholarship-correspondence.trycloudflare.com') : '';
+    const baseUrl = 'https://examinations-citysearch-scholarship-correspondence.trycloudflare.com';
+    const res = await fetch(baseUrl+'/rest/secure/angelbroking/user/v1/updateIPAddress',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':currentIP,'X-ClientPublicIP':currentIP,'X-MACAddress':'MAC_ADDRESS','X-PrivateKey':apiKey},
+      body: JSON.stringify({clientLocalIP:currentIP,clientPublicIP:currentIP})
+    });
+    const data = await res.json();
+    try{ localStorage.setItem('angel_static_ip',currentIP); }catch(e){}
+    if(statusEl) statusEl.innerHTML = '<span style="color:var(--green);">✅ IP: '+currentIP+'</span>';
+    flash('✅ IP Updated: '+currentIP, true);
+  } catch(e){
+    if(statusEl) statusEl.innerHTML = '<span style="color:var(--red);">❌ '+e.message+'</span>';
+  }
+  if(btn) btn.disabled = false;
+}
 // ── Auto IP Update ─────────────────────────────────────────
 async function autoUpdateIP(jwt, apiKey, clientId){
   try{
