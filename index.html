@@ -4933,8 +4933,8 @@ async function getAIAdvice(){
   const trend = document.getElementById('ai-trend').value;
 
   if(!window.ANTHROPIC_KEY){flash('⚠️ Angel page मध्ये AI Key टाका!',false);return;}
-  if(!ltp||ltp<=0){flash('Option LTP टाका!',false);return;}
-  if(!strike){flash('Strike Price टाका!',false);return;}
+  //skip1
+  //skip2
 
   const btn = document.getElementById('ai-btn');
   const loading = document.getElementById('ai-loading');
