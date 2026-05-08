@@ -4911,6 +4911,17 @@ window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
 if(window.ANTHROPIC_KEY){ const el=document.getElementById('anthropicKey'); if(el) el.value=window.ANTHROPIC_KEY; }
 
 async function getAIAdvice(){
+  // Get values via prompt if fields empty
+  let strikeVal = document.getElementById('ai-strike').value;
+  let ltpVal = document.getElementById('ai-ltp').value;
+  let indexVal = document.getElementById('ai-indexltp').value;
+  if(!strikeVal) strikeVal = prompt('Strike Price टाका (उदा: 24400):')||'';
+  if(!ltpVal) ltpVal = prompt('Option LTP टाका (उदा: 85.50):')||'';
+  if(!indexVal) indexVal = prompt('Index LTP टाका (उदा: 24350):')||'';
+  document.getElementById('ai-strike').value = strikeVal;
+  document.getElementById('ai-ltp').value = ltpVal;
+  document.getElementById('ai-indexltp').value = indexVal;
+  //---ORIGINAL---
   // Load saved key
   window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
   const capital = parseFloat(document.getElementById('ai-capital').value)||1700;
