@@ -4623,7 +4623,30 @@ function showAngelPnlPanel(msg){
   if(pnlEl) pnlEl.innerHTML = `<div style="text-align:center;color:var(--muted);padding:16px;font-size:12px;">${msg}</div>`;
 }
 
+function getDefaultExpiries(){
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const today=new Date();
+  const dates=[];
+  let d=new Date(today);
+  let diff=(4-d.getDay()+7)%7;
+  if(diff===0) diff=7;
+  d.setDate(d.getDate()+diff);
+  for(let i=0;i<8;i++){
+    const dd=String(d.getDate()).padStart(2,'0');
+    const mm=months[d.getMonth()];
+    const yy=String(d.getFullYear()).slice(-2);
+    dates.push(dd+'-'+mm+'-'+yy);
+    d.setDate(d.getDate()+7);
+  }
+  return dates;
+}
+
 async function loadOCExpiry(){
+  const sel = document.getElementById('ocExp');
+  if(sel){
+    const dates = getDefaultExpiries();
+    sel.innerHTML = dates.map(e=>'<option>'+e+'</option>').join('');
+  }
   const sym = document.getElementById('ocSym')?.value||'NIFTY';
   const jwtData = getJWT();
   if(!jwtData) return; // use default static dates
