@@ -308,7 +308,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div style="font-size:18px;font-weight:900;margin-bottom:10px;">📋 Option Chain</div>
     <div style="display:flex;gap:8px;margin-bottom:8px;">
       <select id="ocSym" onchange="loadOCExpiry();renderOC();" style="margin-bottom:0;flex:1;font-weight:700;"><option>NIFTY</option><option>BANKNIFTY</option><option>SENSEX</option></select>
-      <select id="ocExp" onchange="renderOC()" style="margin-bottom:0;flex:1;"><option>03-Apr-26</option><option>10-Apr-26</option><option>17-Apr-26</option><option>24-Apr-26</option></select>
+      <select id="ocExp" onchange="renderOC()" style="margin-bottom:0;flex:1;"></select>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
       <div class="stat"><div class="v" id="ocSpot" style="color:var(--green);font-size:12px;">—</div><div class="k">Spot</div></div>
@@ -4909,6 +4909,16 @@ window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
 if(window.ANTHROPIC_KEY){ const el=document.getElementById('anthropicKey'); if(el) el.value=window.ANTHROPIC_KEY; }
 
 async function getAIAdvice(){
+  let s = document.getElementById('ai-strike').value;
+  let l = document.getElementById('ai-ltp').value;
+  let i = document.getElementById('ai-indexltp').value;
+  if(!s) s = prompt('Strike Price (उदा 24400):') || '';
+  if(!l) l = prompt('Option LTP (उदा 85.50):') || '';
+  if(!i) i = prompt('Index LTP (उदा 24350):') || '';
+  document.getElementById('ai-strike').value = s;
+  document.getElementById('ai-ltp').value = l;
+  document.getElementById('ai-indexltp').value = i;
+  //ORIG
   // Get values via prompt if fields empty
   let strikeVal = document.getElementById('ai-strike').value;
   let ltpVal = document.getElementById('ai-ltp').value;
