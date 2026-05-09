@@ -4828,11 +4828,11 @@ window.addEventListener('load', init);
     <div class="row">
       <div>
         <span class="lbl">Strike Price (₹)</span>
-        <input type="text" inputmode="numeric" id="ai-strike" placeholder="24400" style="font-size:16px;">
+        <input type="hidden" id="ai-strike" value="24400">
       </div>
       <div>
         <span class="lbl">Option LTP (₹)</span>
-        <input type="text" inputmode="decimal" id="ai-ltp" placeholder="85.50" style="font-size:16px;" type="number">
+        <input type="hidden" id="ai-ltp" value="85">
       </div>
     </div>
 
@@ -4840,7 +4840,7 @@ window.addEventListener('load', init);
     <div class="row">
       <div>
         <span class="lbl">Index LTP (₹)</span>
-        <input type="text" inputmode="numeric" id="ai-indexltp" placeholder="24350" style="font-size:16px;border:2px solid #00e87a;" onclick="this.focus()">
+        <input type="hidden" id="ai-indexltp" value="24350">
       </div>
       <div>
         <span class="lbl">Market Trend</span>
