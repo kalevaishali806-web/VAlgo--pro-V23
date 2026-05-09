@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAlgo AI Advisor</title>
+<style>
+:root{--bg:#0a0f0a;--card:#0f1a0f;--border:#1a3a1a;--green:#00e676;--red:#ff1744;--gold:#ffd600;--text:#c8e6c9;--muted:#557755;--panel:#111f11}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:sans-serif;min-height:100vh;padding:12px}
+.header{text-align:center;padding:16px 0 12px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.header h1{font-size:1.6rem;font-weight:700;color:var(--green);letter-spacing:2px}
+.header p{font-size:0.85rem;color:var(--muted);margin-top:4px}
+.capital-bar{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.capital-bar label{font-size:0.85rem;color:var(--muted)}
+.capital-bar input{background:transparent;border:1px solid var(--border);color:var(--gold);font-family:inherit;font-size:1.1rem;font-weight:700;width:110px;text-align:right;padding:4px 8px;border-radius:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.sg{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.sg label{display:block;font-size:0.75rem;color:var(--muted);margin-bottom:4px}
+.sg select{width:100%;background:transparent;border:none;color:var(--text);font-family:inherit;font-size:1rem;font-weight:600;outline:none}
+.sg select option{background:#0f1a0f}
+.ltp-row{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.ltp-row label{font-size:0.8rem;color:var(--muted);white-space:nowrap}
+.ltp-row input{flex:1;background:transparent;border:1px solid var(--border);color:var(--gold);font-family:inherit;font-size:1.1rem;font-weight:700;padding:6px 10px;border-radius:6px;width:100%}
+.ask-btn{width:100%;background:linear-gradient(135deg,#00c853,#00e676);color:#000;border:none;border-radius:10px;font-family:inherit;font-size:1.1rem;font-weight:700;padding:14px;cursor:pointer;letter-spacing:1px;margin-bottom:14px}
+.ask-btn:disabled{opacity:0.5}
+.loading{text-align:center;padding:20px;color:var(--muted);font-size:0.9rem;display:none}
+.loading.show{display:block}
+.result-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;display:none}
+.result-card.show{display:block}
+.badge{padding:4px 12px;border-radius:20px;font-size:0.85rem;font-weight:700;letter-spacing:1px}
+.call{background:#003300;color:var(--green);border:1px solid var(--green)}
+.put{background:#330000;color:var(--red);border:1px solid var(--red)}
+.wait{background:#1a1a00;color:var(--gold);border:1px solid var(--gold)}
+.avoid{background:#1a0a00;color:#ff6d00;border:1px solid #ff6d00}
+.levels-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+.level-box{background:var(--bg);border-radius:8px;padding:10px 8px;text-align:center;border:1px solid var(--border)}
+.level-box .lbl{font-size:0.7rem;color:var(--muted);display:block;margin-bottom:4px}
+.level-box .val{font-size:1.15rem;font-weight:700}
+.qty-risk{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.qty-risk div{text-align:center}
+.qty-risk .lbl{font-size:0.7rem;color:var(--muted);display:block}
+.qty-risk .val{font-size:1.1rem;font-weight:700}
+.analysis-text{font-size:0.88rem;color:var(--text);line-height:1.6;background:var(--bg);border-radius:8px;padding:12px;border-left:3px solid var(--green)}
+.warning-box{background:#1a1000;border:1px solid #ff6d00;border-radius:10px;padding:12px 14px;font-size:0.8rem;color:#ff9800;text-align:center;margin-top:10px}
+.footer{text-align:center;font-size:0.72rem;color:var(--muted);padding:16px 0 8px}
+</style>
+</head>
+<body>
+<div class="header"><h1>⚡ VAlgo AI Advisor</h1><p>IP प्रॉबलेम काळात AI मार्गदर्शन · Manual Trade साठी</p></div>
+<div class="capital-bar"><label>💰 Capital (₹)</label><input type="number" id="capital" value="1700" min="100" step="100"></div>
+<div class="grid2">
+<div class="sg"><label>Index / Symbol</label><select id="symbol"><option value="NIFTY">NIFTY 50</option><option value="BANKNIFTY">BANK NIFTY</option><option value="SENSEX">SENSEX</option><option value="CRUDEOIL">Crude Oil</option></select></div>
+<div class="sg"><label>Option Type</label><select id="opttype"><option value="CE">CALL (CE)</option><option value="PE">PUT (PE)</option></select></div>
+</div>
+<div class="grid2">
+<div class="sg"><label>Timeframe</label><select id="tf"><option value="5min">5 मिनिट</option><option value="15min">15 मिनिट</option><option value="1hr">1 तास</option></select></div>
+<div class="sg"><label>Market Trend</label><select id="trend"><option value="bullish">Bullish 📈</option><option value="bearish">Bearish 📉</option><option value="sideways">Sideways ↔️</option><option value="volatile">Volatile ⚡</option></select></div>
+</div>
+<div class="ltp-row"><label>Option LTP (₹)</label><input type="number" id="ltp" placeholder="उदा: 85.50" step="0.5" min="1"></div>
+<div class="ltp-row" style="background:#111f11;"><label>Index LTP (₹)</label><input type="number" id="indexltp" placeholder="उदा: 24350" step="1" min="1"></div>
+<button class="ask-btn" id="askBtn" onclick="getAdvice()">🤖 AI कडून Trade सल्ला घे</button>
+<div class="loading" id="loading">AI विश्लेषण करतोय...</div>
+<div class="result-card" id="resultCard">
+<div id="direction" style="margin-bottom:12px"></div>
+<div class="levels-grid" id="levels"></div>
+<div class="qty-risk" id="qtyRisk"></div>
+<div class="analysis-text" id="analysis"></div>
+</div>
+<div class="warning-box">⚠️ हे AI सल्ला आहे — शेवटचा निर्णय तुझा! Angel One app मध्ये manually order टाक.</div>
+<div class="footer">VAlgo Pro V23 · IP प्रॉबलेम सुटल्यावर live API connect होईल</div>
+<script>
+async function getAdvice(){
+const capital=parseFloat(document.getElementById('capital').value)||1700;
+const symbol=document.getElementById('symbol').value;
+const opttype=document.getElementById('opttype').value;
+const tf=document.getElementById('tf').value;
+const trend=document.getElementById('trend').value;
+const ltp=parseFloat(document.getElementById('ltp').value);
+const indexltp=parseFloat(document.getElementById('indexltp').value);
+if(!ltp||ltp<=0){alert('Option LTP टाका!');return;}
+const btn=document.getElementById('askBtn');
+const loading=document.getElementById('loading');
+const resultCard=document.getElementById('resultCard');
+btn.disabled=true;loading.classList.add('show');resultCard.classList.remove('show');
+const lotSize={NIFTY:75,BANKNIFTY:30,SENSEX:10,CRUDEOIL:100}[symbol]||75;
+const prompt=`You are an expert Indian options trader AI. Capital: Rs${capital}, Symbol: ${symbol}, Option: ${opttype}, Timeframe: ${tf}, Trend: ${trend}, Option LTP: Rs${ltp}, Index LTP: Rs${indexltp||'unknown'}, Lot size: ${lotSize}. Max risk 12% = Rs${Math.round(capital*0.12)}. Respond ONLY in pure JSON no markdown: {"action":"BUY_CE or BUY_PE or WAIT or AVOID","reason_short":"one line in Marathi","entry":number,"stoploss":number,"target":number,"qty":number,"max_loss":number,"potential_profit":number,"rr_ratio":"X:1","analysis":"3-4 sentences in Marathi about setup and exit plan"}`;
+try{
+const response=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})});
+const data=await response.json();
+const text=data.content?.map(i=>i.text||'').join('')||'';
+let result;
+try{result=JSON.parse(text.replace(/```json|```/g,'').trim());}
+catch(e){const m=text.match(/\{[\s\S]*\}/);if(m)result=JSON.parse(m[0]);else throw new Error('parse fail');}
+displayResult(result,ltp,symbol,lotSize);
+}catch(err){alert('AI connect झाला नाही. Internet check कर.');}
+finally{btn.disabled=false;loading.classList.remove('show');}
+}
+function displayResult(r,ltp,symbol,lotSize){
+const card=document.getElementById('resultCard');
+const actionMap={'BUY_CE':['call','📈 CALL खरेदी कर (CE)'],'BUY_PE':['put','📉 PUT खरेदी कर (PE)'],'WAIT':['wait','⏳ थांब — अजून नको'],'AVOID':['avoid','🚫 Trade टाळ आज']};
+const[cls,label]=actionMap[r.action]||['wait',r.action];
+document.getElementById('direction').innerHTML=`<span class="badge ${cls}">${label}</span><span style="font-size:0.8rem;color:#888;margin-left:8px">${r.reason_short||''}</span>`;
+document.getElementById('levels').innerHTML=`<div class="level-box"><span class="lbl">Entry</span><span class="val" style="color:var(--gold)">₹${r.entry||ltp}</span></div><div class="level-box"><span class="lbl">Stoploss</span><span class="val" style="color:var(--red)">₹${r.stoploss||'-'}</span></div><div class="level-box"><span class="lbl">Target</span><span class="val" style="color:var(--green)">₹${r.target||'-'}</span></div>`;
+document.getElementById('qtyRisk').innerHTML=`<div><span class="lbl">Lots</span><span class="val" style="color:var(--gold)">${r.qty||0} lot</span></div><div><span class="lbl">Lot Size</span><span class="val">${lotSize}</span></div><div><span class="lbl">Max Loss</span><span class="val" style="color:var(--red)">₹${r.max_loss||'-'}</span></div><div><span class="lbl">Target Profit</span><span class="val" style="color:var(--green)">₹${r.potential_profit||'-'}</span></div>`;
+document.getElementById('analysis').innerHTML=`<strong style="color:var(--green)">📊 AI विश्लेषण:</strong><br><br>${r.analysis||''}<br><br><strong style="color:var(--gold)">R:R = ${r.rr_ratio||'?'}</strong>`;
+card.classList.add('show');card.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
