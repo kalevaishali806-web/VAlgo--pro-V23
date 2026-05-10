@@ -85,7 +85,7 @@ function saveAIKey(){
 // Load saved key
 window.addEventListener("load",function(){
   const k=localStorage.getItem("valgo_ai_key")||"";
-  if(k) document.getElementById("aiKeyInput").value=k;
+  if(k) document.getElementById("aiKeyInput").value="";
 });
 async function getAdvice(){
 const capital=parseFloat(document.getElementById('capital').value)||1700;
