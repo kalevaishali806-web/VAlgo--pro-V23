@@ -3185,15 +3185,8 @@ function drawCrdChart(){
   s+=`<rect x="${PL+CW+1}" y="${(+ly-8).toFixed(1)}" width="${PR-4}" height="16" rx="3" fill="${tc}"/>`;
   s+=`<text x="${(PL+CW+1+(PR-4)/2).toFixed(1)}" y="${(+ly+4).toFixed(1)}" fill="${bull?'#000':'#fff'}" font-size="8" font-family="sans-serif" font-weight="bold" text-anchor="middle">₹${Math.round(last.c).toLocaleString('en-IN')}</text>`;
   s+=`</svg>`;
-  const svgEl=document.getElementById('crdChartSvg')||document.getElementById('cmChartCanvas');
-  if(svgEl && svgEl.tagName==='svg'){
-    svgEl.setAttribute('width',W); svgEl.setAttribute('height',H);
-    svgEl.innerHTML=s.replace(/<svg[^>]*>/,'').replace('</svg>','');
-  } else {
-    // fallback: inject svg into wrap
-    const wrap2=document.getElementById('cmChartWrap');
-    if(wrap2) wrap2.innerHTML=s;
-  }
+  const wrap2=document.getElementById('cmChartWrap');
+  if(wrap2) wrap2.innerHTML=s;
 }
 
 function doCrdTrade(type){
