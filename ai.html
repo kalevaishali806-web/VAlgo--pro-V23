@@ -110,7 +110,7 @@ let result;
 try{result=JSON.parse(text.replace(/```json|```/g,'').trim());}
 catch(e){const m=text.match(/\{[\s\S]*\}/);if(m)result=JSON.parse(m[0]);else throw new Error('parse fail');}
 displayResult(result,ltp,symbol,lotSize);
-}catch(err){alert('AI connect झाला नाही. Internet check कर.');}
+}catch(err){alert('Error: '+err.message);}
 finally{btn.disabled=false;loading.classList.remove('show');}
 }
 function displayResult(r,ltp,symbol,lotSize){
