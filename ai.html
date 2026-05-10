@@ -48,6 +48,12 @@ body{background:var(--bg);color:var(--text);font-family:sans-serif;min-height:10
 </head>
 <body>
 <div class="header"><h1>⚡ VAlgo AI Advisor</h1><p>IP प्रॉबलेम काळात AI मार्गदर्शन · Manual Trade साठी</p></div>
+<div style="background:#1a2a1a;border:1px solid #00e87a;border-radius:12px;padding:12px;margin:12px;">
+<div style="font-size:11px;color:#00e87a;margin-bottom:6px;">🔑 ANTHROPIC API KEY</div>
+<input id="aiKeyInput" type="password" placeholder="sk-ant-..." style="width:100%;padding:10px;background:#0d1f0d;border:1px solid #00e87a33;border-radius:8px;color:#fff;font-size:13px;box-sizing:border-box;" autocapitalize="none">
+<button onclick="saveAIKey()" style="width:100%;margin-top:8px;padding:10px;background:#00e87a;color:#000;border:none;border-radius:8px;font-weight:800;font-size:13px;">💾 Key Save करा</button>
+<div id="keySaved" style="font-size:11px;text-align:center;margin-top:4px;color:#00e87a;"></div>
+</div>
 <div class="capital-bar"><label>💰 Capital (₹)</label><input type="number" id="capital" value="1700" min="100" step="100"></div>
 <div class="grid2">
 <div class="sg"><label>Index / Symbol</label><select id="symbol"><option value="NIFTY">NIFTY 50</option><option value="BANKNIFTY">BANK NIFTY</option><option value="SENSEX">SENSEX</option><option value="CRUDEOIL">Crude Oil</option></select></div>
