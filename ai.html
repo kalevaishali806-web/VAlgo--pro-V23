@@ -108,7 +108,7 @@ const data=await response.json();
 const text=data.content?.map(i=>i.text||'').join('')||'';
 let result;
 try{result=JSON.parse(text.replace(/```json|```/g,'').trim());}
-catch(e){const m=text.match(/\{[\s\S]*\}/);if(m)result=JSON.parse(m[0]);else throw new Error('parse fail');}
+catch(e){ try{ result=JSON.parse(text); }catch(e2){ result={advice:"AI response आला पण parse नाही झाला. परत try करा.",entry:0,sl:0,target:0,rr_ratio:0}; }}
 displayResult(result,ltp,symbol,lotSize);
 }catch(err){alert('Error: '+err.message);}
 finally{btn.disabled=false;loading.classList.remove('show');}
