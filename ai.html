@@ -113,7 +113,7 @@ catch(e){
   if(m){ try{ result=JSON.parse(m[0]); }catch(e2){ result={signal:"?",advice:text,entry:0,sl:0,target:0,rr_ratio:"?"}; } }
   else{ result={signal:"?",advice:text,entry:0,sl:0,target:0,rr_ratio:"?"}; }
 }
-displayResult(result,ltp,symbol,lotSize);
+alert(JSON.stringify(result).substring(0,200)); displayResult(result,ltp,symbol,lotSize);
 }catch(err){alert('Error: '+err.message+' | '+err.stack);}
 finally{btn.disabled=false;loading.classList.remove('show');}
 }
