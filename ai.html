@@ -121,10 +121,10 @@ function displayResult(r,ltp,symbol,lotSize){
 const card=document.getElementById('resultCard');
 const actionMap={'BUY_CE':['call','📈 CALL खरेदी कर (CE)'],'BUY_PE':['put','📉 PUT खरेदी कर (PE)'],'WAIT':['wait','⏳ थांब — अजून नको'],'AVOID':['avoid','🚫 Trade टाळ आज']};
 const[cls,label]=actionMap[r.action]||['wait',r.action];
-document.getElementById('direction').innerHTML=`<span class="badge ${cls}">${label}</span><span style="font-size:0.8rem;color:#888;margin-left:8px">${r.reason_short||''}</span>`;
-document.getElementById('levels').innerHTML=`<div class="level-box"><span class="lbl">Entry</span><span class="val" style="color:var(--gold)">₹${r.entry||ltp}</span></div><div class="level-box"><span class="lbl">Stoploss</span><span class="val" style="color:var(--red)">₹${r.stoploss||'-'}</span></div><div class="level-box"><span class="lbl">Target</span><span class="val" style="color:var(--green)">₹${r.target||'-'}</span></div>`;
+document.getElementById('direction').innerHTML=`<span class="badge ${cls}">${label}</span>`;
+document.getElementById('levels').innerHTML=`<div class="level-box"><span class="lbl">Entry</span><span class="val" style="color:var(--gold)">₹${r.entry||ltp}</span></div><div class="level-box"><span class="lbl">Stoploss</span><span class="val" style="color:var(--red)">₹${r.sl||r.stoploss||'-'}</span></div><div class="level-box"><span class="lbl">Target</span><span class="val" style="color:var(--green)">₹${r.target||'-'}</span></div>`;
 document.getElementById('qtyRisk').innerHTML=`<div><span class="lbl">Lots</span><span class="val" style="color:var(--gold)">${r.qty||0} lot</span></div><div><span class="lbl">Lot Size</span><span class="val">${lotSize}</span></div><div><span class="lbl">Max Loss</span><span class="val" style="color:var(--red)">₹${r.max_loss||'-'}</span></div><div><span class="lbl">Target Profit</span><span class="val" style="color:var(--green)">₹${r.potential_profit||'-'}</span></div>`;
-document.getElementById('analysis').innerHTML=`<strong style="color:var(--green)">📊 AI विश्लेषण:</strong><br><br>${r.analysis||''}<br><br><strong style="color:var(--gold)">R:R = ${r.rr_ratio||'?'}</strong>`;
+document.getElementById('analysis').innerHTML=`<strong style="color:var(--green)">📊 AI विश्लेषण:</strong><br><br>${r.advice||r.analysis||''}<br><br><strong style="color:var(--gold)">R:R = ${r.rr_ratio||'?'}</strong>`;
 card.classList.add('show');card.scrollIntoView({behavior:'smooth'});
 }
 </script>
