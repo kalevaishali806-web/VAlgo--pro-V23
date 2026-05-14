@@ -4413,6 +4413,32 @@ function showAngelPnlPanel(msg){
 }
 
 async function loadOCExpiry(){
+  // Auto calculate expiry dates
+  function getAutoExpiries(sym){
+    const dates=[];
+    const now=new Date();
+    for(let i=0;i<60;i++){
+      const d=new Date(now);
+      d.setDate(now.getDate()+i);
+      const day=d.getDay();
+      // NIFTY=Thursday(4), BANKNIFTY=Wednesday(3), SENSEX=Friday(5)
+      const sym2=document.getElementById('ocSym')?.value||'NIFTY';
+      if((sym2==='NIFTY'&&day===4)||(sym2==='BANKNIFTY'&&day===3)||(sym2==='SENSEX'&&day===5)){
+        const dd=String(d.getDate()).padStart(2,'0');
+        const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
+        const yy=String(d.getFullYear()).slice(2);
+        dates.push(dd+'-'+mon+'-'+yy);
+        if(dates.length>=6)break;
+      }
+    }
+    return dates;
+  }
+  // Set auto dates first as fallback
+  const autoExp=getAutoExpiries();
+  if(autoExp.length>0){
+    const sel=document.getElementById('ocExp');
+    if(sel){sel.innerHTML=autoExp.map(e=>`<option>${e}</option>`).join('');}
+  }
   const sym = document.getElementById('ocSym')?.value||'NIFTY';
   const jwtData = getJWT();
   if(!jwtData) return; // use default static dates
