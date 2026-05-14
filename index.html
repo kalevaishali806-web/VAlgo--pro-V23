@@ -71,8 +71,6 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
 .oc-t{width:100%;border-collapse:collapse;font-size:10px;}
 .oc-t th,.oc-t td{padding:5px 3px;text-align:center;}
 </style>
-<link rel="icon" type="image/png" href="iconV2.png">
-<link rel="apple-touch-icon" href="iconV2.png">
 </head>
 <body>
 
@@ -87,7 +85,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div id="licWallMsg" style="font-size:13px;font-weight:700;color:#ffb830;background:rgba(255,184,48,0.1);border-radius:10px;padding:10px;margin-bottom:18px;">🔐 VAlgo Tech License आवश्यक आहे</div>
     <!-- Trial Info -->
     <div id="trialInfoBox" style="background:rgba(0,180,255,0.07);border:1px solid rgba(0,180,255,0.2);border-radius:10px;padding:10px;margin-bottom:16px;font-size:11px;color:#5a7a9a;">
-      ⏳ <b style="color:#00b4ff;">5 दिवस Free Trial</b> — Unlimited trades<br>
+      ⏳ <b style="color:#00b4ff;">5 दिवस Free Trial</b> — दररोज 2 trades<br>
       Trial key नको — आपोआप सुरू होतो!
     </div>
     <!-- Key Input -->
@@ -132,17 +130,6 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
       <div class="stat"><div class="v" id="hWR">0%</div><div class="k">Win Rate</div></div>
       <div class="stat"><div class="v" id="hTR">0</div><div class="k">Trades</div></div>
       <div class="stat"><div class="v" id="hPos" style="color:var(--blue);">0</div><div class="k">Open</div></div>
-    </div>
-  </div>
-
-  <!-- MCX Commodity Quick View -->
-  <div class="card" style="padding:10px;margin-bottom:10px;">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <span style="font-size:12px;font-weight:800;color:var(--gold);">🏅 MCX Commodities</span>
-      <button onclick="goPage('comm',document.querySelectorAll('.nav-btn')[7])" style="padding:3px 10px;border-radius:8px;border:1px solid rgba(255,184,48,0.3);background:rgba(255,184,48,0.08);color:var(--gold);font-size:10px;font-weight:800;cursor:pointer;">सर्व →</button>
-    </div>
-    <div style="display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none;" id="homeCmList">
-      <!-- Commodity cards dynamically inserted -->
     </div>
   </div>
 
@@ -310,7 +297,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div style="font-size:18px;font-weight:900;margin-bottom:10px;">📋 Option Chain</div>
     <div style="display:flex;gap:8px;margin-bottom:8px;">
       <select id="ocSym" onchange="loadOCExpiry();renderOC();" style="margin-bottom:0;flex:1;font-weight:700;"><option>NIFTY</option><option>BANKNIFTY</option><option>SENSEX</option></select>
-      <select id="ocExp" onchange="renderOC()" style="margin-bottom:0;flex:1;"></select>
+      <select id="ocExp" onchange="renderOC()" style="margin-bottom:0;flex:1;"><option>03-Apr-26</option><option>10-Apr-26</option><option>17-Apr-26</option><option>24-Apr-26</option></select>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
       <div class="stat"><div class="v" id="ocSpot" style="color:var(--green);font-size:12px;">—</div><div class="k">Spot</div></div>
@@ -466,15 +453,6 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <button onclick="connectAngel()" style="width:100%;padding:15px;background:linear-gradient(135deg,#ff6b00,#ff9500);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;">🔗 Connect</button>
   </div>
 
-  <!-- AI Key Card -->
-  <div class="card" style="margin-top:10px;border:1px solid rgba(0,232,122,0.3);">
-    <div style="font-size:13px;font-weight:900;color:var(--green);margin-bottom:8px;">🤖 AI Tool Key</div>
-    <span class="lbl">Anthropic API Key</span>
-    <input id="anthropicKey" type="password" placeholder="sk-ant-..." autocapitalize="none" autocorrect="off" spellcheck="false" style="margin-bottom:8px;">
-    <button onclick="saveAnthropicKey()" style="width:100%;padding:11px;background:linear-gradient(135deg,#00e57a,#00b84d);color:#000;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;">💾 AI Key Save करा</button>
-    <div id="aiKeySt" style="text-align:center;font-size:11px;color:var(--muted);margin-top:6px;min-height:14px;"></div>
-  </div>
-
   <div id="angelOK" style="display:none;" class="card">
     <div style="color:var(--green);font-weight:800;font-size:15px;margin-bottom:10px;">✅ Angel One Connected!</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
@@ -494,8 +472,6 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
       </div>
     </div>
     <button onclick="manualUpdateIP()" id="ipUpdateBtn" style="width:100%;padding:10px;background:rgba(0,180,255,0.1);color:var(--blue);border:1px solid rgba(0,180,255,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:8px;">🌐 IP Update करा</button>
-    <div id="ipUpdateStatus" style="font-size:11px;text-align:center;margin-bottom:8px;min-height:16px;"></div>
-    <div id="ipUpdateStatus" style="font-size:11px;text-align:center;margin-bottom:8px;min-height:16px;"></div>
     <div id="ipUpdateStatus" style="font-size:11px;text-align:center;margin-bottom:8px;min-height:16px;"></div>
     <button onclick="disconnectAngel()" style="width:100%;padding:11px;background:rgba(255,69,96,0.1);color:var(--red);border:1px solid rgba(255,69,96,0.3);border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">🔌 Disconnect</button>
   </div>
@@ -541,36 +517,24 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
 
 <!-- ═ COMMODITY ═ -->
 <div class="pg" id="pg-comm">
-  <div style="font-size:18px;font-weight:900;margin:4px 0 10px;">🏅 MCX Commodities</div>
+  <div style="font-size:18px;font-weight:900;margin:4px 0 12px;">🛢️ Crude Oil</div>
 
-  <!-- Symbol Tabs -->
-  <div style="display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;margin-bottom:10px;scrollbar-width:none;">
-    <button id="cmTab-CRUDEOIL" onclick="setCmSym('CRUDEOIL',this)" style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid rgba(255,184,48,0.5);background:rgba(255,184,48,0.15);color:var(--gold);font-size:11px;font-weight:800;cursor:pointer;">🛢️ Crude</button>
-    <button id="cmTab-GOLD"      onclick="setCmSym('GOLD',this)"      style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;">🥇 Gold</button>
-    <button id="cmTab-SILVER"    onclick="setCmSym('SILVER',this)"    style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;">🥈 Silver</button>
-    <button id="cmTab-NATURALGAS" onclick="setCmSym('NATURALGAS',this)" style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;">🔥 NatGas</button>
-    <button id="cmTab-COPPER"    onclick="setCmSym('COPPER',this)"    style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;">🟤 Copper</button>
-    <button id="cmTab-ZINC"      onclick="setCmSym('ZINC',this)"      style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;">⚙️ Zinc</button>
-    <button id="cmTab-LEAD"      onclick="setCmSym('LEAD',this)"      style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;">🔩 Lead</button>
-    <button id="cmTab-ALUMINIUM" onclick="setCmSym('ALUMINIUM',this)" style="flex-shrink:0;padding:6px 12px;border-radius:14px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:800;cursor:pointer;">🪙 Aluminium</button>
-  </div>
-
-  <!-- Price Card -->
+  <!-- Live Price Card -->
   <div class="card" style="background:linear-gradient(135deg,#1a0f05,#2a1a08);">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
       <div>
-        <div style="font-size:13px;font-weight:800;color:var(--gold);" id="cmName">MCX CRUDE OIL</div>
-        <div style="font-size:10px;color:var(--muted);" id="cmLotInfo">Lot: 100 BBL · MCX</div>
+        <div style="font-size:13px;font-weight:800;color:var(--gold);">MCX CRUDE OIL</div>
+        <div style="font-size:10px;color:var(--muted);">Lot: 100 BBL · MCX Exchange</div>
       </div>
       <div style="text-align:right;">
         <div style="font-size:26px;font-weight:900;" id="crdPrice">₹6,245</div>
-        <div style="font-size:11px;font-weight:700;color:var(--green);" id="crdChg">+0.45%</div>
+        <div style="font-size:11px;font-weight:700;" id="crdChg" style="color:var(--green);">+0.45%</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
       <div class="stat"><div class="v" id="crdHigh" style="color:var(--green);font-size:12px;">₹6,290</div><div class="k">High</div></div>
-      <div class="stat"><div class="v" id="crdLow"  style="color:var(--red);font-size:12px;">₹6,190</div><div class="k">Low</div></div>
-      <div class="stat"><div class="v" id="crdOI"   style="color:var(--gold);font-size:12px;">1.2L</div><div class="k">OI</div></div>
+      <div class="stat"><div class="v" id="crdLow" style="color:var(--red);font-size:12px;">₹6,190</div><div class="k">Low</div></div>
+      <div class="stat"><div class="v" id="crdOI" style="color:var(--gold);font-size:12px;">1.2L</div><div class="k">OI</div></div>
     </div>
   </div>
 
@@ -579,30 +543,32 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
       <span style="font-size:13px;font-weight:800;">📊 Chart</span>
       <div style="display:flex;gap:5px;">
-        <button class="btn-tf on" onclick="setCmTF('5m',this)">5m</button>
-        <button class="btn-tf" onclick="setCmTF('15m',this)">15m</button>
-        <button class="btn-tf" onclick="setCmTF('1h',this)">1H</button>
-        <button onclick="drawCmChart()" style="padding:6px 10px;border-radius:8px;border:1px solid rgba(0,180,255,0.4);background:rgba(0,180,255,0.15);color:var(--blue);font-size:11px;font-weight:800;cursor:pointer;">🔄</button>
+        <button class="btn-tf on" id="crdTF1" onclick="setCrdTF('5m',this)">5m</button>
+        <button class="btn-tf" onclick="setCrdTF('15m',this)">15m</button>
+        <button class="btn-tf" onclick="setCrdTF('1h',this)">1H</button>
+        <button onclick="drawCrdChart()" style="padding:6px 10px;border-radius:8px;border:1px solid rgba(0,180,255,0.4);background:rgba(0,180,255,0.15);color:var(--blue);font-size:11px;font-weight:800;cursor:pointer;">🔄</button>
       </div>
     </div>
-    <div id="cmChartWrap" style="width:100%;height:220px;background:#0a1626;border-radius:10px;overflow:hidden;">
-      <canvas id="cmChartCanvas" style="width:100%;height:100%;"></canvas>
+    <div id="crdChartWrap" style="width:100%;height:220px;background:#0a1626;border-radius:10px;overflow:hidden;position:relative;">
+      <svg id="crdChartSvg" style="display:block;width:100%;height:100%;"></svg>
     </div>
+    <!-- Indicator values -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;margin-top:8px;font-size:11px;">
-      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--card2);border-radius:6px;"><span style="color:var(--muted);">RSI</span><span id="cmRSI" style="font-weight:800;">—</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--card2);border-radius:6px;"><span style="color:var(--muted);">EMA9</span><span id="cmEMA9" style="font-weight:800;">—</span></div>
-      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--card2);border-radius:6px;"><span style="color:var(--muted);">Signal</span><span id="cmSig" style="font-weight:800;">—</span></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--card2);border-radius:6px;"><span style="color:var(--muted);">RSI</span><span id="crdRSI" style="font-weight:800;color:var(--green);">—</span></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--card2);border-radius:6px;"><span style="color:var(--muted);">EMA9</span><span id="crdEMA9" style="font-weight:800;">—</span></div>
+      <div style="display:flex;justify-content:space-between;padding:5px 8px;background:var(--card2);border-radius:6px;"><span style="color:var(--muted);">Signal</span><span id="crdSig" style="font-weight:800;color:var(--green);">—</span></div>
     </div>
   </div>
 
   <!-- Trade Panel -->
   <div class="card">
     <div style="font-size:13px;font-weight:800;margin-bottom:10px;">⚡ Trade</div>
-    <div style="background:rgba(255,184,48,0.08);border:1px solid rgba(255,184,48,0.2);border-radius:8px;padding:8px;margin-bottom:10px;font-size:11px;color:var(--gold);" id="cmMarginInfo">
-      MCX · Lot: 100 BBL · Margin ~₹35,000/lot
+    <div style="background:rgba(255,184,48,0.08);border:1px solid rgba(255,184,48,0.2);border-radius:8px;padding:8px;margin-bottom:10px;font-size:11px;color:var(--gold);">
+      MCX · Lot Size: 100 BBL · Margin ~₹35,000/lot
     </div>
+    <!-- Lot size -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-      <span style="font-size:11px;color:var(--muted);font-weight:700;">LOTS</span>
+      <span style="font-size:11px;color:var(--muted);font-weight:700;">LOT SIZE</span>
       <div style="display:flex;align-items:center;gap:8px;">
         <button onclick="chCrdLot(-1)" style="width:32px;height:32px;border-radius:8px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:18px;font-weight:900;cursor:pointer;">−</button>
         <span id="crdLotN" style="font-size:18px;font-weight:900;min-width:24px;text-align:center;">1</span>
@@ -610,6 +576,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
         <span id="crdLotQ" style="font-size:10px;color:var(--muted);">= 100 BBL</span>
       </div>
     </div>
+    <!-- SL / TGT -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
       <div><span class="lbl">SL %</span><input id="crdSL" type="number" value="0.5" step="0.1" style="margin-bottom:0;"></div>
       <div><span class="lbl">Target %</span><input id="crdTG" type="number" value="1" step="0.1" style="margin-bottom:0;"></div>
@@ -620,30 +587,33 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     </div>
   </div>
 
-  <!-- Positions -->
+  <!-- Open Positions -->
   <div id="crdPosCard" style="display:none;" class="card">
-    <div style="font-size:13px;font-weight:800;margin-bottom:10px;">📂 Commodity Positions</div>
+    <div style="font-size:13px;font-weight:800;margin-bottom:10px;">📂 Crude Oil Positions</div>
     <div id="crdPosList"></div>
   </div>
 
-  <!-- Option Chain (सर्व Commodities साठी) -->
-  <div id="cmOCCard" class="card" style="padding:10px;">
+  <!-- Option Chain -->
+  <div class="card" style="padding:10px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-      <div style="font-size:13px;font-weight:800;" id="cmOCTitle">📋 Crude Oil Option Chain</div>
+      <div style="font-size:13px;font-weight:800;">📋 Crude Oil Option Chain</div>
       <div style="display:flex;align-items:center;gap:6px;">
         <select id="crdExp" style="margin-bottom:0;padding:5px 8px;font-size:11px;border-radius:7px;width:auto;">
-          
+          <option>17-Mar-26</option>
+          <option>21-Mar-26</option>
         </select>
         <button onclick="renderCrdOC()" style="padding:5px 10px;border-radius:7px;border:1px solid rgba(0,180,255,0.4);background:rgba(0,180,255,0.15);color:var(--blue);font-size:11px;cursor:pointer;">🔄</button>
       </div>
     </div>
+    <!-- ATM info -->
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
-      <div class="stat"><div class="v" id="crdOCSpot" style="color:var(--green);font-size:11px;">—</div><div class="k">Spot</div></div>
-      <div class="stat" style="background:rgba(255,184,48,0.1);border:1px solid rgba(255,184,48,0.3);"><div class="v" id="crdOCATM" style="color:var(--gold);font-size:11px;">—</div><div class="k">ATM</div></div>
+      <div class="stat"><div class="v" id="crdOCSpot" style="color:var(--green);font-size:11px;">₹6,245</div><div class="k">Spot</div></div>
+      <div class="stat" style="background:rgba(255,184,48,0.1);border:1px solid rgba(255,184,48,0.3);"><div class="v" id="crdOCATM" style="color:var(--gold);font-size:11px;">6,250</div><div class="k">ATM</div></div>
       <div class="stat"><div class="v" id="crdOCPCR" style="font-size:11px;">—</div><div class="k">PCR</div></div>
     </div>
+    <!-- OC Lot -->
     <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card2);border-radius:8px;padding:7px 10px;margin-bottom:8px;">
-      <span style="font-size:10px;color:var(--muted);font-weight:700;" id="cmOCLotLabel">LOT (100 BBL)</span>
+      <span style="font-size:10px;color:var(--muted);font-weight:700;">LOT (100 BBL)</span>
       <div style="display:flex;align-items:center;gap:6px;">
         <button onclick="chCrdOCLot(-1)" style="width:26px;height:26px;border-radius:6px;background:rgba(255,69,96,0.15);color:var(--red);border:1px solid rgba(255,69,96,0.3);font-size:14px;font-weight:900;cursor:pointer;">−</button>
         <span id="crdOCLotN" style="font-size:14px;font-weight:900;min-width:20px;text-align:center;">1</span>
@@ -654,11 +624,16 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;"><div id="crdOCTable"></div></div>
   </div>
 
-  <!-- Info Card -->
+  <!-- Info -->
   <div class="card" style="background:rgba(255,184,48,0.05);border:1px solid rgba(255,184,48,0.15);">
-    <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:8px;" id="cmInfoTitle">ℹ️ Crude Oil Info</div>
-    <div style="font-size:11px;color:var(--muted);line-height:1.8;" id="cmInfoBody">
-      • Exchange: MCX<br>• Trading Hours: 9:00 AM – 11:30 PM<br>• Lot Size: 100 Barrel<br>• Tick Size: ₹1<br>• Global Ref: NYMEX WTI Crude<br>• Best Time: 7:00 PM – 9:00 PM
+    <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:8px;">ℹ️ Crude Oil Info</div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.8;">
+      • Exchange: MCX (Multi Commodity Exchange)<br>
+      • Trading Hours: 9:00 AM – 11:30 PM<br>
+      • Lot Size: 100 Barrel<br>
+      • Tick Size: ₹1<br>
+      • Global Reference: NYMEX WTI Crude<br>
+      • Best Time: 7:00 PM – 9:00 PM (US market open)
     </div>
   </div>
 </div>
@@ -711,7 +686,6 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
   <button class="nav-btn" onclick="goPage('angel',this)"><span>🔗</span>Angel</button>
   <button class="nav-btn" onclick="goPage('tools',this)"><span>🔬</span>Tools</button>
   <button class="nav-btn" onclick="goPage('comm',this)"><span>🛢️</span>Commodity</button>
-  <button class="nav-btn" onclick="goPage('ai',this)"><span>🤖</span>AI</button>
 </nav>
 
 <!-- FLASH -->
@@ -1095,7 +1069,7 @@ function goPage(p,btn){
   if(p==='oc') renderOC();
   if(p==='pnl') renderPnl();
   if(p==='strat') renderStrats();
-  if(p==='watch'){ refreshAllWatchPrices(); renderWatch(); renderIntradayPicks(); startWatchPriceRefresh(); }
+  if(p==='watch'){ renderWatch(); renderIntradayPicks(); startWatchPriceRefresh(); }
   if(p==='comm'){crdCandles=genCrdCandles();setTimeout(()=>{drawCrdChart();renderCrdOC();},100);}
 }
 
@@ -2123,21 +2097,10 @@ async function renderOC(){
   document.getElementById('ocSpot').textContent='₹'+spot.toLocaleString('en-IN');
   document.getElementById('ocSpot').style.color = mktDir>=0 ? 'var(--green)' : 'var(--red)';
   document.getElementById('ocATM').textContent=atm.toLocaleString('en-IN');
-  const pcrVal=(mktDir<0 ? 1.2+Math.random()*0.4 : 0.6+Math.random()*0.3).toFixed(2);
-  document.getElementById('ocPCR').textContent=pcrVal;
+  document.getElementById('ocPCR').textContent=(mktDir<0 ? 1.2+Math.random()*0.4 : 0.6+Math.random()*0.3).toFixed(2);
   const strikes=[]; for(let i=-8;i<=8;i++) strikes.push(atm+i*step);
   const mCE=Math.max(...strikes.map(k=>Math.max(0.3,9-Math.abs(k-spot)/step)*100000));
   const mPE=Math.max(...strikes.map(k=>Math.max(0.3,8-Math.abs(k-spot)/step)*100000));
-  // Dummy BP Trend - PCR वरून calculate
-  const dummyPCR=+pcrVal;
-  const dummyTrend = dummyPCR>1.1?'BULLISH':dummyPCR<0.8?'BEARISH':'NEUTRAL';
-  const dummyColor = dummyTrend==='BULLISH'?'#00e87a':dummyTrend==='BEARISH'?'#ff4560':'#ffd700';
-  const dummyIcon  = dummyTrend==='BULLISH'?'📈':dummyTrend==='BEARISH'?'📉':'➡️';
-  const dBPEl=document.getElementById('ocBPTrend');
-  if(dBPEl){
-    dBPEl.innerHTML=`<span style="font-size:9px;color:var(--muted);">🐋 बडे Player HZ Trend:</span> <span style="font-size:11px;font-weight:800;color:${dummyColor};">${dummyIcon} ${dummyTrend}</span> <span style="font-size:9px;color:var(--muted);">PCR: ${pcrVal} · SIM Mode</span>`;
-    dBPEl.style.borderColor=dummyColor;
-  }
   const oif=v=>v>=100000?(v/100000).toFixed(1)+'L':(v/1000).toFixed(0)+'K';
   let html=`<table class="oc-t"><thead>
     <tr style="background:rgba(0,0,0,0.3);">
@@ -2250,7 +2213,7 @@ function renderOCReal(data, sym, step, ls){
     if((s.CE?.openInterest||0) > avgCEOI*1.5) bpCECount++;
     if((s.PE?.openInterest||0) > avgPEOI*1.5) bpPECount++;
   });
-  const bpTrend = bpCECount > bpPECount ? 'BEARISH' : bpPECount > bpCECount ? 'BULLISH' : 'NEUTRAL';
+  const bpTrend = bpCECount > bpPECount ? 'BULLISH' : bpPECount > bpCECount ? 'BEARISH' : 'NEUTRAL';
   const bpColor = bpTrend==='BULLISH'?'#00e87a':bpTrend==='BEARISH'?'#ff4560':'#ffd700';
   const bpIcon  = bpTrend==='BULLISH'?'📈':bpTrend==='BEARISH'?'📉':'➡️';
   const bpHZEl  = document.getElementById('ocBPTrend');
@@ -2315,17 +2278,17 @@ function renderOCReal(data, sym, step, ls){
       </td>
       <td style="color:rgba(255,255,255,0.4);">${ceIV}%</td>
       <td style="color:${+ceChg>=0?'var(--green)':'var(--red)'};">${+ceChg>=0?'+':''}${ceChg}</td>
-      <td style="font-weight:800;${ceHeroZero?'color:var(--green);':''}">₹${ceLTP}${ceHeroZero?'⭐':''}</td>
+      <td style="font-weight:800;${ceHeroZero?'color:var(--green);':''}">₹${ceLTP}${ceHeroZero?'⭐':''}<br>${ceHeroZero?'<span style="font-size:7px;font-weight:900;color:#000;background:var(--green);border-radius:3px;padding:1px 3px;">🦸 HZ</span>':''}</td>
       <td><div style="display:flex;flex-direction:column;gap:2px;">
         <button onclick='ocTrade(${ceObj},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
         <button onclick='ocTrade(${ceObj},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
       </div></td>
-      <td style="font-weight:800;font-size:11px;${isATM?'color:var(--gold);':isMaxPain?'color:var(--blue);':''}">${k.toLocaleString('en-IN')}<div style="font-size:7px;color:${isATM?'var(--gold)':isITMc?'var(--green)':'var(--muted)'};">${tag}</div>${mpBadge}${hzBadge}</td>
+      <td style="font-weight:800;font-size:11px;${isATM?'color:var(--gold);':isMaxPain?'color:var(--blue);':''}">${k.toLocaleString('en-IN')}<div style="font-size:7px;color:${isATM?'var(--gold)':isITMc?'var(--green)':'var(--muted)'};">${tag}</div>${mpBadge}</td>
       <td><div style="display:flex;flex-direction:column;gap:2px;">
         <button onclick='ocTrade(${peObj},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
         <button onclick='ocTrade(${peObj},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
       </div></td>
-      <td style="font-weight:800;${peHeroZero?'color:var(--green);':''}">₹${peLTP}${peHeroZero?'⭐':''}</td>
+      <td style="font-weight:800;${peHeroZero?'color:var(--green);':''}">₹${peLTP}${peHeroZero?'⭐':''}<br>${peHeroZero?'<span style="font-size:7px;font-weight:900;color:#000;background:var(--green);border-radius:3px;padding:1px 3px;">🦸 HZ</span>':''}</td>
       <td style="color:${+peChg>=0?'var(--green)':'var(--red)'};">${+peChg>=0?'+':''}${peChg}</td>
       <td style="color:rgba(255,255,255,0.4);">${peIV}%</td>
       <td>
@@ -2408,100 +2371,34 @@ function addWatch(sym){
 async function fetchCustomPrice(sym){
   const s=ALL_STOCKS.find(x=>x.sym===sym);
   if(!s) return;
-
-  // Method 1: Angel One proxy (if logged in)
-  const jwt=getJWT();
-  if(jwt && jwt.jwt){
+  try{
+    // Yahoo Finance NSE API
+    const url=`https://query1.finance.yahoo.com/v8/finance/chart/${sym}.NS?interval=1d&range=1d`;
+    const res=await fetch(url,{signal:AbortSignal.timeout(6000)});
+    const json=await res.json();
+    const meta=json?.chart?.result?.[0]?.meta;
+    if(meta){
+      const price=+(meta.regularMarketPrice||0).toFixed(2);
+      const prev=+(meta.chartPreviousClose||meta.previousClose||price);
+      const chg=prev>0?+(((price-prev)/prev)*100).toFixed(2):0;
+      s.p=price; s.chg=chg; s.base=price;
+      renderWatch();
+    }
+  }catch(e){
+    // fallback: NSE India free API
     try{
-      const proxy='https://examinations-citysearch-scholarship-correspondence.trycloudflare.com';
-      // NSE symbol to token mapping - common stocks
-      const tokenMap={
-        'RELIANCE':'2885','TCS':'11536','INFY':'1594','HDFCBANK':'1333',
-        'SBIN':'3045','ICICIBANK':'4963','AXISBANK':'5900','WIPRO':'3787',
-        'TATAMOTORS':'3456','MARUTI':'10999','ITC':'1660','BAJFINANCE':'317',
-        'ADANIENT':'25','HINDUNILVR':'1394','KOTAKBANK':'1922','LT':'11483',
-        'SUNPHARMA':'3351','TITAN':'3506','ASIANPAINT':'236','ULTRACEMCO':'11532',
-        'POWERGRID':'14977','NTPC':'11630','ONGC':'2475','COALINDIA':'20374',
-        'BHARTIARTL':'10604','TECHM':'13538','NESTLEIND':'17963','DIVISLAB':'10940',
-        'CIPLA':'694','DRREDDY':'881','EICHERMOT':'910','GRASIM':'1232',
-        'HEROMOTOCO':'1348','HINDALCO':'1363','JSWSTEEL':'11723','M&M':'2031',
-        'TATACONSUM':'3432','TATASTEEL':'3408','UPL':'11287','VEDL':'3063',
-        'BPCL':'526','INDUSINDBK':'5258','APOLLOHOSP':'157'
-      };
-      const token=tokenMap[sym];
-      if(token){
-        const res=await fetch(`${proxy}/rest/secure/angelbroking/market/v1/quote/`,{
-          method:'POST',
-          headers:{
-            'Authorization':'Bearer '+jwt.jwt,
-            'Content-Type':'application/json',
-            'Accept':'application/json',
-            'X-UserType':'USER','X-SourceID':'WEB',
-            'X-ClientLocalIP':'CLIENT_LOCAL_IP',
-            'X-ClientPublicIP':'CLIENT_PUBLIC_IP',
-            'X-MACAddress':'MAC_ADDRESS',
-            'X-PrivateKey': document.getElementById('aApiKey')?.value||jwt.clientId
-          },
-          body:JSON.stringify({mode:'LTP',exchangeTokens:{'NSE':[token]}}),
-          signal:AbortSignal.timeout(5000)
-        });
-        const json=await res.json();
-        const ltp=json?.data?.fetched?.[0]?.ltp;
-        if(ltp && ltp>0){
-          const prev=s.base||ltp;
-          s.p=+ltp.toFixed(2);
-          s.chg=prev>0?+(((ltp-prev)/prev)*100).toFixed(2):0;
-          if(!s.base) s.base=ltp;
-          renderWatch(); renderIntradayPicks();
-          return;
-        }
+      const url2=`https://query2.finance.yahoo.com/v8/finance/chart/${sym}.NS?interval=1d&range=1d`;
+      const res2=await fetch(url2,{signal:AbortSignal.timeout(5000)});
+      const j2=await res2.json();
+      const m2=j2?.chart?.result?.[0]?.meta;
+      if(m2){
+        s.p=+(m2.regularMarketPrice||0).toFixed(2);
+        const prev2=+(m2.chartPreviousClose||m2.previousClose||s.p);
+        s.chg=prev2>0?+(((s.p-prev2)/prev2)*100).toFixed(2):0;
+        s.base=s.p;
+        renderWatch();
       }
-    }catch(e){ console.log('Angel price fetch:',e.message); }
-  }
-
-  // Method 2: NSE India free API (CORS proxy)
-  try{
-    const cors='https://corsproxy.io/?url=';
-    const nseUrl=`https://www.nseindia.com/api/quote-equity?symbol=${encodeURIComponent(sym)}`;
-    const res=await fetch(cors+encodeURIComponent(nseUrl),{
-      headers:{'x-requested-with':'XMLHttpRequest'},
-      signal:AbortSignal.timeout(7000)
-    });
-    const json=await res.json();
-    const price=json?.priceInfo?.lastPrice||json?.priceInfo?.close;
-    if(price && price>0){
-      const prev=json?.priceInfo?.previousClose||price;
-      s.p=+price.toFixed(2);
-      s.chg=prev>0?+(((price-prev)/prev)*100).toFixed(2):0;
-      s.base=s.base||price;
-      renderWatch(); renderIntradayPicks();
-      return;
-    }
-  }catch(e){ console.log('NSE fetch failed:',sym); }
-
-  // Method 3: Open Finance API (no CORS)
-  try{
-    const res=await fetch(`https://api.upstox.com/v2/market-quote/ltp?symbol=NSE_EQ%7C${sym}`,{
-      headers:{'Accept':'application/json'},
-      signal:AbortSignal.timeout(5000)
-    });
-    const json=await res.json();
-    const ltp=json?.data?.[`NSE_EQ:${sym}`]?.last_price;
-    if(ltp && ltp>0){
-      const prev=s.base||ltp;
-      s.p=+ltp.toFixed(2); s.chg=prev>0?+(((ltp-prev)/prev)*100).toFixed(2):0;
-      s.base=s.base||ltp;
-      renderWatch(); renderIntradayPicks();
-      return;
-    }
-  }catch(e){}
-
-  // Method 4: Fallback - random simulation जेणेकरून "Live नाही" न दिसता काही तरी दिसेल
-  // ALL_STOCKS मध्ये असेल तर त्याच price वापर
-  const known=STOCKS.find(x=>x.sym===sym)||ALL_STOCKS.find(x=>x.sym===sym&&!x.custom);
-  if(known && known.p>0){
-    s.p=known.p; s.chg=known.chg; s.base=known.p;
-    renderWatch(); renderIntradayPicks();
+    }catch(e2){ console.log('Price fetch failed:',sym); }
   }
 }
 
@@ -2515,15 +2412,6 @@ function startWatchPriceRefresh(){
       if(s && s.custom) fetchCustomPrice(sym);
     });
   },60000);
-}
-function refreshAllWatchPrices(){
-  watchlist.forEach(sym=>{
-    const s=ALL_STOCKS.find(x=>x.sym===sym);
-    if(!s) return;
-    if(s.custom || s.p===0){
-      fetchCustomPrice(sym);
-    }
-  });
 }
 function removeWatch(sym){watchlist=watchlist.filter(s=>s!==sym);save();renderWatch();}
 
@@ -3017,126 +2905,38 @@ function showInd(k){
 }
 
 // ══ LOCALSTORAGE ═══════════════════════════════════════════
-// ══ HOME COMMODITY WIDGET ══════════════════════════════════
-function renderHomeCommodity(){
-  const list=document.getElementById('homeCmList');
-  if(!list) return;
-  list.innerHTML=Object.entries(CM_DATA).map(([sym,d])=>{
-    const price=+(d.price*(1+(Math.random()-0.5)*0.012)).toFixed(0);
-    const chg=+((Math.random()-0.48)*1.2).toFixed(2);
-    const col=chg>=0?'var(--green)':'var(--red)';
-    const sign=chg>=0?'+':'';
-    const label=sym==='NATURALGAS'?'NATGAS':sym==='CRUDEOIL'?'CRUDE':sym;
-    return `<div data-sym="${sym}" onclick="jumpToCm('${sym}')" style="flex-shrink:0;min-width:90px;background:var(--card2);border-radius:10px;padding:8px 10px;border:1px solid var(--border);cursor:pointer;transition:border-color 0.2s;">
-      <div style="font-size:13px;margin-bottom:2px;">${d.emoji}</div>
-      <div style="font-size:10px;font-weight:800;color:var(--muted);">${label}</div>
-      <div class="cm-price" style="font-size:12px;font-weight:900;margin-top:2px;">₹${price.toLocaleString('en-IN')}</div>
-      <div class="cm-chg" style="font-size:10px;font-weight:700;color:${col};">${sign}${chg}%</div>
-    </div>`;
-  }).join('');
-}
-
-function jumpToCm(sym){
-  const navBtns=document.querySelectorAll('.nav-btn');
-  // Find commodity nav button
-  let commBtn=null;
-  navBtns.forEach(b=>{ if(b.textContent.includes('Commodity')) commBtn=b; });
-  goPage('comm', commBtn||navBtns[7]);
-  setTimeout(()=>{
-    const tab=document.getElementById('cmTab-'+sym);
-    if(tab) setCmSym(sym,tab);
-  },100);
-}
-
-// ══ COMMODITY - MCX ALL ════════════════════════════════════
-const CM_DATA={
-  CRUDEOIL: {name:'MCX CRUDE OIL',  emoji:'🛢️', lot:100,  unit:'BBL',  margin:35000, price:6245,  vol:0.002,  tick:1,    hours:'9:00 AM – 11:30 PM', ref:'NYMEX WTI Crude',      best:'7:00 PM – 9:00 PM'},
-  GOLD:     {name:'MCX GOLD',       emoji:'🥇', lot:1,    unit:'gm',   margin:60000, price:73500, vol:0.0015, tick:1,    hours:'9:00 AM – 11:30 PM', ref:'COMEX Gold',           best:'7:00 PM – 9:00 PM'},
-  SILVER:   {name:'MCX SILVER',     emoji:'🥈', lot:30,   unit:'kg',   margin:40000, price:88500, vol:0.002,  tick:1,    hours:'9:00 AM – 11:30 PM', ref:'COMEX Silver',         best:'7:00 PM – 9:00 PM'},
-  NATURALGAS:{name:'MCX NATURAL GAS',emoji:'🔥',lot:1250, unit:'mmBtu',margin:20000, price:245,   vol:0.003,  tick:0.1,  hours:'9:00 AM – 11:30 PM', ref:'NYMEX Henry Hub',      best:'6:30 PM – 8:00 PM'},
-  COPPER:   {name:'MCX COPPER',     emoji:'🟤', lot:2500, unit:'kg',   margin:25000, price:755,   vol:0.0018, tick:0.05, hours:'9:00 AM – 11:30 PM', ref:'LME Copper',           best:'1:30 PM – 5:00 PM'},
-  ZINC:     {name:'MCX ZINC',       emoji:'⚙️', lot:5000, unit:'kg',   margin:18000, price:248,   vol:0.002,  tick:0.05, hours:'9:00 AM – 11:30 PM', ref:'LME Zinc',             best:'1:30 PM – 5:00 PM'},
-  LEAD:     {name:'MCX LEAD',       emoji:'🔩', lot:5000, unit:'kg',   margin:16000, price:185,   vol:0.002,  tick:0.05, hours:'9:00 AM – 11:30 PM', ref:'LME Lead',             best:'1:30 PM – 5:00 PM'},
-  ALUMINIUM:{name:'MCX ALUMINIUM',  emoji:'🪙', lot:5000, unit:'kg',   margin:14000, price:224,   vol:0.0015, tick:0.05, hours:'9:00 AM – 11:30 PM', ref:'LME Aluminium',        best:'1:30 PM – 5:00 PM'},
-};
-
-let cmSym='CRUDEOIL', cmTF='5m';
+// ══ COMMODITY - CRUDE OIL ══════════════════════════════════
 let crdCandles=[], crdTF='5m', crdLot=1;
 let crdPrice=6245, crdBase=6245;
 
-function setCmSym(sym,btn){
-  cmSym=sym;
-  // Tab highlight
-  document.querySelectorAll('[id^="cmTab-"]').forEach(b=>{
-    b.style.background='transparent'; b.style.color='var(--muted)'; b.style.borderColor='var(--border)';
-  });
-  btn.style.background='rgba(255,184,48,0.15)'; btn.style.color='var(--gold)'; btn.style.borderColor='rgba(255,184,48,0.5)';
-
-  const d=CM_DATA[sym];
-  // Update price with small random variation
-  crdPrice=+(d.price*(1+(Math.random()-0.5)*0.01)).toFixed(0);
-  crdBase=d.price;
-
-  // Update UI
-  document.getElementById('cmName').textContent=d.name;
-  document.getElementById('cmLotInfo').textContent='Lot: '+d.lot+' '+d.unit+' · MCX';
-  document.getElementById('crdPrice').textContent='₹'+crdPrice.toLocaleString('en-IN');
-  const chg=+(((crdPrice-crdBase)/crdBase)*100).toFixed(2);
-  const ce=document.getElementById('crdChg');
-  ce.textContent=(chg>=0?'+':'')+chg+'%';
-  ce.style.color=chg>=0?'var(--green)':'var(--red)';
-  document.getElementById('crdHigh').textContent='₹'+(+(crdPrice*1.008).toFixed(0)).toLocaleString('en-IN');
-  document.getElementById('crdLow').textContent='₹'+(+(crdPrice*0.992).toFixed(0)).toLocaleString('en-IN');
-  document.getElementById('crdOI').textContent=(Math.random()*2+0.5).toFixed(1)+'L';
-  document.getElementById('cmMarginInfo').textContent='MCX · Lot: '+d.lot+' '+d.unit+' · Margin ~₹'+d.margin.toLocaleString('en-IN')+'/lot';
-  crdLot=1;
-  document.getElementById('crdLotN').textContent='1';
-  document.getElementById('crdLotQ').textContent='= '+d.lot+' '+d.unit;
-  document.getElementById('cmInfoTitle').textContent='ℹ️ '+d.name;
-  document.getElementById('cmInfoBody').innerHTML=
-    '• Exchange: MCX<br>• Trading Hours: '+d.hours+'<br>• Lot Size: '+d.lot+' '+d.unit+
-    '<br>• Tick Size: ₹'+d.tick+'<br>• Global Ref: '+d.ref+'<br>• Best Time: '+d.best;
-  // OC for all commodities
-  document.getElementById('cmOCCard').style.display='block';
-  document.getElementById('cmOCTitle').textContent='📋 '+d.name+' Option Chain';
-  const lbl=document.getElementById('cmOCLotLabel');
-  if(lbl) lbl.textContent='LOT ('+d.lot+' '+d.unit+')';
-  crdOCLot=1;
-  document.getElementById('crdOCLotN').textContent='1';
-  document.getElementById('crdOCLotQ').textContent='= '+d.lot+' '+d.unit;
-  crdCandles=[]; drawCrdChart();
-  setTimeout(renderCrdOC,50);
-}
-
-function setCmTF(tf,btn){
-  cmTF=tf; crdTF=tf;
-  document.querySelectorAll('#pg-comm .btn-tf').forEach(b=>b.classList.remove('on'));
-  btn.classList.add('on');
-  crdCandles=[]; drawCrdChart();
-}
-
 function genCrdCandles(){
-  const d=CM_DATA[cmSym]||CM_DATA.CRUDEOIL;
-  const n=cmTF==='1h'?40:cmTF==='15m'?48:50;
-  let p=crdBase||d.price; const arr=[];
+  const cfg={'5m':{n:50,v:0.002},'15m':{n:48,v:0.003},'1h':{n:40,v:0.005}};
+  const {n,v}=cfg[crdTF]||cfg['5m'];
+  let p=crdBase; const arr=[];
   for(let i=0;i<n;i++){
-    const mv=p*d.vol,o=p,h=o+Math.random()*mv*2,l=o-Math.random()*mv*2,c=l+Math.random()*(h-l);
-    arr.push({o:+o.toFixed(1),h:+h.toFixed(1),l:+l.toFixed(1),c:+c.toFixed(1)});
+    const o=p,mv=p*v,h=o+Math.random()*mv*2,l=o-Math.random()*mv*2,c=l+Math.random()*(h-l);
+    arr.push({o:+o.toFixed(0),h:+h.toFixed(0),l:+l.toFixed(0),c:+c.toFixed(0)});
     p=c;
   }
   return arr;
 }
 
+function setCrdTF(tf,btn){
+  crdTF=tf;
+  document.querySelectorAll('#pg-comm .btn-tf').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  crdCandles=genCrdCandles(); drawCrdChart();
+}
+
 function chCrdLot(d){
-  const cm=CM_DATA[cmSym]||CM_DATA.CRUDEOIL;
   crdLot=Math.max(1,crdLot+d);
   document.getElementById('crdLotN').textContent=crdLot;
-  document.getElementById('crdLotQ').textContent='= '+(crdLot*cm.lot)+' '+cm.unit;
+  document.getElementById('crdLotQ').textContent='= '+(crdLot*100)+' BBL';
 }
 
 function drawCrdChart(){
   if(!crdCandles.length) crdCandles=genCrdCandles();
-  const wrap=document.getElementById('cmChartWrap');
+  const wrap=document.getElementById('crdChartWrap');
   if(!wrap) return;
   const W=wrap.offsetWidth||wrap.clientWidth||360;
   const H=220;
@@ -3185,23 +2985,25 @@ function drawCrdChart(){
   s+=`<rect x="${PL+CW+1}" y="${(+ly-8).toFixed(1)}" width="${PR-4}" height="16" rx="3" fill="${tc}"/>`;
   s+=`<text x="${(PL+CW+1+(PR-4)/2).toFixed(1)}" y="${(+ly+4).toFixed(1)}" fill="${bull?'#000':'#fff'}" font-size="8" font-family="sans-serif" font-weight="bold" text-anchor="middle">₹${Math.round(last.c).toLocaleString('en-IN')}</text>`;
   s+=`</svg>`;
-  const wrap2=document.getElementById('cmChartWrap');
-  if(wrap2) wrap2.innerHTML=s;
+  const svgEl=document.getElementById('crdChartSvg');
+  if(svgEl){
+    svgEl.setAttribute('width',W); svgEl.setAttribute('height',H);
+    svgEl.innerHTML=s.replace(/<svg[^>]*>/,'').replace('</svg>','');
+  }
 }
 
 function doCrdTrade(type){
   if(!checkTradeAllowed()) return;
-  const d=CM_DATA[cmSym]||CM_DATA.CRUDEOIL;
   const price=crdPrice;
   const slPct=+document.getElementById('crdSL').value||0.5;
   const tgPct=+document.getElementById('crdTG').value||1;
-  const sl=type==='BUY'?+(price*(1-slPct/100)).toFixed(1):+(price*(1+slPct/100)).toFixed(1);
-  const tgt=type==='BUY'?+(price*(1+tgPct/100)).toFixed(1):+(price*(1-tgPct/100)).toFixed(1);
-  const qty=crdLot*d.lot;
-  const pos={id:Date.now(),sym:d.name,type,entry:price,livePrice:price,sl,tgt,trail:0,qty,isOpt:false,isCrd:true,cmSym,time:new Date().toLocaleTimeString('mr-IN')};
+  const sl=type==='BUY'?+(price*(1-slPct/100)).toFixed(0):+(price*(1+slPct/100)).toFixed(0);
+  const tgt=type==='BUY'?+(price*(1+tgPct/100)).toFixed(0):+(price*(1-tgPct/100)).toFixed(0);
+  const qty=crdLot*100;
+  const pos={id:Date.now(),sym:'CRUDE OIL',type,entry:price,livePrice:price,sl,tgt,trail:0,qty,isOpt:false,isCrd:true,time:new Date().toLocaleTimeString('mr-IN')};
   positions.push(pos);
   renderCrdPositions(); renderPositions();
-  flash(d.emoji+' '+(type==='BUY'?'BUY':'SELL')+' '+cmSym+' @ ₹'+price.toLocaleString('en-IN'), type==='BUY');
+  flash((type==='BUY'?'📈 BUY ':'📉 SELL ')+'Crude Oil @ ₹'+price, type==='BUY');
 }
 
 function renderCrdPositions(){
@@ -3290,36 +3092,20 @@ function feedCrd(){
     if(p.type==='SELL'&&lp>=p.sl){closePos(p.id);renderCrdPositions();return;}
     if(p.type==='SELL'&&lp<=p.tgt){closePos(p.id);renderCrdPositions();return;}
   });
-  // Home widget update - CRUDE price card
-  const hList=document.getElementById('homeCmList');
-  if(hList){
-    const crudeCard=hList.querySelector('[data-sym="CRUDEOIL"]');
-    if(crudeCard){
-      const chg=+(((crdPrice-crdBase)/crdBase)*100).toFixed(2);
-      crudeCard.querySelector('.cm-price').textContent='₹'+crdPrice.toLocaleString('en-IN');
-      const chgEl=crudeCard.querySelector('.cm-chg');
-      chgEl.textContent=(chg>=0?'+':'')+chg+'%';
-      chgEl.style.color=chg>=0?'var(--green)':'var(--red)';
-    }
-  }
 }
 
 // ══ CRUDE OIL OPTION CHAIN ══════════════════════════════════
 let crdOCLot = 1;
 
 function chCrdOCLot(d){
-  const cm=CM_DATA[cmSym]||CM_DATA.CRUDEOIL;
   crdOCLot = Math.max(1, crdOCLot + d);
   document.getElementById('crdOCLotN').textContent = crdOCLot;
-  document.getElementById('crdOCLotQ').textContent = '= ' + (crdOCLot * cm.lot) + ' ' + cm.unit;
+  document.getElementById('crdOCLotQ').textContent = '= ' + (crdOCLot * 100) + ' BBL';
 }
 
 function renderCrdOC(){
-  const cm=CM_DATA[cmSym]||CM_DATA.CRUDEOIL;
-  const spot = crdPrice || cm.price;
-  // Strike step प्रत्येक commodity साठी वेगळा
-  const stepMap={CRUDEOIL:50,GOLD:100,SILVER:1000,NATURALGAS:5,COPPER:5,ZINC:5,LEAD:5,ALUMINIUM:5};
-  const step=stepMap[cmSym]||50;
+  const spot = crdPrice || 6245;
+  const step = 50; // Crude Oil strike step ₹50
   const atm = Math.round(spot / step) * step;
   const mktDir = crdPrice > crdBase ? 1 : -1;
 
@@ -3329,7 +3115,7 @@ function renderCrdOC(){
   document.getElementById('crdOCPCR').textContent = (mktDir < 0 ? 1.1 + Math.random() * 0.4 : 0.7 + Math.random() * 0.3).toFixed(2);
 
   const strikes = [];
-  for(let i = -6; i <= 6; i++) strikes.push(+(atm + i * step).toFixed(1));
+  for(let i = -6; i <= 6; i++) strikes.push(atm + i * step);
 
   const oif = v => v >= 100000 ? (v/100000).toFixed(1)+'L' : (v/1000).toFixed(0)+'K';
   const mOI = 800000;
@@ -3355,12 +3141,12 @@ function renderCrdOC(){
     const ceOI = Math.floor((isATM ? 8 : Math.max(0.3, 6 - dist/step)) * 100000 + Math.random() * 30000);
     const peOI = Math.floor((isATM ? 7 : Math.max(0.3, 5 - dist/step)) * 100000 + Math.random() * 30000);
 
-    const ceLTP = isATM ? +(spot * 0.008 + 2).toFixed(1) :
-                  isITMc ? +(spot - k + 5 + Math.random()*3).toFixed(1) :
-                  +(Math.max(0.5, (step*2 - dist) * 0.05 + Math.random()*2)).toFixed(1);
-    const peLTP = isATM ? +(spot * 0.007 + 2).toFixed(1) :
-                  isITMp ? +(k - spot + 4 + Math.random()*3).toFixed(1) :
-                  +(Math.max(0.5, (step*2 - dist) * 0.045 + Math.random()*2)).toFixed(1);
+    const ceLTP = isATM ? +(spot * 0.008 + 5).toFixed(0) :
+                  isITMc ? +(spot - k + 8 + Math.random()*5).toFixed(0) :
+                  +(Math.max(1, (step*2 - dist) * 0.05 + Math.random()*3)).toFixed(0);
+    const peLTP = isATM ? +(spot * 0.007 + 5).toFixed(0) :
+                  isITMp ? +(k - spot + 7 + Math.random()*5).toFixed(0) :
+                  +(Math.max(1, (step*2 - dist) * 0.045 + Math.random()*3)).toFixed(0);
 
     const ceIV = (isATM ? 28 : 28 + dist/step * 2).toFixed(1);
     const peIV = (isATM ? 29 : 29 + dist/step * 2).toFixed(1);
@@ -3374,11 +3160,12 @@ function renderCrdOC(){
                isITMp ? 'background:rgba(255,69,96,0.04);' : '';
     const tag = isATM ? 'ATM' : isITMc ? 'ITM' : 'OTM';
 
+    // CE/PE colors based on market direction
     const ceLTPcol = isITMc ? (mktDir >= 0 ? 'var(--green)' : 'var(--red)') : 'var(--text)';
     const peLTPcol = isITMp ? (mktDir < 0 ? 'var(--green)' : 'var(--red)') : 'var(--text)';
 
-    const ceObj = JSON.stringify({sym:cmSym,k,type:'CE',ltp:ceLTP,ls:cm.lot,isCrd:true});
-    const peObj = JSON.stringify({sym:cmSym,k,type:'PE',ltp:peLTP,ls:cm.lot,isCrd:true});
+    const ce = JSON.stringify({sym:'CRUDE',k,type:'CE',ltp:ceLTP,ls:100,isCrd:true});
+    const pe = JSON.stringify({sym:'CRUDE',k,type:'PE',ltp:peLTP,ls:100,isCrd:true});
 
     html += `<tr style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
       <td style="text-align:right;"><div style="font-size:8px;font-weight:700;color:var(--green);">${oif(ceOI)}</div><div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:var(--green);width:${ceBar}px;"></div></div></td>
@@ -3386,13 +3173,13 @@ function renderCrdOC(){
       <td style="color:${+ceChg>=0?'var(--green)':'var(--red)'};">${+ceChg>=0?'+':''}${ceChg}</td>
       <td style="font-weight:800;color:${ceLTPcol};">₹${ceLTP}</td>
       <td><div style="display:flex;flex-direction:column;gap:2px;">
-        <button onclick='crdOCTrade(${ceObj},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
-        <button onclick='crdOCTrade(${ceObj},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
+        <button onclick='crdOCTrade(${ce},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
+        <button onclick='crdOCTrade(${ce},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
       </div></td>
       <td style="font-weight:800;font-size:11px;${isATM?'color:var(--gold);':''}">${k.toLocaleString('en-IN')}<div style="font-size:7px;color:${isATM?'var(--gold)':isITMc?'var(--green)':'var(--muted)'};">${tag}</div></td>
       <td><div style="display:flex;flex-direction:column;gap:2px;">
-        <button onclick='crdOCTrade(${peObj},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
-        <button onclick='crdOCTrade(${peObj},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
+        <button onclick='crdOCTrade(${pe},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
+        <button onclick='crdOCTrade(${pe},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
       </div></td>
       <td style="font-weight:800;color:${peLTPcol};">₹${peLTP}</td>
       <td style="color:${+peChg>=0?'var(--green)':'var(--red)'};">${+peChg>=0?'+':''}${peChg}</td>
@@ -3406,11 +3193,10 @@ function renderCrdOC(){
 }
 
 function crdOCTrade(opt, action){
-  const d=CM_DATA[opt.sym]||CM_DATA[cmSym]||CM_DATA.CRUDEOIL;
   openTradeConfirm({
-    sym: `${d.emoji} ${opt.sym} ${opt.k} ${opt.type}`,
+    sym: `CRUDE ${opt.k} ${opt.type}`,
     action, ltp: opt.ltp,
-    ls: opt.ls||d.lot, isOpt: true, isCrd: true
+    ls: 100, isOpt: true, isCrd: true
   });
 }
 
@@ -4027,7 +3813,11 @@ function startTrial(){
   return info;
 }
 function getTrialTradesLeft(){
-  return 999;
+  let info = getTrialInfo();
+  if(!info) info = startTrial();
+  const today = getTodayStr();
+  const used = (info.trades && info.trades[today]) || 0;
+  return Math.max(0, 2 - used);
 }
 function recordTrialTrade(){
   let info = getTrialInfo();
@@ -4068,6 +3858,12 @@ function checkTradeAllowed(){
       showLicenseWall('⏰ Trial संपला! License Key टाका.');
       return false;
     }
+    if(tradesLeft <= 0){
+      flash('⚠️ आजचे 2 trades झाले! उद्या परत करा.', false);
+      return false;
+    }
+    recordTrialTrade();
+    flash(`📊 Trial: आज ${tradesLeft-1} trades शिल्लक`, true);
     return true;
   }
   if(isLicenseExpired(licenseData)){
@@ -4152,10 +3948,6 @@ function init(){
     updateLotInfo();
     startCandleTimer();
     initDrawCanvas();
-    // Init commodity page with Crude Oil selected
-    const crudeTab=document.getElementById('cmTab-CRUDEOIL');
-    if(crudeTab) setCmSym('CRUDEOIL', crudeTab);
-    renderHomeCommodity();
   }, 100);
   setInterval(feed, 2000);
 }
@@ -4618,30 +4410,7 @@ function showAngelPnlPanel(msg){
   if(pnlEl) pnlEl.innerHTML = `<div style="text-align:center;color:var(--muted);padding:16px;font-size:12px;">${msg}</div>`;
 }
 
-function getDefaultExpiries(){
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const today=new Date();
-  const dates=[];
-  let d=new Date(today);
-  let diff=(4-d.getDay()+7)%7;
-  if(diff===0) diff=7;
-  d.setDate(d.getDate()+diff);
-  for(let i=0;i<8;i++){
-    const dd=String(d.getDate()).padStart(2,'0');
-    const mm=months[d.getMonth()];
-    const yy=String(d.getFullYear()).slice(-2);
-    dates.push(dd+'-'+mm+'-'+yy);
-    d.setDate(d.getDate()+7);
-  }
-  return dates;
-}
-
 async function loadOCExpiry(){
-  const sel = document.getElementById('ocExp');
-  if(sel){
-    const dates = getDefaultExpiries();
-    sel.innerHTML = dates.map(e=>'<option>'+e+'</option>').join('');
-  }
   const sym = document.getElementById('ocSym')?.value||'NIFTY';
   const jwtData = getJWT();
   if(!jwtData) return; // use default static dates
@@ -4706,34 +4475,6 @@ async function fetchAngelBalance(){
 }
 
 
-
-async function manualUpdateIP(){
-  const statusEl = document.getElementById('ipUpdateStatus');
-  const btn = document.getElementById('ipUpdateBtn');
-  if(statusEl) statusEl.innerHTML = '<span style="color:var(--gold);">⏳ IP मिळवतोय...</span>';
-  if(btn) btn.disabled = true;
-  try{
-    const ipRes = await fetch('https://api.ipify.org?format=json');
-    const ipData = await ipRes.json();
-    const currentIP = ipData.ip;
-    const jwtData = getJWT();
-    const apiKey = document.getElementById('aApiKey')?.value || jwtData.clientId || '';
-    const proxy = document.querySelector('[id*="JWT"]') ? (localStorage.getItem('angel_proxy')||'https://examinations-citysearch-scholarship-correspondence.trycloudflare.com') : '';
-    const baseUrl = 'https://examinations-citysearch-scholarship-correspondence.trycloudflare.com';
-    const res = await fetch(baseUrl+'/rest/secure/angelbroking/user/v1/updateIPAddress',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+jwtData.jwt,'Content-Type':'application/json','Accept':'application/json','X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':currentIP,'X-ClientPublicIP':currentIP,'X-MACAddress':'MAC_ADDRESS','X-PrivateKey':apiKey},
-      body: JSON.stringify({clientLocalIP:currentIP,clientPublicIP:currentIP})
-    });
-    const data = await res.json();
-    try{ localStorage.setItem('angel_static_ip',currentIP); }catch(e){}
-    if(statusEl) statusEl.innerHTML = '<span style="color:var(--green);">✅ IP: '+currentIP+'</span>';
-    flash('✅ IP Updated: '+currentIP, true);
-  } catch(e){
-    if(statusEl) statusEl.innerHTML = '<span style="color:var(--red);">❌ '+e.message+'</span>';
-  }
-  if(btn) btn.disabled = false;
-}
 // ── Auto IP Update ─────────────────────────────────────────
 async function autoUpdateIP(jwt, apiKey, clientId){
   try{
@@ -4782,215 +4523,6 @@ async function autoUpdateIP(jwt, apiKey, clientId){
 window.addEventListener('load', init);
 </script>
 
-<!-- ══ AI ADVISOR PAGE ════════════════════════════════════ -->
-<div class="pg" id="pg-ai">
-  <div class="card" style="margin-bottom:10px;">
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-      <span style="font-size:22px;">🤖</span>
-      <div>
-        <div style="font-size:15px;font-weight:900;color:var(--green);">AI Trade Advisor</div>
-        <div style="font-size:10px;color:var(--muted);">Strike Price टाका → Entry / SL / Target मिळवा</div>
-      </div>
-    </div>
-
-    <!-- Capital -->
-    <span class="lbl">Capital (₹)</span>
-    <input type="text" inputmode="numeric" id="ai-capital" value="1700" style="margin-bottom:10px;font-size:16px;">
-
-    <!-- Symbol + Option Type -->
-    <div class="row">
-      <div>
-        <span class="lbl">Symbol</span>
-        <select id="ai-symbol">
-          <option value="NIFTY">NIFTY</option>
-          <option value="BANKNIFTY">BANKNIFTY</option>
-          <option value="SENSEX">SENSEX</option>
-          <option value="CRUDEOIL">Crude Oil</option>
-        </select>
-      </div>
-      <div>
-        <span class="lbl">Option Type</span>
-        <select id="ai-opttype">
-          <option value="CE">CALL CE</option>
-          <option value="PE">PUT PE</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Strike Price + Option LTP -->
-    <div class="row">
-      <div>
-        <span class="lbl">Strike Price (₹)</span>
-        <input type="hidden" id="ai-strike" value="24400">
-      </div>
-      <div>
-        <span class="lbl">Option LTP (₹)</span>
-        <input type="hidden" id="ai-ltp" value="85">
-      </div>
-    </div>
-
-    <!-- Index LTP + Trend -->
-    <div class="row">
-      <div>
-        <span class="lbl">Index LTP (₹)</span>
-        <input type="hidden" id="ai-indexltp" value="24350">
-      </div>
-      <div>
-        <span class="lbl">Market Trend</span>
-        <select id="ai-trend">
-          <option value="bullish">Bullish 📈</option>
-          <option value="bearish">Bearish 📉</option>
-          <option value="sideways">Sideways ↔️</option>
-          <option value="volatile">Volatile ⚡</option>
-        </select>
-      </div>
-    </div>
-
-    <button class="btn-g" style="width:100%;margin-top:4px;" onclick="getAIAdvice()" id="ai-btn">🤖 AI सल्ला घे</button>
-  </div>
-
-  <!-- Loading -->
-  <div id="ai-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px;">AI विश्लेषण करतोय...</div>
-
-  <!-- Result -->
-  <div id="ai-result" style="display:none;">
-    <!-- Direction -->
-    <div class="card" style="margin-bottom:10px;">
-      <div id="ai-action" style="font-size:16px;font-weight:900;margin-bottom:6px;"></div>
-      <div id="ai-reason" style="font-size:11px;color:var(--muted);"></div>
-    </div>
-
-    <!-- Entry / SL / Target -->
-    <div class="row" style="margin-bottom:10px;">
-      <div class="stat">
-        <div class="v" id="ai-entry" style="color:var(--gold);">—</div>
-        <div class="k">ENTRY ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-sl" style="color:var(--red);">—</div>
-        <div class="k">STOPLOSS ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-tgt" style="color:var(--green);">—</div>
-        <div class="k">TARGET ₹</div>
-      </div>
-    </div>
-
-    <!-- Qty / Risk / Profit -->
-    <div class="row" style="margin-bottom:10px;">
-      <div class="stat">
-        <div class="v" id="ai-qty" style="color:var(--blue);">—</div>
-        <div class="k">LOTS</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-loss" style="color:var(--red);">—</div>
-        <div class="k">MAX LOSS ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-profit" style="color:var(--green);">—</div>
-        <div class="k">TARGET ₹</div>
-      </div>
-      <div class="stat">
-        <div class="v" id="ai-rr" style="color:var(--gold);">—</div>
-        <div class="k">R:R</div>
-      </div>
-    </div>
-
-    <!-- Analysis -->
-    <div class="card" style="border-left:3px solid var(--green);">
-      <div style="font-size:11px;font-weight:700;color:var(--green);margin-bottom:8px;">📊 AI विश्लेषण</div>
-      <div id="ai-analysis" style="font-size:12px;color:var(--text);line-height:1.7;"></div>
-    </div>
-
-    <div style="margin-top:10px;background:#1a1000;border:1px solid #ff6d00;border-radius:10px;padding:10px;font-size:10px;color:#ff9800;text-align:center;">
-      ⚠️ AI सल्ला आहे — Angel One app मधून manually order टाक!
-    </div>
-  </div>
-</div>
-
-<script>
-function saveAnthropicKey(){
-  const k = document.getElementById('anthropicKey').value.trim();
-  if(!k||!k.startsWith('sk-ant-')){
-    document.getElementById('aiKeySt').style.color='var(--red)';
-    document.getElementById('aiKeySt').textContent='❌ चुकीची key! sk-ant- ने सुरू होते';
-    return;
-  }
-  localStorage.setItem('anthropic_key',k);
-  window.ANTHROPIC_KEY=k;
-  document.getElementById('aiKeySt').style.color='var(--green)';
-  document.getElementById('aiKeySt').textContent='✅ AI Key saved!';
-  flash('✅ AI Key Save झाली!',true);
-}
-// Load key on startup
-window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
-if(window.ANTHROPIC_KEY){ const el=document.getElementById('anthropicKey'); if(el) el.value=window.ANTHROPIC_KEY; }
-
-async function getAIAdvice(){
-  // Load saved key
-  window.ANTHROPIC_KEY = localStorage.getItem('anthropic_key')||'';
-  const capital = parseFloat(document.getElementById('ai-capital').value)||1700;
-  const symbol = document.getElementById('ai-symbol').value;
-  const opttype = document.getElementById('ai-opttype').value;
-  const strike = document.getElementById('ai-strike').value;
-  const ltp = parseFloat(document.getElementById('ai-ltp').value);
-  const indexltp = parseFloat(document.getElementById('ai-indexltp').value);
-  const trend = document.getElementById('ai-trend').value;
-
-  if(!window.ANTHROPIC_KEY){flash('⚠️ Angel page मध्ये AI Key टाका!',false);return;}
-  //skip1
-  //skip2
-
-  const btn = document.getElementById('ai-btn');
-  const loading = document.getElementById('ai-loading');
-  const result = document.getElementById('ai-result');
-
-  btn.disabled=true;
-  loading.style.display='block';
-  result.style.display='none';
-
-  const lotSize={NIFTY:75,BANKNIFTY:30,SENSEX:10,CRUDEOIL:100}[symbol]||75;
-
-  const prompt=`You are an expert Indian options trader AI for NSE/BSE. Capital: Rs${capital}, Symbol: ${symbol}, Strike: ${strike}${opttype}, Option LTP: Rs${ltp}, Index LTP: Rs${indexltp||'unknown'}, Trend: ${trend}, Lot size: ${lotSize}. Max risk 12% = Rs${Math.round(capital*0.12)}. SL = 20-30% below entry. Target = min 2:1 RR. If 1 lot cost > capital suggest qty 0. Respond ONLY pure JSON no markdown: {"action":"BUY_CE or BUY_PE or WAIT or AVOID","reason_short":"one line Marathi","entry":number,"stoploss":number,"target":number,"qty":number,"max_loss":number,"potential_profit":number,"rr_ratio":"X:1","analysis":"3-4 sentences Marathi about setup entry exit plan"}`;
-
-  try{
-    const res = await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","x-api-key":window.ANTHROPIC_KEY||"","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
-      body:JSON.stringify({model:"claude-sonnet-4-5",max_tokens:1000,messages:[{role:"user",content:prompt}]})
-    });
-    const data = await res.json();
-    const text = data.content?.map(i=>i.text||'').join('')||'';
-    let r;
-    try{r=JSON.parse(text.replace(/```json|```/g,'').trim());}
-    catch(e){const m=text.match(/\{[\s\S]*\}/);if(m)r=JSON.parse(m[0]);else throw new Error('fail');}
-
-    const actionMap={'BUY_CE':'📈 CALL खरेदी कर (CE)','BUY_PE':'📉 PUT खरेदी कर (PE)','WAIT':'⏳ थांब — अजून नको','AVOID':'🚫 Trade टाळ आज'};
-    const colorMap={'BUY_CE':'var(--green)','BUY_PE':'var(--red)','WAIT':'var(--gold)','AVOID':'#ff6d00'};
-
-    document.getElementById('ai-action').style.color = colorMap[r.action]||'var(--text)';
-    document.getElementById('ai-action').textContent = actionMap[r.action]||r.action;
-    document.getElementById('ai-reason').textContent = r.reason_short||'';
-    document.getElementById('ai-entry').textContent = r.entry||ltp;
-    document.getElementById('ai-sl').textContent = r.stoploss||'-';
-    document.getElementById('ai-tgt').textContent = r.target||'-';
-    document.getElementById('ai-qty').textContent = (r.qty||0)+' lot';
-    document.getElementById('ai-loss').textContent = r.max_loss||'-';
-    document.getElementById('ai-profit').textContent = r.potential_profit||'-';
-    document.getElementById('ai-rr').textContent = r.rr_ratio||'-';
-    document.getElementById('ai-analysis').textContent = r.analysis||'';
-
-    result.style.display='block';
-    flash('✅ AI सल्ला तयार!',true);
-  }catch(err){
-    flash('AI connect झाला नाही!',false);
-  }finally{
-    btn.disabled=false;
-    loading.style.display='none';
-  }
-}
-</script>
-
 <!-- ══ OPTION PRICE CHART MODAL ════════════════════════════ -->
 <div id="optChartModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.8);">
   <div style="position:absolute;bottom:0;left:0;right:0;background:#0d1e30;border-radius:20px 20px 0 0;padding:0 0 24px;max-height:90vh;overflow-y:auto;">
@@ -5012,28 +4544,5 @@ async function getAIAdvice(){
     <div id="optChartLevels" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 16px 0;"></div>
   </div>
 </div>
-<script>window.addEventListener("load",function(){
-  loadOCExpiry();
-  // MCX Crude expiry - last Tuesday of month
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function getMCXExpiries(){
-    const dates=[];
-    const today=new Date();
-    for(let m=0;m<4;m++){
-      const d=new Date(today.getFullYear(),today.getMonth()+m+1,0);
-      while(d.getDay()!==2) d.setDate(d.getDate()-1);
-      if(d>=today){
-        const dd=String(d.getDate()).padStart(2,'0');
-        dates.push(dd+'-'+months[d.getMonth()]+'-'+String(d.getFullYear()).slice(-2));
-      }
-    }
-    return dates;
-  }
-  const crdSel=document.getElementById('crdExp');
-  if(crdSel){
-    const mcxDates=getMCXExpiries();
-    crdSel.innerHTML=mcxDates.map(e=>'<option>'+e+'</option>').join('');
-  }
-});</script>
 </body>
 </html>
