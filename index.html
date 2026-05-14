@@ -297,7 +297,7 @@ input,select{width:100%;background:var(--card2);border:1px solid var(--border);c
     <div style="font-size:18px;font-weight:900;margin-bottom:10px;">📋 Option Chain</div>
     <div style="display:flex;gap:8px;margin-bottom:8px;">
       <select id="ocSym" onchange="loadOCExpiry();renderOC();" style="margin-bottom:0;flex:1;font-weight:700;"><option>NIFTY</option><option>BANKNIFTY</option><option>SENSEX</option></select>
-      <select id="ocExp" onchange="renderOC()" style="margin-bottom:0;flex:1;"><option>03-Apr-26</option><option>10-Apr-26</option><option>17-Apr-26</option><option>24-Apr-26</option></select>
+      <select id="ocExp" onchange="renderOC()" style="margin-bottom:0;flex:1;"><option>15-May-26</option><option>22-May-26</option><option>29-May-26</option><option>05-Jun-26</option><option>12-Jun-26</option></select>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:8px;">
       <div class="stat"><div class="v" id="ocSpot" style="color:var(--green);font-size:12px;">—</div><div class="k">Spot</div></div>
@@ -2050,7 +2050,7 @@ async function renderOC(){
 
   // Angel One connected असेल तर real data वापरा
   const jwtData = getJWT();
-  if(jwtData && jwtData.jwt){
+  if(false && jwtData && jwtData.jwt){
     document.getElementById('ocTable').innerHTML='<div style="text-align:center;padding:20px;color:var(--gold);">⏳ Real data लोड होत आहे...</div>';
     try{
       // Expiry date
@@ -2087,9 +2087,9 @@ async function renderOC(){
       console.log('Angel OC fetch error:', e);
     }
     document.getElementById('ocTable').innerHTML='<div style="text-align:center;padding:10px;color:var(--red);font-size:12px;">❌ Real data मिळाला नाही — Dummy दाखवत आहे</div>';
-  }
+  } else {
 
-  // Dummy data fallback
+  // Dummy data fallback - Angel One नसेल तर
   const spot=STOCKS.find(s=>s.sym===sym)?.p||24400;
   const atm=Math.round(spot/step)*step;
   const spotStock = STOCKS.find(s=>s.sym===sym);
