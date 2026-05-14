@@ -2129,10 +2129,10 @@ async function renderOC(){
     const ce=JSON.stringify({sym,k,type:'CE',ltp:ceLTP,ls});
     const pe=JSON.stringify({sym,k,type:'PE',ltp:peLTP,ls});
     html+=`<tr style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
-      <td style="text-align:right;"><div style="font-size:8px;font-weight:700;color:var(--green);">${oif(ceOI)}</div><div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:var(--green);width:${ceBar}px;"></div></div></td>
+      <td style="text-align:right;"><div style="font-size:8px;font-weight:700;${ceBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--green);'}">${oif(ceOI)}${ceBigPlayer?'🔥':''}</div><div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:${ceBigPlayer?'#00ff88':'var(--green)'};width:${ceBar}px;"></div></div></td>
       <td style="color:rgba(255,255,255,0.4);">${ceIV}%</td>
       <td style="color:${+ceChg>=0?'var(--green)':'var(--red)'};">${+ceChg>=0?'+':''}${ceChg}</td>
-      <td style="font-weight:800;color:${isITMc?(mktDir>=0?'var(--green)':'var(--red)'):'var(--text)'};">₹${ceLTP}</td>
+      <td style="font-weight:800;${ceBigPlayer&&!isITMc&&!isATM&&ceLTP>=0.5&&ceLTP<=5?'color:var(--green);background:rgba(0,232,122,0.08);':isITMc?'color:'+(mktDir>=0?'var(--green)':'var(--red)')+';':'color:var(--text);'}">₹${ceLTP}${ceBigPlayer&&!isITMc&&!isATM&&ceLTP>=0.5&&ceLTP<=5?'⭐':''}<br>${ceBigPlayer&&!isITMc&&!isATM&&ceLTP>=0.5&&ceLTP<=5?'<span style="font-size:7px;font-weight:900;color:#000;background:var(--green);border-radius:3px;padding:1px 3px;">🦸 HZ</span>':''}</td>
       <td><div style="display:flex;flex-direction:column;gap:2px;">
         <button onclick='ocTrade(${ce},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
         <button onclick='ocTrade(${ce},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
@@ -2142,10 +2142,10 @@ async function renderOC(){
         <button onclick='ocTrade(${pe},"BUY")' style="padding:3px 5px;background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">B</button>
         <button onclick='ocTrade(${pe},"SELL")' style="padding:3px 5px;background:rgba(255,69,96,0.2);color:var(--red);border:1px solid rgba(255,69,96,0.4);border-radius:4px;font-size:8px;font-weight:800;cursor:pointer;">S</button>
       </div></td>
-      <td style="font-weight:800;color:${isITMp?(mktDir<0?'var(--green)':'var(--red)'):'var(--text)'};">₹${peLTP}</td>
+      <td style="font-weight:800;${peBigPlayer&&!isITMp&&!isATM&&peLTP>=0.5&&peLTP<=5?'color:var(--green);background:rgba(0,232,122,0.08);':isITMp?'color:'+(mktDir<0?'var(--green)':'var(--red)')+';':'color:var(--text);'}">₹${peLTP}${peBigPlayer&&!isITMp&&!isATM&&peLTP>=0.5&&peLTP<=5?'⭐':''}<br>${peBigPlayer&&!isITMp&&!isATM&&peLTP>=0.5&&peLTP<=5?'<span style="font-size:7px;font-weight:900;color:#000;background:var(--green);border-radius:3px;padding:1px 3px;">🦸 HZ</span>':''}</td>
       <td style="color:${+peChg>=0?'var(--green)':'var(--red)'};">${+peChg>=0?'+':''}${peChg}</td>
       <td style="color:rgba(255,255,255,0.4);">${peIV}%</td>
-      <td><div style="font-size:8px;font-weight:700;color:var(--red);">${oif(peOI)}</div><div style="height:2px;background:rgba(255,69,96,0.12);margin-top:2px;width:32px;"><div style="height:2px;background:var(--red);width:${peBar}px;"></div></div></td>
+      <td><div style="font-size:8px;font-weight:700;${peBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--red);'}">${oif(peOI)}${peBigPlayer?'🔥':''}</div><div style="height:2px;background:rgba(255,69,96,0.12);margin-top:2px;width:32px;"><div style="height:2px;background:${peBigPlayer?'#00ff88':'var(--red)'};width:${peBar}px;"></div></div></td>
     </tr>`;
   });
   html+='</tbody></table>';
@@ -3170,7 +3170,7 @@ function renderCrdOC(){
     const pe = JSON.stringify({sym:'CRUDE',k,type:'PE',ltp:peLTP,ls:100,isCrd:true});
 
     html += `<tr style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
-      <td style="text-align:right;"><div style="font-size:8px;font-weight:700;color:var(--green);">${oif(ceOI)}</div><div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:var(--green);width:${ceBar}px;"></div></div></td>
+      <td style="text-align:right;"><div style="font-size:8px;font-weight:700;${ceBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--green);'}">${oif(ceOI)}${ceBigPlayer?'🔥':''}</div><div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:${ceBigPlayer?'#00ff88':'var(--green)'};width:${ceBar}px;"></div></div></td>
       <td style="color:rgba(255,255,255,0.4);">${ceIV}%</td>
       <td style="color:${+ceChg>=0?'var(--green)':'var(--red)'};">${+ceChg>=0?'+':''}${ceChg}</td>
       <td style="font-weight:800;color:${ceLTPcol};">₹${ceLTP}</td>
@@ -3186,7 +3186,7 @@ function renderCrdOC(){
       <td style="font-weight:800;color:${peLTPcol};">₹${peLTP}</td>
       <td style="color:${+peChg>=0?'var(--green)':'var(--red)'};">${+peChg>=0?'+':''}${peChg}</td>
       <td style="color:rgba(255,255,255,0.4);">${peIV}%</td>
-      <td><div style="font-size:8px;font-weight:700;color:var(--red);">${oif(peOI)}</div><div style="height:2px;background:rgba(255,69,96,0.12);margin-top:2px;width:32px;"><div style="height:2px;background:var(--red);width:${peBar}px;"></div></div></td>
+      <td><div style="font-size:8px;font-weight:700;${peBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--red);'}">${oif(peOI)}${peBigPlayer?'🔥':''}</div><div style="height:2px;background:rgba(255,69,96,0.12);margin-top:2px;width:32px;"><div style="height:2px;background:${peBigPlayer?'#00ff88':'var(--red)'};width:${peBar}px;"></div></div></td>
     </tr>`;
   });
 
