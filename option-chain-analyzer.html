@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VailGo Option Analyzer</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#090e1a;
+  color:#c8deff;
+  font-family: Arial, sans-serif;
+  min-height:100vh;
+}
+header {
+  background:#0d1525;
+  border-bottom:1px solid #1a2a45;
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky; top:0; z-index:50;
+}
+.logo { font-size:20px; font-weight:700; color:#00d4ff; letter-spacing:1px; }
+.logo b { color:#00ff88; }
+.badge {
+  font-size:11px; color:#00ff88;
+  background:#00ff8815; border:1px solid #00ff8840;
+  padding:3px 10px; border-radius:20px;
+  display:flex; align-items:center; gap:5px;
+}
+.dot {
+  width:7px; height:7px; border-radius:50%;
+  background:#00ff88;
+  animation: blink 1.2s ease-in-out infinite;
+}
+@keyframes blink { 50%{ opacity:0.3; } }
+.controls {
+  background:#0d1525;
+  border-bottom:1px solid #1a2a45;
+  padding:12px 16px;
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+}
+select, .btn {
+  background:#0a1525;
+  border:1px solid #1a2a45;
+  color:#c8deff;
+  padding:9px 14px;
+  border-radius:6px;
+  font-size:14px;
+  font-weight:600;
+}
+.btn {
+  color:#00d4ff; border-color:#00d4ff; cursor:pointer; background:#00d4ff10;
+}
+.btn:active { background:#00d4ff30; }
+#loading {
+  display:none; position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background:#090e1acc; z-index:200;
+  justify-content:center; align-items:center; flex-direction:column; gap:14px;
+}
+#loading.show { display:flex; }
+.spin {
+  width:46px; height:46px;
+  border:3px solid #1a2a45; border-top-color:#00d4ff;
+  border-radius:50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to{ transform:rotate(360deg); } }
+.load-txt { color:#00d4ff; font-size:14px; }
+#result { display:none; padding:14px 14px 30px; }
+#result.show { display:block; }
+.sig-box {
+  border-radius:10px; padding:16px; margin-bottom:12px; border:1px solid #1a2a45;
+}
+.sig-box.bull { border-color:#00ff88; background:#00ff8808; }
+.sig-box.bear { border-color:#ff3355; background:#ff335508; }
+.sig-box.side { border-color:#ffd700; background:#ffd70008; }
+.sig-top { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.sig-icon { font-size:38px; line-height:1; }
+.sig-label { font-size:11px; color:#4a6080; letter-spacing:2px; margin-bottom:3px; }
+.sig-dir { font-size:26px; font-weight:700; }
+.bull .sig-dir { color:#00ff88; }
+.bear .sig-dir { color:#ff3355; }
+.side .sig-dir { color:#ffd700; }
+.conf-lbl { font-size:11px; color:#4a6080; margin-bottom:5px; }
+.conf-track { height:5px; background:#1a2a45; border-radius:3px; overflow:hidden; }
+.conf-bar { height:100%; border-radius:3px; }
+.bull .conf-bar { background:#00ff88; }
+.bear .conf-bar { background:#ff3355; }
+.side .conf-bar { background:#ffd700; }
+.targets { display:flex; gap:8px; margin-top:12px; }
+.tgt {
+  flex:1; background:#0a1525; border:1px solid #1a2a45;
+  border-radius:7px; padding:8px; text-align:center;
+}
+.tgt-lbl { font-size:10px; color:#4a6080; margin-bottom:3px; }
+.tgt-val { font-size:17px; font-weight:700; font-family:monospace; }
+.tgt.sup .tgt-val { color:#ff3355; }
+.tgt.spot .tgt-val { color:#00d4ff; }
+.tgt.res .tgt-val { color:#00ff88; }
+.panel {
+  background:#0d1525; border:1px solid #1a2a45;
+  border-radius:10px; padding:14px; margin-bottom:12px;
+}
+.panel-hd {
+  font-size:11px; color:#4a6080; letter-spacing:2px;
+  text-transform:uppercase; margin-bottom:10px;
+  padding-bottom:8px; border-bottom:1px solid #1a2a45;
+}
+.mrow {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:6px 0; border-bottom:1px solid #0d1a2a; font-size:13px;
+}
+.mrow:last-child { border:none; }
+.mlbl { color:#4a6080; }
+.mval { font-weight:700; font-family:monospace; }
+.up { color:#00ff88; } .dn { color:#ff3355; } .neu { color:#ffd700; } .acc { color:#00d4ff; }
+.reason {
+  display:flex; gap:10px; align-items:flex-start;
+  padding:8px 0; border-bottom:1px solid #0d1a2a; font-size:13px; line-height:1.6;
+}
+.reason:last-child { border:none; }
+.ricn { font-size:15px; flex-shrink:0; margin-top:1px; }
+.note { font-size:11px; color:#4a6080; text-align:center; padding:10px 14px 4px; line-height:1.8; }
+#init { padding:60px 20px; text-align:center; color:#4a6080; }
+
+/* Toggle CE/PE */
+.tog-btn {
+  flex:1; padding:8px; border-radius:6px; font-size:13px; font-weight:700;
+  cursor:pointer; border:1px solid #1a2a45; background:#0a1525; color:#4a6080;
+}
+.tog-btn.active { background:#00d4ff18; border-color:#00d4ff; color:#00d4ff; }
+
+/* Filter tabs */
+.ftab {
+  padding:5px 12px; border-radius:20px; font-size:12px; font-weight:600;
+  cursor:pointer; border:1px solid #1a2a45; background:#0a1525; color:#4a6080;
+}
+.ftab.active { background:#ffd70020; border-color:#ffd700; color:#ffd700; }
+
+/* Strike cards */
+.strike-card {
+  border:1px solid #1a2a45; border-radius:8px; padding:11px 12px;
+  margin-bottom:8px; cursor:pointer; background:#0a1525;
+}
+.strike-card:active { background:#1a2a45; }
+.strike-card.selected { border-color:#00d4ff; background:#00d4ff0c; }
+.strike-card.itm { border-left:3px solid #ffd700; }
+.strike-card.atm-card { border-left:3px solid #00d4ff; background:#00d4ff06; }
+.strike-card.otm { border-left:3px solid #4a6080; }
+
+.sc-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.sc-strike { font-size:17px; font-weight:700; font-family:monospace; color:#c8deff; }
+.sc-badge {
+  font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; letter-spacing:1px;
+}
+.badge-itm { background:#ffd70025; color:#ffd700; border:1px solid #ffd70050; }
+.badge-atm { background:#00d4ff25; color:#00d4ff; border:1px solid #00d4ff50; }
+.badge-otm { background:#ffffff10; color:#4a6080; border:1px solid #4a608050; }
+
+.sc-row { display:flex; justify-content:space-between; font-size:12px; margin-top:3px; }
+.sc-lbl { color:#4a6080; }
+.sc-val { font-family:monospace; font-weight:600; color:#c8deff; }
+.sc-prem { font-size:15px; font-weight:700; font-family:monospace; }
+.ce-prem { color:#00ff88; }
+.pe-prem { color:#ff3355; }
+
+/* Qty buttons */
+.qty-btn {
+  width:32px; height:32px; border-radius:6px; font-size:18px; font-weight:700;
+  cursor:pointer; border:1px solid #1a2a45; background:#0a1525; color:#00d4ff;
+  line-height:1;
+}
+.qty-btn:active { background:#1a2a45; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Vail<b>Go</b> TECH</div>
+  <div class="badge"><div class="dot"></div>AI ANALYSIS</div>
+</header>
+
+<div class="controls">
+  <select id="sel-index">
+    <option value="NIFTY">NIFTY 50</option>
+    <option value="BANKNIFTY">BANK NIFTY</option>
+    <option value="SENSEX">SENSEX</option>
+    <option value="FINNIFTY">FIN NIFTY</option>
+    <option value="MIDCPNIFTY">MIDCAP NIFTY</option>
+  </select>
+  <select id="sel-expiry">
+    <option>आजचा Expiry</option>
+    <option>Weekly</option>
+    <option>Monthly</option>
+  </select>
+  <button class="btn" onclick="run()">⚡ ANALYZE करा</button>
+  <span id="ts" style="font-size:11px;color:#4a6080;font-family:monospace;"></span>
+</div>
+
+<div id="loading">
+  <div class="spin"></div>
+  <div class="load-txt">Option Chain विश्लेषण होतेय...</div>
+</div>
+
+<div id="init">
+  <div style="font-size:50px;margin-bottom:14px;">📊</div>
+  <div style="font-size:17px;font-weight:700;color:#c8deff;margin-bottom:8px;">Option Chain Analyzer</div>
+  <div style="font-size:13px;line-height:1.9;">Index निवडा आणि <span style="color:#00d4ff;font-weight:700;">ANALYZE करा</span> बटण दाबा<br>AI तुम्हाला market direction सांगेल</div>
+</div>
+
+<div id="result">
+  <div class="sig-box" id="sig-box">
+    <div class="sig-top">
+      <div class="sig-icon" id="sig-icon">📊</div>
+      <div>
+        <div class="sig-label">MARKET DIRECTION</div>
+        <div class="sig-dir" id="sig-dir">—</div>
+      </div>
+    </div>
+    <div class="conf-lbl">Confidence: <span id="conf-pct">0</span>%</div>
+    <div class="conf-track"><div class="conf-bar" id="conf-bar" style="width:0%"></div></div>
+    <div class="targets">
+      <div class="tgt sup"><div class="tgt-lbl">🛡 SUPPORT</div><div class="tgt-val" id="t-sup">—</div></div>
+      <div class="tgt spot"><div class="tgt-lbl">📍 SPOT</div><div class="tgt-val" id="t-spot">—</div></div>
+      <div class="tgt res"><div class="tgt-lbl">🔝 RESIST</div><div class="tgt-val" id="t-res">—</div></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hd">OI Analysis</div>
+    <div class="mrow"><span class="mlbl">PCR (OI)</span><span class="mval" id="m-pcr">—</span></div>
+    <div class="mrow"><span class="mlbl">Max CE OI Strike</span><span class="mval dn" id="m-maxce">—</span></div>
+    <div class="mrow"><span class="mlbl">Max PE OI Strike</span><span class="mval up" id="m-maxpe">—</span></div>
+    <div class="mrow"><span class="mlbl">OI Trend</span><span class="mval acc" id="m-oitrend">—</span></div>
+    <div class="mrow"><span class="mlbl">IV Skew</span><span class="mval" id="m-ivskew">—</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hd">Market Pulse</div>
+    <div class="mrow"><span class="mlbl">ATM Strike</span><span class="mval neu" id="m-atm">—</span></div>
+    <div class="mrow"><span class="mlbl">ATM CE Premium</span><span class="mval" id="m-ceprem">—</span></div>
+    <div class="mrow"><span class="mlbl">ATM PE Premium</span><span class="mval" id="m-peprem">—</span></div>
+    <div class="mrow"><span class="mlbl">CE/PE Ratio</span><span class="mval" id="m-ratio">—</span></div>
+    <div class="mrow"><span class="mlbl">Expected Range</span><span class="mval acc" id="m-range">—</span></div>
+  </div>
+
+  <div class="panel" id="oi-panel">
+    <div class="panel-hd">Strike-wise OI &nbsp;🔴 PUT &nbsp;🟢 CALL</div>
+    <canvas id="oiCanvas" style="display:block;"></canvas>
+  </div>
+
+  <!-- Strike Selector Panel -->
+  <div class="panel" id="strike-panel">
+    <div class="panel-hd">📌 Strike निवडा — ITM / ATM / OTM</div>
+
+    <!-- CE / PE toggle -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;">
+      <button class="tog-btn active" id="tog-ce" onclick="toggleOpt('CE')">CALL (CE)</button>
+      <button class="tog-btn" id="tog-pe" onclick="toggleOpt('PE')">PUT (PE)</button>
+    </div>
+
+    <!-- Filter tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+      <button class="ftab active" onclick="filterTab(this,'ALL')">सर्व</button>
+      <button class="ftab" onclick="filterTab(this,'ITM')">ITM 💰</button>
+      <button class="ftab" onclick="filterTab(this,'ATM')">ATM 🎯</button>
+      <button class="ftab" onclick="filterTab(this,'OTM')">OTM 🎲</button>
+    </div>
+
+    <!-- Strike cards -->
+    <div id="strike-cards"></div>
+  </div>
+
+  <!-- Trade Calculator -->
+  <div class="panel" id="calc-panel" style="display:none;">
+    <div class="panel-hd">🧮 Trade Calculator</div>
+    <div id="calc-selected" style="margin-bottom:10px;font-size:13px;color:#4a6080;">Strike निवडलेला नाही</div>
+    <div class="mrow">
+      <span class="mlbl">Lots</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="qty-btn" onclick="adjLot(-1)">−</button>
+        <span id="lot-count" style="font-size:18px;font-weight:700;font-family:monospace;color:#00d4ff;min-width:28px;text-align:center;">1</span>
+        <button class="qty-btn" onclick="adjLot(1)">+</button>
+      </div>
+    </div>
+    <div class="mrow"><span class="mlbl">Premium</span><span class="mval acc" id="calc-prem">—</span></div>
+    <div class="mrow"><span class="mlbl">Lot Size</span><span class="mval" id="calc-lot">—</span></div>
+    <div class="mrow"><span class="mlbl">Total Cost</span><span class="mval neu" id="calc-cost">—</span></div>
+    <div class="mrow"><span class="mlbl">Break-even</span><span class="mval" id="calc-be">—</span></div>
+    <div class="mrow"><span class="mlbl">Target Profit (2x)</span><span class="mval up" id="calc-tp">—</span></div>
+    <div class="mrow"><span class="mlbl">Max Loss</span><span class="mval dn" id="calc-ml">—</span></div>
+    <div style="margin-top:10px;padding:10px;background:#0a1525;border-radius:7px;font-size:12px;color:#4a6080;line-height:1.9;" id="calc-note">—</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-hd">Analysis कारणे</div>
+    <div id="reasons"></div>
+  </div>
+
+  <div class="note">⚠️ केवळ शैक्षणिक हेतूसाठी | Trading स्वतःच्या जबाबदारीवर करा</div>
+</div>
+
+<script>
+function generateChain(idx) {
+  var spots = {NIFTY:24200,BANKNIFTY:52500,SENSEX:79800,FINNIFTY:23800,MIDCPNIFTY:11200};
+  var steps = {NIFTY:50,BANKNIFTY:100,SENSEX:100,FINNIFTY:50,MIDCPNIFTY:25};
+  var spot = spots[idx] + Math.round((Math.random()-0.5)*spots[idx]*0.015);
+  var step = steps[idx];
+  var atm = Math.round(spot/step)*step;
+  var bias = Math.random()>0.45?'bull':'bear';
+  var strikes = [];
+  for (var i=-5; i<=5; i++) {
+    var strike = atm + i*step;
+    var dist = Math.abs(i);
+    var base = (6-dist)*(700+Math.round(Math.random()*600));
+    var ceOI, peOI;
+    if (bias==='bull') {
+      ceOI = i>=1?base*(1.3+Math.random()*0.6):base*(0.5+Math.random()*0.4);
+      peOI = i<=-1?base*(1.4+Math.random()*0.7):base*(0.5+Math.random()*0.4);
+    } else {
+      ceOI = i>=-1?base*(1.4+Math.random()*0.7):base*(0.5+Math.random()*0.4);
+      peOI = i<=1?base*(0.5+Math.random()*0.4):base*(1.3+Math.random()*0.6);
+    }
+    var cePrem = Math.max(8, Math.round((atm-strike+250)*0.5*(dist<=1?1:0.4)+Math.random()*20));
+    var pePrem = Math.max(8, Math.round((strike-atm+250)*0.5*(dist<=1?1:0.4)+Math.random()*20));
+    strikes.push({strike:strike,ceOI:Math.round(ceOI),peOI:Math.round(peOI),cePrem:cePrem,pePrem:pePrem,isATM:(i===0)});
+  }
+  var totCE=0, totPE=0;
+  for (var k=0;k<strikes.length;k++){totCE+=strikes[k].ceOI;totPE+=strikes[k].peOI;}
+  var maxCEobj=strikes[0], maxPEobj=strikes[0];
+  for (var k=0;k<strikes.length;k++){
+    if(strikes[k].ceOI>maxCEobj.ceOI) maxCEobj=strikes[k];
+    if(strikes[k].peOI>maxPEobj.peOI) maxPEobj=strikes[k];
+  }
+  return {spot:spot,atm:atm,strikes:strikes,
+    pcr:(totPE/totCE).toFixed(2),maxCE:maxCEobj.strike,maxPE:maxPEobj.strike,
+    cePrem:strikes[5].cePrem,pePrem:strikes[5].pePrem};
+}
+
+function localAnalyze(c,idx) {
+  var pcr=parseFloat(c.pcr);
+  var dir=pcr>1.15?'BULLISH':pcr<0.85?'BEARISH':'SIDEWAYS';
+  var dmr=dir==='BULLISH'?'वर जाणार 📈':dir==='BEARISH'?'खाली जाणार 📉':'Sideways ↔️';
+  var conf=dir==='SIDEWAYS'?55:Math.min(88,Math.round(Math.abs(pcr-1)*90+48));
+  var rng={NIFTY:150,BANKNIFTY:300,SENSEX:500,FINNIFTY:150,MIDCPNIFTY:75}[idx]||150;
+  return {
+    direction:dir,direction_marathi:dmr,confidence:conf,
+    support:c.maxPE,resistance:c.maxCE,
+    oi_trend:dir==='BULLISH'?'Long Buildup':dir==='BEARISH'?'Short Buildup':'Long Unwinding',
+    iv_skew:dir==='BULLISH'?'CE Skew (Bullish)':dir==='BEARISH'?'PE Skew (Bearish)':'Neutral',
+    expected_range:'±'+rng+' points',
+    reasons:[
+      'PCR '+c.pcr+' — '+(dir==='BULLISH'?'PUT writing जास्त, support मजबूत':'CALL writing जास्त, resistance मजबूत'),
+      'Max CE OI '+c.maxCE+' वर — strong resistance zone',
+      'Max PE OI '+c.maxPE+' वर — मजबूत support level',
+      'ATM CE:PE ratio '+(c.cePrem/c.pePrem).toFixed(2)+' — '+(dir==='BULLISH'?'bullish':'bearish')+' bias दाखवतो'
+    ]
+  };
+}
+
+async function run() {
+  var idx = document.getElementById('sel-index').value;
+  gIdx = idx;
+  document.getElementById('loading').className = 'show';
+  document.getElementById('init').style.display = 'none';
+  document.getElementById('result').className = '';
+
+  var c = generateChain(idx);
+  gChain = c;
+  gSelected = null;
+  document.getElementById('calc-panel').style.display = 'none';
+
+  var prompt = 'NSE Option Chain analyst. Reply ONLY valid JSON no extra text.\n'+
+    idx+' Spot:'+c.spot+' ATM:'+c.atm+' PCR:'+c.pcr+
+    ' MaxCE:'+c.maxCE+' MaxPE:'+c.maxPE+' CEprem:'+c.cePrem+' PEprem:'+c.pePrem+'\n'+
+    'JSON: {"direction":"BULLISH or BEARISH or SIDEWAYS","direction_marathi":"वर जाणार 📈 or खाली जाणार 📉 or Sideways ↔️","confidence":75,"support":'+c.maxPE+',"resistance":'+c.maxCE+',"oi_trend":"Long Buildup","iv_skew":"CE Skew (Bullish)","expected_range":"±150 points","reasons":["Marathi reason1","reason2","reason3","reason4"]}';
+
+  var result = null;
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:700,
+        messages:[{role:'user',content:prompt}]})
+    });
+    var data = await resp.json();
+    var txt = '';
+    if (data.content) { for(var i=0;i<data.content.length;i++) txt+=data.content[i].text||''; }
+    txt = txt.replace(/```json/g,'').replace(/```/g,'').trim();
+    result = JSON.parse(txt);
+  } catch(e) {
+    result = localAnalyze(c, idx);
+  }
+
+  document.getElementById('loading').className = '';
+  renderResult(result, c);
+  setTimeout(function(){ renderStrikes(); }, 150);
+}
+
+function renderResult(r, c) {
+  var box = document.getElementById('sig-box');
+  var cls = r.direction==='BULLISH'?'bull':r.direction==='BEARISH'?'bear':'side';
+  box.className = 'sig-box '+cls;
+  var icons={BULLISH:'🚀',BEARISH:'🔻',SIDEWAYS:'↔️'};
+  document.getElementById('sig-icon').textContent = icons[r.direction]||'📊';
+  document.getElementById('sig-dir').textContent = r.direction_marathi;
+  document.getElementById('conf-pct').textContent = r.confidence;
+  document.getElementById('conf-bar').style.width = r.confidence+'%';
+  document.getElementById('t-sup').textContent = r.support.toLocaleString('en-IN');
+  document.getElementById('t-spot').textContent = c.spot.toLocaleString('en-IN');
+  document.getElementById('t-res').textContent = r.resistance.toLocaleString('en-IN');
+
+  var pcn=parseFloat(c.pcr);
+  var pEl=document.getElementById('m-pcr');
+  pEl.textContent=c.pcr;
+  pEl.className='mval '+(pcn>1.1?'up':pcn<0.9?'dn':'neu');
+  document.getElementById('m-maxce').textContent=r.resistance.toLocaleString('en-IN');
+  document.getElementById('m-maxpe').textContent=r.support.toLocaleString('en-IN');
+  document.getElementById('m-oitrend').textContent=r.oi_trend||'—';
+  document.getElementById('m-ivskew').textContent=r.iv_skew||'—';
+  document.getElementById('m-atm').textContent=c.atm.toLocaleString('en-IN');
+  document.getElementById('m-ceprem').textContent='₹'+c.cePrem;
+  document.getElementById('m-peprem').textContent='₹'+c.pePrem;
+  document.getElementById('m-ratio').textContent=(c.cePrem/c.pePrem).toFixed(2);
+  document.getElementById('m-range').textContent=r.expected_range||'—';
+
+  // Show result panel first
+  document.getElementById('result').className = 'show';
+
+  // Draw canvas after layout settles
+  setTimeout(function(){ drawOI(c.strikes); }, 120);
+
+  var icons2=['🔍','📊','🏦','⚡'];
+  var reasons = r.reasons||[];
+  var html='';
+  for(var i=0;i<reasons.length;i++){
+    html+='<div class="reason"><div class="ricn">'+(icons2[i]||'•')+'</div><div>'+reasons[i]+'</div></div>';
+  }
+  document.getElementById('reasons').innerHTML=html;
+
+  var now=new Date();
+  document.getElementById('ts').textContent=
+    String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+}
+
+function drawOI(strikes) {
+  var canvas = document.getElementById('oiCanvas');
+  if (!canvas) return;
+  var panel = document.getElementById('oi-panel');
+  if (!panel) return;
+
+  var maxOI = 0;
+  for (var i=0;i<strikes.length;i++){
+    if(strikes[i].ceOI>maxOI) maxOI=strikes[i].ceOI;
+    if(strikes[i].peOI>maxOI) maxOI=strikes[i].peOI;
+  }
+
+  var rowH = 30;
+  var padV = 4;
+  var labelW = 62;
+  var atmTagW = 36;
+  var W = panel.clientWidth - 28;
+  if (W < 100) W = 280;
+  var totalBarW = W - labelW - atmTagW;
+  var halfW = Math.floor(totalBarW / 2) - 2;
+  var H = strikes.length * rowH + padV * 2;
+
+  canvas.width = W;
+  canvas.height = H;
+
+  var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+
+  var cx = labelW + halfW; // x of center divider
+
+  for (var i=0;i<strikes.length;i++) {
+    var s = strikes[i];
+    var y = padV + i * rowH;
+    var midY = y + rowH / 2;
+
+    if (s.isATM) {
+      ctx.fillStyle = '#0d1e35';
+      ctx.fillRect(2, y+2, W-4, rowH-4);
+    }
+
+    // Strike text
+    ctx.font = s.isATM ? 'bold 12px monospace' : '11px monospace';
+    ctx.fillStyle = s.isATM ? '#00d4ff' : '#4a6080';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(s.strike), labelW-4, midY);
+
+    // PE bar (left of center)
+    var peW = maxOI>0 ? Math.max(3, Math.round((s.peOI/maxOI)*halfW)) : 3;
+    ctx.fillStyle = '#ff3355';
+    ctx.fillRect(cx-peW, y+8, peW, 14);
+
+    // CE bar (right of center)
+    var ceW = maxOI>0 ? Math.max(3, Math.round((s.ceOI/maxOI)*halfW)) : 3;
+    ctx.fillStyle = '#00ff88';
+    ctx.fillRect(cx+2, y+8, ceW, 14);
+
+    // Divider
+    ctx.fillStyle = '#2a3a55';
+    ctx.fillRect(cx, y+6, 2, 18);
+
+    // ATM tag
+    if (s.isATM) {
+      ctx.font = 'bold 9px monospace';
+      ctx.fillStyle = '#00d4ff';
+      ctx.textAlign = 'left';
+      ctx.fillText('ATM', cx+halfW+4, midY);
+    }
+  }
+}
+
+setInterval(function(){
+  if(document.getElementById('result').className==='show') run();
+}, 180000);
+
+// ============ STRIKE SELECTOR ============
+var gChain = null;
+var gOpt = 'CE';   // current CE/PE
+var gFilter = 'ALL';
+var gLots = 1;
+var gSelected = null;
+var LOT_SIZES = {NIFTY:25,BANKNIFTY:15,SENSEX:10,FINNIFTY:25,MIDCPNIFTY:75};
+var gIdx = 'NIFTY';
+
+function toggleOpt(opt) {
+  gOpt = opt;
+  document.getElementById('tog-ce').className = 'tog-btn'+(opt==='CE'?' active':'');
+  document.getElementById('tog-pe').className = 'tog-btn'+(opt==='PE'?' active':'');
+  gSelected = null;
+  document.getElementById('calc-panel').style.display = 'none';
+  renderStrikes();
+}
+
+function filterTab(el, f) {
+  gFilter = f;
+  var tabs = document.querySelectorAll('.ftab');
+  for (var i=0; i<tabs.length; i++) tabs[i].className = 'ftab';
+  el.className = 'ftab active';
+  renderStrikes();
+}
+
+function renderStrikes() {
+  if (!gChain) return;
+  var html = '';
+  var strikes = gChain.strikes;
+  var atm = gChain.atm;
+
+  for (var i=0; i<strikes.length; i++) {
+    var s = strikes[i];
+    var isITM = gOpt==='CE' ? s.strike < atm : s.strike > atm;
+    var isATM = s.strike === atm;
+    var isOTM = gOpt==='CE' ? s.strike > atm : s.strike < atm;
+    var stype = isATM ? 'ATM' : isITM ? 'ITM' : 'OTM';
+
+    if (gFilter==='ITM' && !isITM) continue;
+    if (gFilter==='ATM' && !isATM) continue;
+    if (gFilter==='OTM' && !isOTM) continue;
+
+    var prem = gOpt==='CE' ? s.cePrem : s.pePrem;
+    var oi   = gOpt==='CE' ? s.ceOI   : s.peOI;
+    var cardCls = 'strike-card '+(isATM?'atm-card':isITM?'itm':'otm');
+    if (gSelected && gSelected.strike===s.strike) cardCls += ' selected';
+    var badgeCls = isATM?'badge-atm':isITM?'badge-itm':'badge-otm';
+    var premCls  = gOpt==='CE'?'ce-prem':'pe-prem';
+
+    // intrinsic value
+    var intrinsic = isATM ? 0 : isITM ? (gOpt==='CE'?atm-s.strike:s.strike-atm) : 0;
+    var timeVal = Math.max(0, prem - intrinsic);
+
+    // OI quality label
+    var oiK = Math.round(oi/1000);
+    var oiLabel = oiK > 3000 ? '🔥 High OI' : oiK > 1000 ? '✅ Good OI' : '⚠️ Low OI';
+
+    html += '<div class="strike-card '+cardCls+'" onclick="selectStrike('+i+')">';
+    html += '<div class="sc-top">';
+    html += '<span class="sc-strike">'+s.strike+'</span>';
+    html += '<span class="sc-badge '+badgeCls+'">'+stype+'</span>';
+    html += '</div>';
+    html += '<div class="sc-row"><span class="sc-lbl">Premium</span><span class="sc-prem '+premCls+'">₹'+prem+'</span></div>';
+    html += '<div class="sc-row"><span class="sc-lbl">OI</span><span class="sc-val">'+oiK+'K &nbsp;'+oiLabel+'</span></div>';
+    html += '<div class="sc-row"><span class="sc-lbl">Intrinsic</span><span class="sc-val">₹'+intrinsic+'</span><span class="sc-lbl">Time Value</span><span class="sc-val">₹'+timeVal+'</span></div>';
+    html += '</div>';
+  }
+
+  if (!html) html = '<div style="color:#4a6080;font-size:13px;padding:10px 0;">या filter मध्ये strikes नाहीत</div>';
+  document.getElementById('strike-cards').innerHTML = html;
+}
+
+function selectStrike(idx) {
+  if (!gChain) return;
+  var s = gChain.strikes[idx];
+  gSelected = {strike:s.strike, prem: gOpt==='CE'?s.cePrem:s.pePrem, type:gOpt};
+  gLots = 1;
+  renderStrikes();
+  updateCalc();
+  document.getElementById('calc-panel').style.display = 'block';
+  document.getElementById('calc-panel').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function adjLot(d) {
+  gLots = Math.max(1, gLots + d);
+  document.getElementById('lot-count').textContent = gLots;
+  updateCalc();
+}
+
+function updateCalc() {
+  if (!gSelected) return;
+  var ls = LOT_SIZES[gIdx] || 25;
+  var prem = gSelected.prem;
+  var lots = gLots;
+  var totalCost = prem * ls * lots;
+  var be = gSelected.type==='CE' ? gSelected.strike + prem : gSelected.strike - prem;
+  var tp2x = totalCost * 2;
+  var atm = gChain.atm;
+  var isITM = gSelected.type==='CE' ? gSelected.strike < atm : gSelected.strike > atm;
+  var isATM = gSelected.strike === atm;
+
+  document.getElementById('calc-selected').innerHTML =
+    '<span style="color:#c8deff;font-size:15px;font-weight:700;">'+gSelected.strike+' '+gSelected.type+'</span>' +
+    ' &nbsp;<span style="color:#4a6080;font-size:12px;">'+(isATM?'ATM':isITM?'ITM 💰':'OTM 🎲')+'</span>';
+  document.getElementById('calc-prem').textContent = '₹'+prem;
+  document.getElementById('calc-lot').textContent = ls+' units/lot';
+  document.getElementById('calc-cost').textContent = '₹'+totalCost.toLocaleString('en-IN');
+  document.getElementById('calc-be').textContent = be.toLocaleString('en-IN');
+  document.getElementById('calc-tp').textContent = '₹'+tp2x.toLocaleString('en-IN')+' (premium 2x)';
+  document.getElementById('calc-ml').textContent = '₹'+totalCost.toLocaleString('en-IN')+' (full premium)';
+
+  var note = '';
+  if (isATM) {
+    note = '🎯 ATM strike — सर्वाधिक liquidity, delta ~0.5. Market थोडंही हलवलं तर profit होतो. Safest buying option.';
+  } else if (isITM) {
+    note = '💰 ITM strike — Premium जास्त पण intrinsic value आहे. Delta जास्त (~0.6-0.8). Risk कमी पण capital जास्त लागतो.';
+  } else {
+    var otmDist = Math.abs(gSelected.strike - atm);
+    if (otmDist <= (gChain.strikes[1].strike - gChain.strikes[0].strike) * 2) {
+      note = '🎲 Near OTM — कमी premium, चांगला reward:risk ratio. Market '+otmDist+' points हलवायला लागेल break-even साठी.';
+    } else {
+      note = '⚡ Deep OTM — खूप कमी premium, high risk. Market खूप जास्त हलवायला लागेल. Small capital, lottery trade.';
+    }
+  }
+  document.getElementById('calc-note').textContent = note;
+}
+</script>
+</body>
+</html>
