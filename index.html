@@ -3108,6 +3108,8 @@ function setCmSym(sym,btn){
   setTimeout(renderCrdOC,50);
 }
 
+function drawCmChart(){ crdCandles=[]; drawCrdChart(); }
+
 function setCmTF(tf,btn){
   cmTF=tf; crdTF=tf;
   document.querySelectorAll('#pg-comm .btn-tf').forEach(b=>b.classList.remove('on'));
