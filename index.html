@@ -4659,7 +4659,7 @@ async function fetchAngelBalance(){
   const jwtData = getJWT();
   if(!jwtData) return;
   try{
-    const res = await fetch('https://gaming-facts-favour-pci.trycloudflare.com/rest/secure/angelbroking/user/v1/getRMS',{
+    const res = await fetch('https://gaming-facts-favour-pci.trycloudflare.com/balance',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
