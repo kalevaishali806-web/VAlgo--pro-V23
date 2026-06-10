@@ -2811,7 +2811,11 @@ function placeRealOrder(){
   const orderPayload={
     variety:'NORMAL',
     tradingsymbol:sym,
-    symboltoken:'99926000', // NIFTY default token
+    symboltoken:(function(){
+      const tokens={'NIFTY':'99926000','BANKNIFTY':'99926009','SENSEX':'99919000',
+      'CRUDEOIL':'234230','GOLD':'57362','SILVER':'58888'};
+      return tokens[sym]||'99926000';
+    })(),
     transactiontype:side,
     exchange:'NSE',
     ordertype:orderType,
