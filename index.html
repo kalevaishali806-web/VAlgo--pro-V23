@@ -4442,7 +4442,7 @@ async function fetchAngelBalance(){
   const jwtData = getJWT();
   if(!jwtData) return;
   try{
-    const res = await fetch('https://cet-attract-occurrence-concern.trycloudflare.com/rest/secure/angelbroking/user/v1/getRMS',{
+    const res = await fetch('https://cet-attract-occurrence-concern.trycloudflare.com/balance',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
