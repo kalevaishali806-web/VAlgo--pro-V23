@@ -3360,6 +3360,17 @@ function tcExecute(){
     time: new Date().toLocaleTimeString('mr-IN')
   };
   positions.push(pos);
+  if(pos.isOpt && liveStatus==='angel'){
+    const parts = tcPending.sym.split(' ');
+    fetch('https://200-141-2-219.sslip.io/vailgo/optionOrder',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name:parts[0], strike:parts[1], type:parts[2], action:pos.type, qty})
+    }).then(r=>r.json()).then(d=>{
+      if(d.status){ flash('✅ Real Order: '+d.data.orderid, true); }
+      else{ flash('❌ Order Failed: '+d.message, false); }
+    }).catch(e=>flash('❌ '+e, false));
+  }
   closeModal('mTradeConfirm');
   renderPositions();
   if(pos.isCrd) renderCrdPositions();
