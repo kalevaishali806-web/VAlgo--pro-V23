@@ -3365,7 +3365,7 @@ function tcExecute(){
     fetch('https://200-141-2-219.sslip.io/vailgo/optionOrder',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({name:parts[0], strike:parts[1], type:parts[2], action:pos.type, qty})
+      body:JSON.stringify({name:parts[0], strike:parts[1], type:parts[2], action:pos.type, qty, sl:tcPending.sl, tgt:tcPending.tgt})
     }).then(r=>r.json()).then(d=>{
       if(d.status){ flash('✅ Real Order: '+d.data.orderid, true); }
       else{ flash('❌ Order Failed: '+d.message, false); }
