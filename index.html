@@ -2057,7 +2057,7 @@ async function renderOC(){
       const expiry = expEl ? expEl.value : '';
 
       // Angel One Option Chain API
-      const res = await fetch('https://200-141-2-219.sslip.io/rest/secure/angelbroking/marketData/v1/optionChain',{
+      const res = await fetch('https://200-141-2-219.sslip.io/vailgo/angelOptionChain',{
         method:'POST',
         headers:{
           'Authorization':'Bearer '+jwtData.jwt,
@@ -4429,7 +4429,7 @@ async function loadOCExpiry(){
   const jwtData = getJWT();
   if(!jwtData) return; // use default static dates
   try{
-    const res = await fetch('https://200-141-2-219.sslip.io/rest/secure/angelbroking/marketData/v1/optionChain',{
+    const res = await fetch('https://200-141-2-219.sslip.io/vailgo/angelOptionChain',{
       method:'POST',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
