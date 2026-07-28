@@ -1871,7 +1871,7 @@ function runAlgo(){
     // Option CE symbol तयार करतो
     const strikeOffset=s.strike==='ITM1'?-1:s.strike==='OTM1'?1:0;
     const strike=getATMStrike(s.sym, strikeOffset);
-    const optSym=`${s.sym} ${strike} CE`;
+    const optType=isBuySignal?'CE':'PE'; const optSym=`${s.sym} ${strike} ${optType}`;
     const optLot=s.optLot||1;
     const ls=LOTS[s.sym]||50;
     const qty=optLot*ls;
@@ -1888,6 +1888,7 @@ function runAlgo(){
         time:new Date().toLocaleTimeString('mr-IN'),
         stratName:s.name};
       positions.push(pos); s.trades++; save(); renderPositions(); drawChart();
+      if(liveStatus==="angel"){ fetch("https://200-141-2-219.sslip.io/vailgo/optionOrder",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:s.sym,strike:strike,type:optType,action:"BUY",qty:qty,sl:pos.sl,tgt:pos.tgt})}).then(r=>r.json()).then(d=>{ if(d.status){flash("✅ Bot Real Order: "+d.data.orderid,true);} else {flash("❌ Bot Order Failed: "+d.message,false);} }).catch(e=>flash("❌ "+e,false)); }
       flash('⚡ '+s.name+': '+optSym+' CE BUY @₹'+cePrice, true);
     } else if(isSellSignal&&alreadyIn){
       closePos(alreadyIn.id);
