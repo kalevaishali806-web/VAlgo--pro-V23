@@ -1888,7 +1888,7 @@ function runAlgo(){
         time:new Date().toLocaleTimeString('mr-IN'),
         stratName:s.name};
       positions.push(pos); s.trades++; save(); renderPositions(); drawChart();
-      if(liveStatus==="angel"){ fetch("https://200-141-2-219.sslip.io/vailgo/optionOrder",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:s.sym,strike:strike,type:optType,action:"BUY",qty:qty,sl:pos.sl,tgt:pos.tgt})}).then(r=>r.json()).then(d=>{ if(d.status){flash("✅ Bot Real Order: "+d.data.orderid,true);} else {flash("❌ Bot Order Failed: "+d.message,false);} }).catch(e=>flash("❌ "+e,false)); }
+      if(liveStatus==="angel"){ fetch("https://vailgo-proxy.onrender.com/vailgo/optionOrder",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:s.sym,strike:strike,type:optType,action:"BUY",qty:qty,sl:pos.sl,tgt:pos.tgt})}).then(r=>r.json()).then(d=>{ if(d.status){flash("✅ Bot Real Order: "+d.data.orderid,true);} else {flash("❌ Bot Order Failed: "+d.message,false);} }).catch(e=>flash("❌ "+e,false)); }
       flash('⚡ '+s.name+': '+optSym+' CE BUY @₹'+cePrice, true);
     } else if(isSellSignal&&alreadyIn){
       closePos(alreadyIn.id);
@@ -2058,7 +2058,7 @@ async function renderOC(){
       const expiry = expEl ? expEl.value : '';
 
       // Angel One Option Chain API
-      const res = await fetch('https://200-141-2-219.sslip.io/vailgo/angelOptionChain',{
+      const res = await fetch('https://vailgo-proxy.onrender.com/vailgo/angelOptionChain',{
         method:'POST',
         headers:{
           'Authorization':'Bearer '+jwtData.jwt,
@@ -2685,7 +2685,7 @@ async function autoLoadJWT(){
   st.style.color='var(--gold)';
   st.textContent='⏳ Local server कडून token घेत आहे...';
   try {
-    const res = await fetch('https://200-141-2-219.sslip.io/token');
+    const res = await fetch('https://vailgo-proxy.onrender.com/token');
     if(res.ok){
       const data = await res.json();
       const token = (data.token||'').replace('Bearer ','').trim();
@@ -2828,7 +2828,7 @@ function placeRealOrder(){
   };
 
   // Proxy server मधून order पाठवा
-  fetch('https://200-141-2-219.sslip.io/rest/secure/angelbroking/order/v1/placeOrder',{
+  fetch('https://vailgo-proxy.onrender.com/rest/secure/angelbroking/order/v1/placeOrder',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
@@ -3363,7 +3363,7 @@ function tcExecute(){
   positions.push(pos);
   if(pos.isOpt && liveStatus==='angel'){
     const parts = tcPending.sym.split(' ');
-    fetch('https://200-141-2-219.sslip.io/vailgo/optionOrder',{
+    fetch('https://vailgo-proxy.onrender.com/vailgo/optionOrder',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({name:parts[0], strike:parts[1], type:parts[2], action:pos.type, qty, sl:tcPending.sl, tgt:tcPending.tgt})
@@ -3536,7 +3536,7 @@ async function fetchAngelCandles(sym,jwt){
     const from=new Date(now-7*24*3600*1000);
     const fmt=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     const body={exchange:'NSE',symboltoken:token,interval:tfMap[curTF]||'FIVE_MINUTE',fromdate:fmt(from),todate:fmt(now)};
-    const res=await fetch('https://200-141-2-219.sslip.io/rest/secure/angelbroking/historical/v1/getCandleData',{
+    const res=await fetch('https://vailgo-proxy.onrender.com/rest/secure/angelbroking/historical/v1/getCandleData',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'X-UserType':'USER','X-SourceID':'WEB','X-ClientLocalIP':'192.168.1.1','X-ClientPublicIP':'106.193.147.98','X-MACAddress':'fe80::1','X-PrivateKey':'Y4IDCPLI'},
       body:JSON.stringify(body),
@@ -4355,7 +4355,7 @@ function closeOptChart(){
 async function fetchAngelPnl(jwt, clientId){
   try{
     // Fetch positions
-    const res = await fetch('https://200-141-2-219.sslip.io/rest/secure/angelbroking/order/v1/getPosition',{
+    const res = await fetch('https://vailgo-proxy.onrender.com/rest/secure/angelbroking/order/v1/getPosition',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwt,
@@ -4430,7 +4430,7 @@ async function loadOCExpiry(){
   const jwtData = getJWT();
   if(!jwtData) return; // use default static dates
   try{
-    const res = await fetch('https://200-141-2-219.sslip.io/vailgo/angelOptionChain',{
+    const res = await fetch('https://vailgo-proxy.onrender.com/vailgo/angelOptionChain',{
       method:'POST',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
@@ -4457,7 +4457,7 @@ async function fetchAngelBalance(){
   const jwtData = getJWT();
   if(!jwtData) return;
   try{
-    const res = await fetch('https://200-141-2-219.sslip.io/balance',{
+    const res = await fetch('https://vailgo-proxy.onrender.com/balance',{
       method:'GET',
       headers:{
         'Authorization':'Bearer '+jwtData.jwt,
@@ -4509,7 +4509,7 @@ async function autoUpdateIP(jwt, apiKey, clientId){
     }
 
     // Update IP on Angel One
-    const res = await fetch('https://200-141-2-219.sslip.io/rest/secure/angelbroking/user/v1/updateIPAddress',{
+    const res = await fetch('https://vailgo-proxy.onrender.com/rest/secure/angelbroking/user/v1/updateIPAddress',{
       method:'POST',
       headers:{
         'Authorization':'Bearer '+jwt,
