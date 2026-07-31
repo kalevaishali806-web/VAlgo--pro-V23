@@ -2808,32 +2808,22 @@ function placeRealOrder(){
   resEl.innerHTML='<div style="color:var(--gold);font-size:12px;">⏳ Order पाठवतोय Angel One API ला...</div>';
 
   // Angel One SmartAPI place order
-  const orderPayload={
-    variety:'NORMAL',
-    tradingsymbol:sym,
-    symboltoken:(function(){
-      const tokens={'NIFTY':'99926000','BANKNIFTY':'99926009','SENSEX':'99919000',
-      'CRUDEOIL':'234230','GOLD':'57362','SILVER':'58888'};
-      return tokens[sym]||'99926000';
-    })(),
-    transactiontype:side,
-    exchange:'NSE',
-    ordertype:orderType,
-    producttype:'INTRADAY',
-    duration:'DAY',
-    price:price.toFixed(2),
-    squareoff:'0',
-    stoploss:'0',
-    quantity:qty.toString()
+  const symParts=sym.split(' ');
+  const optPayload={
+    name:symParts[0]||'NIFTY',
+    strike:symParts[1]||'',
+    type:symParts[2]||'CE',
+    action:side,
+    qty:qty
   };
 
-  // Proxy server मधून order पाठवा
-  fetch('https://200-141-2-219.sslip.io/rest/secure/angelbroking/order/v1/placeOrder',{
+  // Proxy server मधून order पाठवा (option token lookup सह)
+  fetch('https://200-141-2-219.sslip.io/vailgo/optionOrder',{
     method:'POST',
     headers:{
       'Content-Type':'application/json',
     },
-    body:JSON.stringify(orderPayload)
+    body:JSON.stringify(optPayload)
   })
   .then(r=>r.json())
   .then(data=>{
