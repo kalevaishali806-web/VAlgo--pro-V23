@@ -1065,7 +1065,13 @@ function goPage(p,btn){
   document.getElementById('pg-'+p).classList.add('on');
   if(btn) btn.classList.add('on');
   document.getElementById('appBody').scrollTop=0;
-  if(p==='oc') renderOC();
+  if(p==='oc'){
+    renderOC();
+    if(window._ocInterval) clearInterval(window._ocInterval);
+    window._ocInterval = setInterval(renderOC, 4000);
+  } else {
+    if(window._ocInterval){ clearInterval(window._ocInterval); window._ocInterval=null; }
+  }
   if(p==='pnl') renderPnl();
   if(p==='strat') renderStrats();
   if(p==='watch'){ renderWatch(); renderIntradayPicks(); startWatchPriceRefresh(); }
