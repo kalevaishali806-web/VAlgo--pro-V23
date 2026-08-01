@@ -3393,16 +3393,16 @@ function openStopSettings(){
 
 function save(){
   try{
-    localStorage.setItem('va_strats',JSON.stringify(strats));
-    localStorage.setItem('va_closed',JSON.stringify(closed));
-    localStorage.setItem('va_watch', JSON.stringify(watchlist));
+    localStorage.setItem('va_live_strats',JSON.stringify(strats));
+    localStorage.setItem('va_live_closed',JSON.stringify(closed));
+    localStorage.setItem('va_live_watch', JSON.stringify(watchlist));
   }catch(e){}
 }
 function load(){
   try{
-    const s=localStorage.getItem('va_strats'); if(s) strats=JSON.parse(s);
-    const c=localStorage.getItem('va_closed'); if(c) closed=JSON.parse(c);
-    const w=localStorage.getItem('va_watch');  if(w) watchlist=JSON.parse(w);
+    const s=localStorage.getItem('va_live_strats'); if(s) strats=JSON.parse(s);
+    const c=localStorage.getItem('va_live_closed'); if(c) closed=JSON.parse(c);
+    const w=localStorage.getItem('va_live_watch');  if(w) watchlist=JSON.parse(w);
     // Fetch prices for custom stocks on load
     setTimeout(()=>{
       watchlist.forEach(sym=>{
