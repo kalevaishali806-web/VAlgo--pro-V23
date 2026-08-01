@@ -2054,7 +2054,7 @@ function delStrat(id){if(!confirm('Delete?'))return;strats=strats.filter(x=>x.id
 let ocLotN=1;
 function chOCLot(d){
   const sym=document.getElementById('ocSym')?.value||'NIFTY';
-  const ls={NIFTY:50,BANKNIFTY:15,SENSEX:10}[sym]||50;
+  const ls=(typeof LOTS!=="undefined"?LOTS[sym]:null)||{NIFTY:65,BANKNIFTY:30,SENSEX:20}[sym]||65;
   ocLotN=Math.max(1,ocLotN+d);
   document.getElementById('ocLotN').textContent=ocLotN;
   document.getElementById('ocLotQ').textContent=`= ${ocLotN*ls} qty`;
@@ -2062,7 +2062,7 @@ function chOCLot(d){
 async function renderOC(){
   const sym=document.getElementById('ocSym')?.value||'NIFTY';
   const step={NIFTY:50,BANKNIFTY:100,SENSEX:100}[sym]||50;
-  const ls={NIFTY:50,BANKNIFTY:15,SENSEX:10}[sym]||50;
+  const ls=(typeof LOTS!=="undefined"?LOTS[sym]:null)||{NIFTY:65,BANKNIFTY:30,SENSEX:20}[sym]||65;
 
   // Angel One connected असेल तर real data वापरा
   const jwtData = getJWT();
