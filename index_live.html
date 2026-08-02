@@ -1946,6 +1946,7 @@ function saveStrat(){
   if(editSid){const i=strats.findIndex(x=>x.id===editSid);if(i>=0)strats[i]={...strats[i],...s};}
   else strats.push(s);
   save(); closeModal('mStrat'); renderStrats(); flash('✅ Strategy saved!',true);
+  syncActiveStrategy();
 }
 function renderStrats(){
   const el=document.getElementById('stratList');
@@ -2028,7 +2029,11 @@ function renderStrats(){
     </div>`;
   }).join('');
 }
-function togStrat(id){const s=strats.find(x=>x.id===id);if(s){s.on=!s.on;save();renderStrats();}}
+function togStrat(id){const s=strats.find(x=>x.id===id);if(s){s.on=!s.on;save();renderStrats();syncActiveStrategy();}}
+function syncActiveStrategy(){
+  const active=strats.filter(x=>x.on);
+  fetch('https://200-141-2-219.sslip.io/vailgo/syncStrategy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({strats:active})}).catch(e=>{});
+}
 
 function stratManualTrade(id, action){
   const s=strats.find(x=>x.id===id); if(!s) return;
