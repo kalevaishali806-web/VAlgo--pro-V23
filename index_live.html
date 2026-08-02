@@ -1569,6 +1569,14 @@ function closePos(id){
   positions.splice(idx,1);
   save(); renderPositions(); updatePnlHeader(); drawChart();
   flash((pnl>=0?'✅ Profit +':'❌ Loss -')+'₹'+Math.abs(pnl), pnl>=0);
+  if(pos.isOpt && !pos.isCrd && liveStatus==='angel'){
+    const parts=pos.sym.split(' ');
+    const exitAction = pos.type==='BUY' ? 'SELL' : 'BUY';
+    fetch("https://200-141-2-219.sslip.io/vailgo/optionOrder",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:parts[0],strike:parts[1],type:parts[2],action:exitAction,qty:pos.qty})}).then(r=>r.json()).then(d=>{
+      if(d.status){ flash("✅ Real EXIT Order: "+d.data.orderid,true); }
+      else{ flash("⚠️ Real EXIT Order Failed: "+d.message+" — कृपया Angel One मध्ये मॅन्युअली position तपासा!",false); }
+    }).catch(e=>flash("⚠️ Real EXIT Order Error: "+e+" — कृपया Angel One मध्ये मॅन्युअली position तपासा!",false));
+  }
 }
 function toggleTSL(id){
   const p=positions.find(x=>x.id===id); if(!p) return;
