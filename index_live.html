@@ -2300,7 +2300,7 @@ function renderOCReal(data, sym, step, ls){
     const ceOIColor = ceBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--green);';
     const peOIColor = peBigPlayer?'color:#00ff88;text-shadow:0 0 6px rgba(0,255,136,0.5);':'color:var(--red);';
 
-    html+=`<tr style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
+    html+=`<tr id="${isATM?'ocAtmRow':''}" style="${bg}border-bottom:1px solid rgba(255,255,255,0.03);">
       <td style="text-align:right;">
         <div style="font-size:8px;font-weight:700;${ceOIColor}">${oif(ceOI)}${ceBigPlayer?'🔥':''}</div>
         <div style="height:2px;background:rgba(0,232,122,0.12);margin-top:2px;width:32px;margin-left:auto;"><div style="height:2px;background:${ceBigPlayer?'#00ff88':'var(--green)'};width:${ceBar}px;"></div></div>
@@ -2329,6 +2329,7 @@ function renderOCReal(data, sym, step, ls){
 
   html+='</tbody></table>';
   document.getElementById('ocTable').innerHTML=html;
+  setTimeout(()=>{const r=document.getElementById('ocAtmRow'); if(r) r.scrollIntoView({block:'center', behavior:'instant'});}, 50);
 }
 
 function ocTrade(opt,action){
