@@ -2329,7 +2329,10 @@ function renderOCReal(data, sym, step, ls){
 
   html+='</tbody></table>';
   document.getElementById('ocTable').innerHTML=html;
-  setTimeout(()=>{const r=document.getElementById('ocAtmRow'); if(r) r.scrollIntoView({block:'center', behavior:'instant'});}, 50);
+  if(!window._ocScrolledOnce){
+    window._ocScrolledOnce = true;
+    setTimeout(()=>{const r=document.getElementById('ocAtmRow'); if(r) r.scrollIntoView({block:'center', behavior:'instant'});}, 50);
+  }
 }
 
 function ocTrade(opt,action){
